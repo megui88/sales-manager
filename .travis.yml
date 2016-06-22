@@ -1,0 +1,12 @@
+language: php
+
+php:
+  - 7.0
+before_script:
+  - php composer.phar install
+  - cp .env.example .env
+  - mysql -e "CREATE DATABASE sm_test" -uroot
+  - php artisan migrate
+
+script:
+  - ./vendor/bin/phpunit tests
