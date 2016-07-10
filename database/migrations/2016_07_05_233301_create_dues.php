@@ -15,10 +15,11 @@ class CreateDues extends Migration
         Schema::create('dues', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('sale_id')->unsigned();
-            $table->decimal('amount_of_quota',8,2);
+            $table->decimal('amount_of_quota', 8, 2);
             $table->integer('number_of_quota');
             $table->integer('payer_id')->unsigned();
-            $table->date('date_due');
+            $table->string('period');
+            $table->date('due_date')->nullable();
             $table->string('state');
             $table->timestamps();
         });

@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => "no-reply@c-inteligente.com.ar", 'name' => null],
+    'from' => ['address' => 'no-reply@c-inteligente.com.ar', 'name' => null],
 
     /*
     |--------------------------------------------------------------------------

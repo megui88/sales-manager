@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\NewSaleEvent;
+use App\Listeners\CurrentAccountListener;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -15,6 +17,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         'App\Events\SomeEvent' => [
             'App\Listeners\EventListener',
+        ],
+        NewSaleEvent::class => [
+            CurrentAccountListener::class,
         ],
     ];
 

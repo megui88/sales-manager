@@ -2,45 +2,71 @@
 
 namespace App;
 
+use App\Contract\Channels;
 use App\Contract\States;
 use App\Contract\Transactional;
+use App\Events\NewSaleEvent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Event;
 
-class Sale extends Model implements Transactional, States
+class Sale extends Model implements Transactional, States, Channels
 {
+    public $errors = [];
 
     protected $fillable = [
         'amount',
         'charge',
         'payer_id',
         'collector_id',
-        'payer_id',
         'installments',
+        'sale_mode',
         'state',
-        'first_date_due',
+        'first_due_date',
+        'period',
+    ];
+
+    public static $required = [
+        'amount',
+        'charge',
+        'payer_id',
+        'collector_id',
+        'installments',
+        'sale_mode',
+        'state',
+    ];
+
+    protected $dates = [
+        'first_due_date',
     ];
 
     protected static function boot()
     {
         parent::boot();
-        self::creating(function($entity){
+        self::creating(function ($entity) {
             $entity->state = self::INITIATED;
+            if (empty($entity->period) && empty($entity->first_due_date)) {
+                $entity->period = Periods::getCurrentPeriod();
+            }
+            if (empty($entity->period) && !empty($entity->first_due_date)) {
+                $entity->period = Periods::getPeriod($entity->first_due_date);
+            }
+
+            if (!empty($entity->period) && empty($entity->first_due_date)) {
+                $entity->first_due_date = Periods::getDueDate($entity->period);
+            }
+
+            foreach (self::$required as $key) {
+                if (empty($entity->$key)) {
+                    $entity->errors [] = "The attribute $key is required.";
+                }
+            }
+
+            return empty($entity->errors);
         });
 
-        self::created(function($sale){
-            for($x = 0 ; $x < $sale->installments ; ++$x){
-                $date_due = (new \DateTime($sale->first_date_due->format(DATE_ATOM)))->modify("+$x month");
-                $due = Due::create([
-                    'sale_id' => $sale->id,
-                    'amount_of_quota' => ($sale->amount / $sale->installments),   //@todo move to service
-                    'number_of_quota' =>  ($x + 1),
-                    'payer_id' => $sale->payer_id,
-                    'date_due' => $date_due,
-                    'state' => self::INITIATED,
-                ]);
-                $due->save();
-            }
+        self::created(function ($sale) {
+            Event::fire(new NewSaleEvent($sale));
         });
     }
 
@@ -51,7 +77,7 @@ class Sale extends Model implements Transactional, States
 
     public function transaction()
     {
-        return $this->morphMany('App\Transaction', 'transactional');
+        return $this->morphMany(Transaction::class, 'transactional');
     }
 
     public function getCollectorId()
@@ -66,6 +92,16 @@ class Sale extends Model implements Transactional, States
 
     public function dues()
     {
-        return $this->hasMany('App\Due');
+        return $this->hasMany(Due::class);
+    }
+
+    public function accredits()
+    {
+        return $this->hasMany(Accredit::class);
+    }
+
+    public function incomes()
+    {
+        return $this->hasMany(Incomes::class);
     }
 }

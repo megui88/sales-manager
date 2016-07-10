@@ -14,7 +14,7 @@ $uri = urldecode(
 // application without having installed a "real" web server software here.
 if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
     $filename = __DIR__.'/public'.$uri;
-    $mime_types = array(
+    $mime_types = [
 
         'txt' => 'text/plain',
         'htm' => 'text/html',
@@ -68,11 +68,11 @@ if ($uri !== '/' && file_exists(__DIR__.'/public'.$uri)) {
         // open office
         'odt' => 'application/vnd.oasis.opendocument.text',
         'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
-    );
-    $ext = strtolower(array_pop(explode('.',$filename)));
+    ];
+    $ext = strtolower(array_pop(explode('.', $filename)));
 
-    if(! empty($mime_types[$ext])) {
-        header('Content-Type: ' . $mime_types[$ext]);
+    if (!empty($mime_types[$ext])) {
+        header('Content-Type: '.$mime_types[$ext]);
     }
     echo file_get_contents($filename);
     exit;
