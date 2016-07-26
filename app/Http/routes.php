@@ -17,4 +17,8 @@ Route::get('/', function () {
 
 Route::auth();
 
+Route::post('oauth/access_token', function() {
+    return Response::json(Authorizer::issueAccessToken());
+});
+
 Route::get('/home', 'HomeController@index');
