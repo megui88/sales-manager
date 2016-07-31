@@ -76,7 +76,7 @@ class BusinessCore
         }
         $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
-        return (string) $dateTime->modify("+$months month")->format(self::PERIOD_FORMAT);
+        return (string) $dateTime->modify("last day of +$months month")->format(self::PERIOD_FORMAT);
     }
 
     /**
@@ -91,7 +91,7 @@ class BusinessCore
         }
         $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
-        return (string) $dateTime->modify("+$months month")->format(self::DUE_DATE_FORMAT);
+        return (string) $dateTime->modify("last day of +$months month")->format(self::DUE_DATE_FORMAT);
     }
 
     /**

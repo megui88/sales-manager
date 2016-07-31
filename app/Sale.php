@@ -7,7 +7,6 @@ use App\Contract\States;
 use App\Contract\Transactional;
 use App\Events\NewSaleEvent;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 
 class Sale extends Model implements Transactional, States, Channels

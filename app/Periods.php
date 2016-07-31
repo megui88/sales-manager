@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Periods extends Model
 {
     protected $fillable = [
-        'uid', 'due_date', 'closed_at', 'operator_id_opened', 'operator_id_closed'
+        'uid', 'due_date', 'closed_at', 'operator_id_opened', 'operator_id_closed',
     ];
 
     public static function getPeriod($date = 'now')

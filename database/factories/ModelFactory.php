@@ -19,3 +19,11 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\OauthClients::class, function (Faker\Generator $faker) {
+    return [
+        'id' => $faker->randomElement(['web', 'mobile', 'vendor']),
+        'secret' => bcrypt(str_random(10)),
+        'name' => $faker->name,
+    ];
+});

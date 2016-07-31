@@ -1,12 +1,12 @@
 <?php
 
 use App\Sale;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class CurrentAccountHappyPassTest extends TestCase
 {
+    use DatabaseMigrations;
     use DatabaseTransactions;
 
     public function getData()
@@ -28,6 +28,30 @@ class CurrentAccountHappyPassTest extends TestCase
         $data = $this->getData();
         $data['period'] = null;
         $this->assertTrue($this->saleHappyPass($data));
+    }
+
+    public function testSaleLastDayOfMonth()
+    {
+        $data = $this->getData();
+        $data['period'] = null;
+        $init_date = '2015-12-31';
+        for ($x = 1; $x <= 12; ++$x) {
+            $due_date = new \DateTime($init_date);
+            $data['first_due_date'] = $due_date->modify("last day of +$x month");
+            $this->assertTrue($this->saleHappyPass($data));
+        }
+    }
+
+    public function testSaleFirstDayOfMonth()
+    {
+        $data = $this->getData();
+        $data['period'] = null;
+        $init_date = '2015-12-01';
+        for ($x = 1; $x <= 12; ++$x) {
+            $due_date = new \DateTime($init_date);
+            $data['first_due_date'] = $due_date->modify("first day of +$x month");
+            $this->assertTrue($this->saleHappyPass($data));
+        }
     }
 
     public function testSaleWithoutTheFirstDueDate()
@@ -149,7 +173,7 @@ class CurrentAccountHappyPassTest extends TestCase
             $this->assertEquals($index + 1, $due->number_of_quota);
             if (!is_null($data['first_due_date'])) {
                 $due_date = clone $data['first_due_date'];
-                $evaluated = $due_date->modify("+$index month");
+                $evaluated = $due_date->modify("last day of +$index month");
                 $this->assertEquals($evaluated->format('Y-m-d'), $due->due_date);
                 $this->assertEquals($business->dateToPeriodFormat($evaluated), $due->period);
                 $this->assertEquals(
@@ -181,7 +205,7 @@ class CurrentAccountHappyPassTest extends TestCase
             $totalCollect += $accredit->amount_of_quota;
             if (!is_null($data['first_due_date'])) {
                 $due_date = clone $data['first_due_date'];
-                $evaluated = $due_date->modify("+$index month");
+                $evaluated = $due_date->modify("last day of +$index month");
                 $this->assertEquals($evaluated->format('Y-m-d'), $accredit->due_date);
                 $this->assertEquals($business->dateToPeriodFormat($evaluated), $accredit->period);
                 $this->assertEquals(
@@ -213,7 +237,7 @@ class CurrentAccountHappyPassTest extends TestCase
             $totalCollect += $income->amount_of_quota;
             if (!is_null($data['first_due_date'])) {
                 $due_date = clone $data['first_due_date'];
-                $evaluated = $due_date->modify("+$index month");
+                $evaluated = $due_date->modify("last day of +$index month");
                 $this->assertEquals($evaluated->format('Y-m-d'), $income->due_date);
                 $this->assertEquals($business->dateToPeriodFormat($evaluated), $income->period);
                 $this->assertEquals(

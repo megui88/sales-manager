@@ -30,24 +30,24 @@ return [
     'grant_types' => [
 
         'authorization_code' => [
-            'class' => '\League\OAuth2\Server\Grant\AuthCodeGrant',
+            'class' => \League\OAuth2\Server\Grant\AuthCodeGrant::class,
             'access_token_ttl' => 3600,
-            'auth_token_ttl' => 60
+            'auth_token_ttl' => 60,
         ],
         'password' => [
-            'class' => '\League\OAuth2\Server\Grant\PasswordGrant',
-            'callback' => '\App\PasswordGrantVerifier@verify',
-            'access_token_ttl' => 3600
+            'class' => \League\OAuth2\Server\Grant\PasswordGrant::class,
+            'callback' => \App\PasswordGrantVerifier::class.'@verify',
+            'access_token_ttl' => 3600,
         ],
         'client_credentials' => [
-            'class' => '\League\OAuth2\Server\Grant\ClientCredentialsGrant',
-            'access_token_ttl' => 3600
+            'class' => \League\OAuth2\Server\Grant\ClientCredentialsGrant::class,
+            'access_token_ttl' => 3600,
         ],
         'refresh_token' => [
-            'class' => '\League\OAuth2\Server\Grant\RefreshTokenGrant',
+            'class' => \League\OAuth2\Server\Grant\RefreshTokenGrant::class,
             'access_token_ttl' => 3600,
-            'refresh_token_ttl' => 36000
-        ]
+            'refresh_token_ttl' => 36000,
+        ],
     ],
 
     /*
@@ -62,7 +62,7 @@ return [
     |
     */
 
-    'token_type' => 'League\OAuth2\Server\TokenType\Bearer',
+    'token_type' => \League\OAuth2\Server\TokenType\Bearer::class,
 
     /*
     |--------------------------------------------------------------------------
