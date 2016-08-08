@@ -22,8 +22,8 @@ class ModelServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootMorphMap();
-        Sale::created($this->setTransaction('s'));
-        Sale::deleted($this->setTransaction('d'));
+        Sale::created($this->setTransaction());
+        Sale::deleted($this->setTransaction());
     }
 
     /**
@@ -45,9 +45,9 @@ class ModelServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function setTransaction($t)
+    private function setTransaction()
     {
-        return function ($entity) use ($t) {
+        return function ($entity){
 
             if ($entity instanceof Transactional) {
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Incomes extends Model
 {
+    use UuidForKey;
     protected $fillable = [
         'sale_id',
         'amount_of_quota',

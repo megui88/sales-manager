@@ -13,18 +13,19 @@ class CreateTransaction extends Migration
     public function up()
     {
         Schema::create('transactions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('transactional_id');
+            $table->uuid('id');
+            $table->uuid('transactional_id');
             $table->string('transactional_type');
             $table->integer('client_id');
             $table->integer('office_id');
-            $table->integer('operator_id')->unsigned();
-            $table->integer('supervisor_id')->nullable();
-            $table->integer('collector_id')->unsigned();
-            $table->integer('payer_id')->unsigned();
-            $table->integer('comment_id')->unsigned();
+            $table->uuid('operator_id');
+            $table->uuid('supervisor_id')->nullable();
+            $table->uuid('collector_id');
+            $table->uuid('payer_id');
+            $table->uuid('comment_id')->nullable();
             $table->string('state')->nullable();
             $table->timestamps();
+            $table->primary('id');
         });
     }
 

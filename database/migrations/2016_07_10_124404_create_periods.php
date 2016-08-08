@@ -13,8 +13,15 @@ class CreatePeriods extends Migration
     public function up()
     {
         Schema::create('periods', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
+            $table->string('uid');
+            $table->dateTime('due_date');
+            $table->dateTime('closed_at');
+            $table->integer('operator_id_opened');
+            $table->integer('operator_id_closed');
             $table->timestamps();
+            $table->primary('id');
+            $table->index('uid');
         });
     }
 

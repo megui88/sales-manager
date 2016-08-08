@@ -166,6 +166,9 @@ class CurrentAccountHappyPassTest extends TestCase
         $dues = $sale->dues;
 
         //Then
+        if($data['installments'] != $dues->count()){
+            dd($data['installments'], $dues->count());
+        }
         $this->assertEquals($data['installments'], $dues->count());
 
         foreach ($dues as $index => $due) {

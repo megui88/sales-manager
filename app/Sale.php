@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Event;
 
 class Sale extends Model implements Transactional, States, Channels
 {
+    use UuidForKey;
     public $errors = [];
 
     protected $fillable = [

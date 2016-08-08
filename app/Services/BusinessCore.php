@@ -4,6 +4,10 @@ namespace App\Services;
 
 class BusinessCore
 {
+    const CREDIT_MAX = 40000;
+    const AGENT_ROLE = 9;
+    const VENDOR_ROLE = 1;
+    const MEMBER_ROLE = 2;
     const PERIOD_FORMAT = 'Ym';
     const PERIOD_EXP_REG = '/^(\d{4})(\d{2})+$/i';
     const PERIOD_EXP_REG_REMP = '${1}-$2-01';

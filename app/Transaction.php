@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    use UuidForKey;
     protected $fillable = [
         'client_id',
         'office_id',
