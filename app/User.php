@@ -2,13 +2,16 @@
 
 namespace App;
 
+use App\Contract\CustomizeQuery;
+use App\Contract\ModelPagination as Pagination;
 use App\Services\BusinessCore;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CustomizeQuery, Pagination
 {
     use UuidForKey;
+    use ModelPagination;
     /**
      * The attributes that are mass assignable.
      *
@@ -70,7 +73,7 @@ class User extends Authenticatable
     public function builder($data)
     {
         $this->credit_max =  BusinessCore::CREDIT_MAX;
-        
+
         foreach ($data as $attribute => $value){
             $this->$attribute = $value;
         }
@@ -81,5 +84,15 @@ class User extends Authenticatable
 
         return $this;
 
+    }
+
+    public function getColumn()
+    {
+        return 'name';
+    }
+
+    public function getOperator()
+    {
+        return 'like';
     }
 }

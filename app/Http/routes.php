@@ -4,6 +4,10 @@
 Route::auth();
 
 # Api OAuth
+Route::get('oauth/access_token', function () {
+    return Response::json(Authorizer::issueAccessToken());
+});
+
 Route::post('oauth/access_token', function () {
     return Response::json(Authorizer::issueAccessToken());
 });
@@ -19,4 +23,10 @@ Route::group(['middleware' => 'auth'], function () {
         return view('welcome');
     });
 });
+
+# Users
+Route::group([],function () {
+    Route::get('/users', 'UserController@index');
+});
+
 
