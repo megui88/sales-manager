@@ -42,6 +42,10 @@ class Authenticate
             }
         }
 
+        if (! Auth::user()->enable) {
+            return redirect()->to('/user-disable');
+        }
+
         return $next($request);
     }
 

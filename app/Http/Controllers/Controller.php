@@ -11,6 +11,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Validator;
 
 class Controller extends BaseController
 {
@@ -29,6 +30,14 @@ class Controller extends BaseController
 
             if (empty($value)){
                 continue;
+            }
+
+            if ('true' === $value){
+                $value = true;
+            }
+
+            if ('false' === $value){
+                $value = false;
             }
 
             if (('size' == $filter && ! $model->canUseInPaginate($filter)) || 'pageSize' == $filter){
@@ -50,11 +59,7 @@ class Controller extends BaseController
             if ( (('q' == $filter && ! $model->canUseInPaginate($filter)) || 'queryCustom' == $filter)
                 && $model instanceof CustomizeQuery
             ){
-                $query->where(
-                    $model->getColumn(),
-                    $model->getOperator(),
-                    $value .'%'
-                );
+                $query = $model->customQuery($query,$value, $filters);
             }
 
             if ($model->canUseInPaginate($filter) ){
@@ -84,5 +89,18 @@ class Controller extends BaseController
     {
         $request = request();
         return $request->get('filters',[]);
+    }
+
+    public function exceptionNotAurhoze()
+    {
+        $rules = [
+            'password' => 'required',
+        ];
+        $messages = [
+            'required' => 'La contraseña no pertence a un usuario autorizado.',
+        ];
+
+        $validator = Validator::make(['password'], $rules, $messages);
+        $this->throwValidationException(request(), $validator);
     }
 }

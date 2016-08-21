@@ -2,8 +2,9 @@
 
 namespace App\Contract;
 
+use Illuminate\Database\Query\Builder;
+
 interface CustomizeQuery
 {
-    function getColumn();
-    function getOperator();
+    function customQuery(Builder $query, $value = '', $filters = null);
 }

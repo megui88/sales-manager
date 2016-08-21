@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Services\BusinessCore;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -50,6 +51,8 @@ class AuthController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'code' => 'required|unique:users',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -65,7 +68,11 @@ class AuthController extends Controller
     {
         return User::create([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
             'email' => $data['email'],
+            'code' => $data['code'],
+            'enable' => false,
+            'role' => BusinessCore::MEMBER_ROLE,
             'password' => bcrypt($data['password']),
         ]);
     }

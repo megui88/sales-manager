@@ -14,6 +14,10 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\OauthNewClient::class,
+        Commands\EnableUser::class,
+        Commands\UserDetails::class,
+        Commands\UpgradeUser::class,
+        Commands\DowngradeUser::class,
     ];
 
     /**
