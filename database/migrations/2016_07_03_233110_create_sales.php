@@ -13,7 +13,7 @@ class CreateSales extends Migration
     public function up()
     {
         Schema::create('sales', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->increments('id');
             $table->decimal('charge', 8, 2);
             $table->decimal('amount', 8, 2);
             $table->integer('installments');
@@ -21,10 +21,10 @@ class CreateSales extends Migration
             $table->uuid('collector_id');
             $table->date('first_due_date')->nullable();
             $table->string('sale_mode')->nullable();
+            $table->text('description');
             $table->string('period');
             $table->string('state');
             $table->timestamps();
-            $table->primary('id');
         });
     }
 

@@ -2,12 +2,10 @@
 
 namespace App;
 
-use App\Services\BusinessCore;
-use Illuminate\Database\Eloquent\Model;
+use App\Repositories\PeriodsRepository;
 
-class Periods extends Model
+class Periods extends PeriodsRepository
 {
-    use UuidForKey;
     protected $fillable = [
         'uid',
         'due_date',
@@ -15,21 +13,4 @@ class Periods extends Model
         'operator_id_opened',
         'operator_id_closed',
     ];
-
-    public static function getPeriod($date = 'now')
-    {
-        $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
-
-        return $dateTime->format(BusinessCore::PERIOD_FORMAT);
-    }
-
-    public static function getCurrentPeriod()
-    {
-        return date('Ym', strtotime('now'));
-    }
-
-    public static function getDueDate($period)
-    {
-        return;// new \DateTime('now');
-    }
 }

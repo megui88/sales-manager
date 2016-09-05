@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Repositories\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
 
 class Accredit extends Model

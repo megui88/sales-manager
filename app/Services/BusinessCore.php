@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\User;
+use Illuminate\Support\Facades\DB;
+
 class BusinessCore
 {
     const CREDIT_MAX = 40000;
     const AGENT_ROLE = 9;
-    const VENDOR_ROLE = 1;
-    const MEMBER_ROLE = 2;
+    const VENDOR_ROLE = 'proveedor';
+    const MEMBER_ROLE = 'socio';
+    const EMPLOYEE_ROLE = 'empleado';
+    const EMPLOYEE_ADMIN_ROLE = 'administrador';
     const PERIOD_FORMAT = 'Ym';
     const PERIOD_EXP_REG = '/^(\d{4})(\d{2})+$/i';
     const PERIOD_EXP_REG_REMP = '${1}-$2-01';
@@ -16,13 +21,31 @@ class BusinessCore
     const PRINT_DECIMALS = 2;
     const PRINT_DEC_POINT = '.';
     const PRINT_THOUSANDS_SEP = ',';
+    const MEMBER_AFFILIATE = 'afiliado';
+    const MEMBER_DISENROLLED = 'desafiliado';
 
+    public static function AuthorizationPassword($password)
+    {
+
+        $results = DB::select('SELECT * FROM users WHERE  role = :role',
+            [
+                'role' => self::EMPLOYEE_ADMIN_ROLE,
+            ]);
+        foreach ($results as $result){
+            if( password_verify($password, $result->password) ){
+                return true;
+            };
+        }
+
+        return false;
+
+    }
     /**
      * @param $number
      * @return string|float
      * @throws BusinessException
      */
-    public function printAmount($number)
+    public static function printAmount($number)
     {
         if (!is_numeric($number)) {
             throw new BusinessException('try to format a nonnumeric');

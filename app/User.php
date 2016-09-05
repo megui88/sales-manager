@@ -2,13 +2,11 @@
 
 namespace App;
 
-use App\Services\BusinessCore;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Repositories\UserRepository;
 
-class User extends Authenticatable
+class User extends UserRepository
 {
-    use UuidForKey;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,7 +26,6 @@ class User extends Authenticatable
         'internal_phone',
         'credit_max',
         'birth_date',
-        'state',
         'group_id',
         'debit_automatic',
         'cuil_cuit',
@@ -39,7 +36,10 @@ class User extends Authenticatable
         'stand',
         'discharge_date',
         'leaving_date',
+        'cbu',
+        'state',
         'role',
+        'enable',
     ];
 
     /**
@@ -50,36 +50,4 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
-    static public function buildMember($data)
-    {
-        $user = new static;
-        $user->builder($data);
-        $user->role = BusinessCore::MEMBER_ROLE;
-        $user->save();
-    }
-
-    static public function buildVendor($data)
-    {
-        $user = new static;
-        $user->builder($data);
-        $user->role = BusinessCore::VENDOR_ROLE;
-        $user->save();
-    }
-
-    public function builder($data)
-    {
-        $this->credit_max =  BusinessCore::CREDIT_MAX;
-        
-        foreach ($data as $attribute => $value){
-            $this->$attribute = $value;
-        }
-
-        if(empty($this->email)) {
-            $this->password = Hash::make(str_random(8));
-        }
-
-        return $this;
-
-    }
 }

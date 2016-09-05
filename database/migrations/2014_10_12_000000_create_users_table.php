@@ -23,8 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('cellphone')->nuleable();
             $table->string('internal_phone')->nuleable();
             $table->decimal('credit_max')->nuleable();
-            $table->dateTime('birth_date')->nuleable();
-            $table->string('state')->nuleable();
+            $table->date('birth_date')->nuleable();
             $table->integer('group_id')->nuleable();
             $table->boolean('debit_automatic');
             $table->string('cuil_cuit')->nuleable();
@@ -33,13 +32,14 @@ class CreateUsersTable extends Migration
             $table->string('business_name')->nuleable();
             $table->integer('category_id');
             $table->string('web')->nuleable();
-            $table->boolean('stand');
-            $table->dateTime('discharge_date')->nuleable();
-            $table->dateTime('leaving_date')->nuleable();
+            $table->date('discharge_date')->nuleable();
+            $table->date('leaving_date')->nuleable();
             $table->string('role')->nuleable();
             $table->string('code')->unique();
             $table->string('email')->unique();
+            $table->string('state')->default(\App\Services\BusinessCore::MEMBER_AFFILIATE);
             $table->string('password');
+            $table->boolean('enable');
             $table->rememberToken();
             $table->timestamps();
             $table->primary('id');

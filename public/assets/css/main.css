@@ -1,0 +1,15 @@
+#searchUsersTableResults tr:hover {
+    background-color: #d9edf7;
+}
+.input-error{
+    border-radius: 5px;
+    border:#FF0000 2px solid;
+}
+.input-error :focus{
+    border-radius: 5px;
+    border:#FF0000 2px solid;
+}
+.input-error :hover{
+    border-radius: 5px;
+    border:#FF0000 2px solid;
+}
