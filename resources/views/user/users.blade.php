@@ -36,9 +36,7 @@
                                     <div class="input-group">
                                         <input type="text" name="filters[q]" class="form-control" placeholder="Ingrese nombre..." value="{{ !empty($filters['q']) ? $filters['q'] : '' }}">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default" type="submit">
-                                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                                            </button>
+                                            {!! \App\Helpers\BladeHelpers::buttonSubmit('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')!!}
                                         </span>
                                     </div>
 

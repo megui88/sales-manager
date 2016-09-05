@@ -9,6 +9,7 @@ use App\Http\Requests\UserProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Services\BusinessCore;
 use App\User;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -21,7 +22,24 @@ class UserController extends Controller
     {
         $users = $this->pagination(User::class);
         $filters = $this->getFilters();
+
+        if(request()->isXmlHttpRequest()) {
+            return $users;
+        }
+
         return view('user.users', compact('users', 'filters'));
+    }
+
+    /**
+     * @param string $user
+     * @return User
+     */
+    public function details($user)
+    {
+        $user = User::where('id','=',$user)
+            ->orWhere('code', '=', $user)
+            ->firstOrFail();
+        return $user;
     }
 
     public function newUser()

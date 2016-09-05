@@ -53,9 +53,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-user"></i> Dar de alta CBU
-                                    </button>
+                                    {!! \App\Helpers\BladeHelpers::buttonSubmit('Dar de alta CBU')!!}
                                 </div>
                             </div>
                         </form>

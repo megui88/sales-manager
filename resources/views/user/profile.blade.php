@@ -333,9 +333,7 @@
 
                             <div class="form-group" style="@if(\App\Helpers\BladeHelpers::isMemberDisenrolled($user)) display:none @endif">
                                 <div class="col-md-6 col-md-offset-4">
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fa fa-btn fa-user"></i> Actualizar
-                                    </button>
+                                    {!! \App\Helpers\BladeHelpers::buttonSubmit('Actualizar')!!}
                                     <a href="/users/disenrolled/{{  $user->id }}" class="btn btn-danger">
                                         <i class="fa fa-btn fa-user"></i> BAJA
                                     </a>

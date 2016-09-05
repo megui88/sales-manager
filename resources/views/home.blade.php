@@ -8,7 +8,7 @@
                     <div class="panel-heading">Nueva venta</div>
 
                     <div class="panel-body">
-                        <form method="post" action="/sales">
+                        <form method="post" action="/sales" name="tests">
                             {{ csrf_field() }}
                             <input type="hidden" name="sale_mode" value="{{ \App\Sale::CURRENT_ACCOUNT }}">
 
@@ -16,7 +16,7 @@
 
                                 <div class="col-md-4">
                                     <label for="payer" class="col-md-4 control-label">Socio</label>
-                                    <input id="payer" type="text" class="form-control" name="payer">
+                                    <input id="payer" type="text" class="form-control" name="payer" required>
                                     <input id="payer_id" type="hidden" class="form-control" name="payer_id">
 
                                     @if ($errors->has('payer_id'))
@@ -27,7 +27,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="collector" class="col-md-4 control-label">Proveedor</label>
-                                    <input id="collector" type="text" class="form-control" name="collector">
+                                    <input id="collector" type="text" class="form-control" name="collector" required>
                                     <input id="collector_id" type="hidden" class="form-control" name="collector_id">
 
                                     @if ($errors->has('collector_id'))
@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="col-md-12" style="text-align: right">
                                     <p>
-                                        <button type="submit" class="btn btn-primary">Completar</button>
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Completar')!!}
                                     </p>
                                 </div>
                             </div>
