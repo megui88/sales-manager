@@ -14,6 +14,8 @@ Route::post('oauth/access_token', function () {
 
 # Url's anonymous
 Route::group([],function () {
+    Route::get('/register/provider', 'ProvidersController@register');
+    Route::post('/register/provider', 'ProvidersController@createRegister');
     Route::get('/user-disable', 'HomeController@userDisable');
 });
 
@@ -37,6 +39,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/{user}', 'UserController@details');
     Route::get('/profile/{user}', 'UserController@profile');
+    Route::get('/profile/edit/{user}', 'UserController@editProfile');
     Route::put('/profile/{user}', 'UserController@updateProfile');
     Route::get('/members/income/{user}', 'MemberController@membershipIncome');
     Route::get('/providers/income/{user}', 'ProvidersController@membershipIncome');

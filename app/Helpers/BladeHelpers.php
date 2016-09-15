@@ -20,8 +20,9 @@ class BladeHelpers
         return $user->state == BusinessCore::MEMBER_DISENROLLED;
     }
 
-    public static function buttonSubmit($message)
+    public static function buttonSubmit($message, $id = null)
     {
-        return '<button type="button" class="btn btn-primary btn-submit" onclick="submit()">' . $message . '</button>';
+        $html_id = $id ? "id=\"$id\"" : '';
+        return '<button type="button" class="btn btn-primary btn-submit" onclick="submit()" '. $html_id .'>' . $message . '</button>';
     }
 }

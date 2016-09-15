@@ -4,41 +4,38 @@ $(document).ready(function(){
         $(this).addClass('inputs');
     });
 
-    $('.inputs').keydown(function (e) {
-        switch (e.which){
-            case 13:
-                var input = this;
-                bussiness.inputs.inputMember(this)
-                    .then(function (data) {
-                        if(bussiness.inputs.setMember(input, {
+    $('.inputs').keydown(function (e) {switch (e.which){
+        case 13:
+            var input = this;
+            bussiness.inputs.inputMember(this)
+                .then(function (data) {
+                    if (bussiness.inputs.setMember(input, {
                             'full_name': data.last_name + ', ' + data.name,
                             'code': data.code,
                             'id': data.id
                         })) {
-                            return bussiness.inputs.nextInput(input);
-                        }
-                    })
-                    .catch(function(msg){
-                        if($(input).prop('required')){
-                            bussiness.alerts.inputIsRequired(input);
-                            console.log(msg);
-                        } else {
-                            bussiness.inputs.nextInput(input);
-                        }
-                    });
-                break;
-            case 115: // F4
-                bussiness.users.search(this,function (err, data) {
-                    if(err){
-                        console.error(err);
-                        return;
+                        return bussiness.inputs.nextInput(input);
                     }
-                    console.log(data);
+                })
+                .catch(function(msg){if ($(input).prop('required')){
+                    bussiness.alerts.inputIsRequired(input);
+                    console.log(msg);
+                } else {
+                    bussiness.inputs.nextInput(input);
+                }
                 });
-                return false;
-                break;
-        }
-    });
+            break;
+        case 115: // F4
+            bussiness.users.search(this,function (err, data) {
+                if (err){
+                    console.error(err);
+                    return;
+                }
+                console.log(data);
+            });
+            return false;
+            break;
+    }});
 
 });
 

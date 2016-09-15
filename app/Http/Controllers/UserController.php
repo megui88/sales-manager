@@ -47,7 +47,6 @@ class UserController extends Controller
         return view('user.new_user');
     }
 
-
     public function create(UserRequest $request)
     {
         $user = User::create($request->all());
@@ -141,7 +140,7 @@ class UserController extends Controller
             }
             $this->exceptionNotAurhoze();
         }
-        $template = $user->state == BusinessCore::MEMBER_DISENROLLED ? 'user.disenrolled_confirm' : 'user.disenrolled';
+        $template = $user->status == BusinessCore::MEMBER_DISENROLLED ? 'user.disenrolled_confirm' : 'user.disenrolled';
         return view($template, compact('user'));
     }
 
@@ -152,6 +151,16 @@ class UserController extends Controller
     public function profile(User $user)
     {
         return view('user.profile', compact('user'));
+    }
+
+
+    /**
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function editProfile(User $user)
+    {
+        return view('user.edit', compact('user'));
     }
 
     /**

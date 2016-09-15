@@ -6,7 +6,7 @@ function Bussiness() {
         create: function (message, type) {
             var id = bussiness.uuid();
             var $alert = $('<div>').attr('id',id).addClass('alert');
-            if(type.length) {
+            if (type.length) {
                 $alert.addClass(type);
             }
             $alert.text(message);
@@ -51,7 +51,7 @@ function Bussiness() {
                 id: data.id || ''
             };
             var $origin = $(origin);
-            if(! bussiness.inputs.hasGoal(origin)){
+            if (! bussiness.inputs.hasGoal(origin)){
                 return false;
             }
             var $destination = bussiness.inputs.getGoal(origin);
@@ -76,19 +76,30 @@ function Bussiness() {
             return new Promise(function(resolver, reject){
                 var $input = $(input);
                 var id = $input.val();
-                if (! $.isNumeric(id)){
-                    reject(new Error('Debe ser numero. Valor: ' + id + ' typeof: ' + typeof id));
-                    return;
+                switch ($input.attr('name')) {
+                    case 'payer':
+                    case 'collector':
+                    case 'member':
+                        if
+                        (!$.isNumeric(id))
+                        {
+                            reject(new Error('Debe ser numero. Valor: ' + id + ' typeof: ' + typeof id));
+                            return;
+                        }
+                        SalesManager.users.get(id).then(function (user) {
+                            if (!user.enable && $.hasData(input) && $input.data('member') == true) {
+                                reject(new Error('Miembro deshabilitado'));
+                                return;
+                            }
+                            resolver(user);
+                        }).catch(function (msg) {
+                            reject(msg);
+                        });
+                        break;
+                    default:
+                        reject();
+                        break;
                 }
-                SalesManager.users.get(id).then(function (user) {
-                    if(! user.enable && $.hasData(input) && $input.data('member') == true){
-                        reject(new Error('Miembro deshabilitado'));
-                        return;
-                    }
-                    resolver(user);
-                }).catch(function(msg){
-                    reject(msg);
-                });
             });
         },
         nextInput: function(input){
@@ -98,14 +109,14 @@ function Bussiness() {
             if ($next.length){
                 $next.focus();
             } else{
-                $(this).closest('form').submit();
+                $(input).closest('form').submit();
             }
         }
     };
 
     bussiness.users = {
-        search: function(input, callback){
-            var callback = (typeof callback == 'function') ? callback : function(){};
+        search: function(input, _callback){
+            var callback = (typeof _callback == 'function') ? _callback : function(){};
             var $input = $(input);
             var inputName = $input.attr('name');
             var find = function(){};
@@ -115,8 +126,7 @@ function Bussiness() {
             var timeout;
             $tableResult.removeClass('inputs');
 
-
-            if(! bussiness.inputs.hasGoal(input)){
+            if (! bussiness.inputs.hasGoal(input)){
                 callback(new Error('Es necesario el input: ' + inputName + '_id para usar el buscador'));
             }
             var $goal = bussiness.inputs.getGoal(input);
@@ -134,57 +144,54 @@ function Bussiness() {
             setTimeout(function(){$inputQuery.focus()},500);
 
             $inputQuery.keypress(function(){
-                if(timeout){ clearTimeout(timeout);}
-                timeout = setTimeout(function () {
-                    find($inputQuery.val(),function (err, response) {
-                        $('#' + $tableResult.attr('id') + ' tr').remove();
-                        if(err){
-                            console.log(err);
-                            return;
-                        }
-                        response.data.forEach(function (data) {
-                            var $tr = $('<tr>');
-                            var $td = $('<td>');
-                            $td.text(data.code);
-                            $tr.append($td);
-                            var $td = $('<td>');
-                            $td.text(data.name);
-                            $tr.append($td);
-                            var $td = $('<td>');
-                            $td.text(data.last_name);
-                            $tr.append($td);
-                            var full_name = data.last_name + ', ' + data.name;
-                            $tr.data('full_name', full_name);
-                            $tr.data('code', data.code);
-                            $tr.data('id', data.id);
-                            $tr.click(function(){
-                                done({
-                                    'full_name': full_name,
-                                    'code': data.code,
-                                    'id': data.id
-                                });
+                if (timeout){ clearTimeout(timeout);}
+                timeout = setTimeout(function (){ find($inputQuery.val(),function (err, response) {
+                    $('#' + $tableResult.attr('id') + ' tr').remove();
+                    if (err){
+                        console.log(err);
+                        return;
+                    }
+                    response.data.forEach(function (data) {
+                        var $tr = $('<tr>');
+                        var $td = $('<td>');
+                        $td.text(data.code);
+                        $tr.append($td);
+                        var $td = $('<td>');
+                        $td.text(data.name);
+                        $tr.append($td);
+                        var $td = $('<td>');
+                        $td.text(data.last_name);
+                        $tr.append($td);
+                        var full_name = data.last_name + ', ' + data.name;
+                        $tr.data('full_name', full_name);
+                        $tr.data('code', data.code);
+                        $tr.data('id', data.id);
+                        $tr.click(function(){
+                            done({
+                                'full_name': full_name,
+                                'code': data.code,
+                                'id': data.id
                             });
-
-                            $tableResult.append($tr);
                         });
 
-                        function done(result){
-                            $inputQuery.val('');
-                            $('#' + $tableResult.attr('id') + ' tr').remove();
-                            var setter = new bussiness.inputs.setMember($input, result);
-                            $modal.modal('hide');
-                            bussiness.inputs.nextInput($input);
-                            $.removeData($input);
-                            $.removeData($goal);
-                            $.removeData(setter);
-                            delete $input;
-                            delete $goal;
-                            delete setter;
-                            callback(null, true);
-                        }
+                        $tableResult.append($tr);
                     });
 
-                },900);
+                    function done(result){
+                        $inputQuery.val('');
+                        $('#' + $tableResult.attr('id') + ' tr').remove();
+                        var setter = new bussiness.inputs.setMember($input, result);
+                        $modal.modal('hide');
+                        bussiness.inputs.nextInput($input);
+                        $.removeData($input);
+                        $.removeData($goal);
+                        $.removeData(setter);
+                        delete $input;
+                        delete $goal;
+                        delete setter;
+                        callback(null, true);
+                    }
+                }); },900);
 
             });
         }
