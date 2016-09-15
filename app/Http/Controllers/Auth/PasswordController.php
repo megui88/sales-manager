@@ -19,6 +19,7 @@ class PasswordController extends Controller
     */
 
     use ResetsPasswords;
+    public $subject = 'SM | Restablecer contraseña';
 
     /**
      * Create a new password controller instance.

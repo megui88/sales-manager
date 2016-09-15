@@ -19,6 +19,8 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
         $user->builder($data);
         $user->role = BusinessCore::MEMBER_ROLE;
         $user->save();
+
+        return $user;
     }
 
     static public function buildVendor($data)
@@ -27,6 +29,8 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
         $user->builder($data);
         $user->role = BusinessCore::VENDOR_ROLE;
         $user->save();
+
+        return $user;
     }
 
     public function builder($data)
