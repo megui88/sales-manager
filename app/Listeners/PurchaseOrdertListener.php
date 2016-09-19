@@ -11,7 +11,7 @@ use App\Services\BusinessCore;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-class CurrentAccountListener
+class PurchaseOrdertListener
 {
     private $business;
 
@@ -25,7 +25,7 @@ class CurrentAccountListener
     public function handle(NewSaleEvent $event)
     {
         $sale = $event->getSale();
-        if ($sale->getAttribute('sale_mode') !== Sale::CURRENT_ACCOUNT) {
+        if ($sale->getAttribute('sale_mode') !== Sale::PURCHASE_ORDER) {
             return true;
         }
 
@@ -52,13 +52,13 @@ class CurrentAccountListener
                 'amount_of_quota' => $dueAmountOfQuotes[$quote],
                 'due_date' => $due_dates[$quote],
                 'period' => $periods[$quote],
-                'state' => Sale::INITIATED,
+                'state' => Sale::PENDING,
             ];
             Due::create($data);
-            $data['amount_of_quota'] = $accreditAmountOfQuotes[$quote];
+         /*   $data['amount_of_quota'] = $accreditAmountOfQuotes[$quote];
             Accredit::create($data);
             $data['amount_of_quota'] = $incomeAmountOfQuotes[$quote];
-            Incomes::create($data);
+            Incomes::create($data);*/
         }
     }
 }

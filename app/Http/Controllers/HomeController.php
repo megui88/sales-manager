@@ -17,8 +17,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $sales = Sale::orderBy('id', 'desc')->take(5)->get();
-        return view('home', compact('sales'));
+        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->get();
+        return view('sales', compact('sales'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function creditNotes()
+    {
+        $credit_notes = Sale::where('amount', '<', 0)->orderBy('id', 'desc')->get();
+        return view('credit_notes', compact('credit_notes'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function purchaseOrder()
+    {
+        $purchase_orders = Sale::where('sale_mode', '=', Sale::PURCHASE_ORDER)->orderBy('id', 'desc')->get();
+        return view('purchase_orders', compact('purchase_orders'));
     }
 
     /**

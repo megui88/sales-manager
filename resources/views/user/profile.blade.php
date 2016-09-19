@@ -7,10 +7,17 @@
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Usuario <strong>{{ $user->code  }}</strong>
-                    <a href="/profile/edit/{{ $user->id }}" style="float: right"> Editar </a></div>
+                        <a href="/profile/edit/{{ $user->id }}" style="float: right"> Editar </a></div>
                     <div class="panel-body">
 
-                        <h1>{{ $user->name }} {{ $user->last_name }}</h1>
+                        <h1>@if( \App\Helpers\BladeHelpers::isMemberDisenrolled($user))
+                                <strong style="color:red">BAJA</strong>
+                            @endif
+                                {{ $user->name }} {{ $user->last_name }}
+                            @if( \App\Services\BusinessCore::VENDOR_ROLE == $user->role)
+                                <strong style="float:right">{{ $user->administrative_expenses }} %</strong>
+                            @endif
+                        </h1>
                         <div class="row">
                             <div class="col-md-6">
                                 <strong>Estado:</strong>

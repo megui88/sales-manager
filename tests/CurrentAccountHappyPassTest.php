@@ -9,17 +9,37 @@ class CurrentAccountHappyPassTest extends TestCase
     use DatabaseMigrations;
     use DatabaseTransactions;
 
+    public function setUp()
+    {
+        parent::setUp();
+
+    }
+
     public function getData()
     {
+        $operator = factory(\App\User::class)->create([
+            'role' => \App\Services\BusinessCore::EMPLOYEE_ROLE
+        ]);
+        $collector = factory(\App\User::class)->create([
+            'administrative_expenses' => rand(5,10),
+            'role' => \App\Services\BusinessCore::VENDOR_ROLE
+        ]);
+        $payer = factory(\App\User::class)->create([
+            'administrative_expenses' => 0,
+            'role' => \App\Services\BusinessCore::MEMBER_ROLE
+        ]);
+        $period = factory(\App\Periods::class)->create();
+        \Illuminate\Support\Facades\Auth::login($operator);
+
         return [
             'amount' => rand(1000, 10),
-            'installments' => 3,
-            'charge' => 5,
-            'payer_id' => 4,
-            'collector_id' => 5,
+            'installments' => rand(3,12),
+            'charge' => $collector->administrative_expenses,
+            'payer_id' => $payer->id,
+            'collector_id' => $collector->id,
             'sale_mode' => Sale::CURRENT_ACCOUNT,
-            'period' => \App\Periods::getCurrentPeriod(),
-            'first_due_date' => new \DateTime('now'),
+            'period' => $period->uid,
+            'first_due_date' => $period->due_date,
         ];
     }
 
@@ -143,6 +163,7 @@ class CurrentAccountHappyPassTest extends TestCase
         }
 
         //Then
+        $this->seeInDatabase('sales', ['id' => $sale->id]);
         $this->assertEquals(1, $sale->transaction->count());
 
         $transaction = \App\Transaction::where('transactional_type', 'sales')
@@ -151,7 +172,7 @@ class CurrentAccountHappyPassTest extends TestCase
         $this->assertNotEmpty($transaction);
         $this->assertEquals(1, $transaction->client_id);
         $this->assertEquals(2, $transaction->office_id);
-        $this->assertEquals(3, $transaction->operator_id);
+        $this->assertEquals(\Illuminate\Support\Facades\Auth::user()->id, $transaction->operator_id);
         $this->assertEquals(null, $transaction->supervisor_id);
         $this->assertEquals($data['installments'], $sale->installments);
         $this->assertEquals($data['amount'], $sale->amount);

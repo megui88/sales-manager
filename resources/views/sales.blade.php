@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-12">
+            <div class="col-lg-7 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Nueva venta</div>
 
@@ -15,9 +15,9 @@
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
 
                                 <div class="col-md-4">
-                                    <label for="payer" class="col-md-4 control-label">Socio</label>
-                                    <input id="payer" type="text" class="form-control" name="payer" required>
-                                    <input id="payer_id" type="hidden" class="form-control" name="payer_id">
+                                    <label for="payer" class="col-md-4 control-label">Comprador</label>
+                                    <input id="payer" type="text" class="form-control" name="payer" data-sale=true required value="{{old('payer')}}">
+                                    <input id="payer_id" type="hidden" class="form-control" name="payer_id" value="{{old('payer_id')}}">
 
                                     @if ($errors->has('payer_id'))
                                         <span class="help-block">
@@ -26,9 +26,9 @@
                                     @endif
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="collector" class="col-md-4 control-label">Proveedor</label>
-                                    <input id="collector" type="text" class="form-control" name="collector" required>
-                                    <input id="collector_id" type="hidden" class="form-control" name="collector_id">
+                                    <label for="collector" class="col-md-4 control-label">Vendedor</label>
+                                    <input id="collector" type="text" class="form-control" name="collector" data-sale=true required value="{{old('collector')}}">
+                                    <input id="collector_id" type="hidden" class="form-control" name="collector_id" value="{{old('collector_id')}}">
 
                                     @if ($errors->has('collector_id'))
                                         <span class="help-block">
@@ -38,18 +38,27 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="period" class="col-md-4 control-label">Periodo</label>
-                                    <input id="period" type="text" class="form-control" name="period">
-                                    <input id="period_id" type="hidden" class="form-control" name="period_id">
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(5, old('period')) !!}
 
-                                    @if ($errors->has('period_id'))
+                                    @if ($errors->has('period'))
                                         <span class="help-block">
-                                        <strong>{{ $errors->first('period_id') }}</strong>
+                                        <strong>{{ $errors->first('period') }}</strong>
                                     </span>
                                     @endif
                                 </div>
-                                <div class="col-md-9">
+                                <div class="col-md-3">
+                                    <label for="concept" class="col-md-4 control-label">Concepto</label>
+                                    {!! \App\Helpers\BladeHelpers::sellConceptSelect('+', old('concept_id')) !!}
+
+                                    @if ($errors->has('concept_id'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('concept_id') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-6">
                                     <label for="description" class="col-md-4 control-label">Descripción</label>
-                                    <input id="description" type="text" class="form-control" name="description">
+                                    <input id="description" type="text" class="form-control" name="description"  value="{{old('description')}}">
 
                                     @if ($errors->has('description'))
                                         <span class="help-block">
@@ -59,7 +68,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="installments" class="col-md-4 control-label">Cuotas</label>
-                                    <input id="installments" type="number" class="form-control" name="installments">
+                                    <input id="installments" type="number" class="form-control" name="installments" value="{{old('installments')}}">
 
                                     @if ($errors->has('installments'))
                                         <span class="help-block">
@@ -70,7 +79,7 @@
                                 <div class="col-md-6">
 
                                     <label for="amount" class="col-md-4 control-label">Importe</label>
-                                    <input id="amount" type="number" class="form-control" name="amount">
+                                    <input id="amount" type="number" class="form-control" name="amount" value="{{old('amount')}}">
 
                                     @if ($errors->has('amount'))
                                         <span class="help-block">
@@ -80,7 +89,7 @@
                                 </div>
                                 <div class="col-md-12" style="text-align: right">
                                     <p>
-                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Completar')!!}
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Vender')!!}
                                     </p>
                                 </div>
                             </div>
@@ -88,19 +97,32 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-12">
+            <div class="col-lg-5 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Ultimas ventas</div>
 
                     <div class="panel-body">
-                        <table class="table-responsive">
+                        <table class="table table-bordered table-responsive">
+                            <thead>
+
+                            <tr>
+                                <td>Comprador</td>
+                                <td>Vendedor</td>
+                                <td>Periodo</td>
+                                <td>C</td>
+                                <td>Importe</td>
+                                <td></td>
+                            </tr>
+                            </thead>
                             @foreach($sales as $sale)
-                                <td>{{ $sale->id }}</td>
-                                <td>{{ $sale->payer()->last_name . ' ... ' }}</td>
-                                <td>{{ $sale->collecter()->fantasy_name }}</td>
-                                <td>{{ $sale->period }}</td>
-                                <td>{{ $sale->installments }}</td>
-                                <td>{{ $sale->amount }}</td>
+                                <tr @if($sale->state == \App\Sale::ANNULLED) class="danger"@endif>
+                                    <td>{{ $sale->payer->code  }}</td>
+                                    <td>{{ $sale->collector->code }}</td>
+                                    <td>{{ $sale->period }}</td>
+                                    <td>{{ $sale->installments }}</td>
+                                    <td>{{ $sale->amount }}</td>
+                                    <td><a href="/sales/{{$sale->id}}"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+                                </tr>
                             @endforeach
                         </table>
                     </div>
@@ -108,4 +130,7 @@
             </div>
         </div>
     </div>
+    <script>
+        var inputFocus = 'payer';
+    </script>
 @endsection

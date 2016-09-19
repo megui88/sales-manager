@@ -13,4 +13,13 @@ class Periods extends PeriodsRepository
         'operator_id_opened',
         'operator_id_closed',
     ];
+    protected $dates = [
+        'due_date',
+        'closed_at',
+    ];
+
+    public function __toString()
+    {
+        return $this->uid;
+    }
 }

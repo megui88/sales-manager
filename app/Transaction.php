@@ -22,4 +22,9 @@ class Transaction extends Model
     {
         return $this->morphTo();
     }
+
+    public function operator()
+    {
+        return $this->belongsTo(User::class, 'operator_id', 'id');
+    }
 }

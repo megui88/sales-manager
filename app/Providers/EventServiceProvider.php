@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\NewSaleEvent;
 use App\Listeners\CurrentAccountListener;
+use App\Listeners\PurchaseOrdertListener;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -20,6 +21,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         NewSaleEvent::class => [
             CurrentAccountListener::class,
+            PurchaseOrdertListener::class,
         ],
     ];
 

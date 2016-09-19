@@ -10,8 +10,10 @@ use App\Events\NewSaleEvent;
 use App\Incomes;
 use App\Periods;
 use App\Transaction;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 abstract class SaleRepository extends Model implements Transactional, States, Channels
 {
@@ -31,9 +33,10 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
     {
         parent::boot();
         self::creating(function ($entity) {
+
             $entity->state = self::INITIATED;
             if (empty($entity->period) && empty($entity->first_due_date)) {
-                $entity->period = Periods::getCurrentPeriod();
+                $entity->period = Periods::getCurrentPeriod()->uid;
             }
             if (empty($entity->period) && !empty($entity->first_due_date)) {
                 $entity->period = Periods::getPeriod($entity->first_due_date);
@@ -48,7 +51,6 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
                     $entity->errors [] = "The attribute $key is required.";
                 }
             }
-
             return empty($entity->errors);
         });
 
@@ -90,5 +92,14 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
     public function incomes()
     {
         return $this->hasMany(Incomes::class);
+    }
+    public function collector()
+    {
+        return $this->belongsTo(User::class, 'collector_id', 'id');
+    }
+
+    public function payer()
+    {
+        return $this->belongsTo(User::class, 'payer_id', 'id');
     }
 }

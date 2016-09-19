@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdministrativeExpensesRequest;
 use App\Http\Requests\CbuRequest;
 use App\Http\Requests\CodeRequest;
 use App\Http\Requests\EmailRequest;
@@ -58,40 +59,11 @@ class UserController extends Controller
      * @param User $user
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function changeCbu(User $user)
-    {
-        return view('user.change_cbu', compact('user'));
-    }
-
-
-    /**
-     * @param User $user
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function changeEmail(User $user)
-    {
-        return view('user.change_email', compact('user'));
-    }
-
-    /**
-     * @param User $user
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function updateEmail(User $user, EmailRequest $request)
     {
         $user->update($request->all());
         $request->session()->flash('alert-success', 'Los cambios fueron guardados correctamente!');
         return redirect()->to('/profile/' . $user->id);
-    }
-
-
-    /**
-     * @param User $user
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function changeCode(User $user)
-    {
-        return view('user.change_code', compact('user'));
     }
 
     /**
@@ -105,7 +77,6 @@ class UserController extends Controller
         return redirect()->to('/profile/' . $user->id);
     }
 
-
     /**
      * @param User $user
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -113,6 +84,37 @@ class UserController extends Controller
     public function confirmCbu(User $user)
     {
         return view('user.confirm_cbu', compact('user'));
+    }
+
+    /**
+     * @param $property
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function changeProperty($property, User $user)
+    {
+        return view('user.change_' . $property, compact('user'));
+    }
+
+    /**
+     * @param $property
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function confirmProperty($property, User $user)
+    {
+        return view('user.confirm_' . $property, compact('user'));
+    }
+
+    /**
+     * @param User $user
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function updateAdministrativeExpenses(User $user, AdministrativeExpensesRequest $request)
+    {
+        $user->update($request->all());
+        $request->session()->flash('alert-success', 'Los cambios fueron guardados correctamente!');
+        return redirect()->to('/users/administrative_expenses/confirm/' . $user->id);
     }
 
     /**
@@ -136,11 +138,11 @@ class UserController extends Controller
 
             if(BusinessCore::AuthorizationPassword(request()->get('password'))) {
                 $user->disEnrolled();
-                return view('user.disenrolled_confirm', compact('user'));
+                return view('user.confirm_disenrolled', compact('user'));
             }
             $this->exceptionNotAurhoze();
         }
-        $template = $user->status == BusinessCore::MEMBER_DISENROLLED ? 'user.disenrolled_confirm' : 'user.disenrolled';
+        $template = $user->state == BusinessCore::MEMBER_DISENROLLED ? 'user.confirm_disenrolled' : 'user.change_disenrolled';
         return view($template, compact('user'));
     }
 

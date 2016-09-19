@@ -43,7 +43,7 @@ class RegisterProviderTest extends TestCase
                 'phone' => '02208529976',
                 'internal_phone' => '16354',
                 'cellphone' => '5411688963741',
-                'birth_date' => '04/09/1963',
+                'birth_date' => '1963-09-04',
                 'cuil_cuit' => '27559637895',
                 'fantasy_name' => 'locos por la moda',
                 'business_name' => 'Gerardo Gonzalez SE',
