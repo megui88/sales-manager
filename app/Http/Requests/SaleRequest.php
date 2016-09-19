@@ -27,15 +27,16 @@ class SaleRequest extends Request
     {
         return [
             'amount' => 'numeric|required',
-            'charge' => 'numeric|required',
-            'payer_id' => 'numeric|required',
-            'collector_id' => 'numeric|required',
+            'charge' => 'numeric',
+            'payer_id' => 'string|required',
+            'collector_id' => 'string|required',
             'installments' => 'numeric|required',
             'sale_mode' => 'string|required',
             'description' => 'string|required',
-            'state' => 'string|required',
+            'state' => 'string',
             'first_due_date' => 'date',
             'period' => 'string|required',
+            'concept_id' => 'string|required',
         ];
     }
 }

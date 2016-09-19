@@ -7,6 +7,7 @@ interface States
     const INITIATED = 'initiated'; //Default state
     const OPENED = 'opened';
     const PROCESSED = 'processed';
+    const PENDING = 'pending';
     const WAITING = 'waiting';
     const ANNULLED = 'annulled';
     const STOPPED = 'stopped';

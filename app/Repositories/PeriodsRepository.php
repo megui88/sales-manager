@@ -1,8 +1,11 @@
 <?php
 namespace App\Repositories;
 
+use App\Periods;
 use App\Services\BusinessCore;
+use App\Services\DoesNotExistOpenPeriodException;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 abstract class PeriodsRepository extends Model
 {
@@ -16,7 +19,8 @@ abstract class PeriodsRepository extends Model
 
     public static function getCurrentPeriod()
     {
-        return date('Ym', strtotime('now'));
+        return Periods::firstOrFail()->whereNull('closed_at')
+            ->whereNull('operator_id_closed')->first();
     }
 
     public static function getDueDate($period)

@@ -5,19 +5,28 @@
         {!! \App\Helpers\BladeHelpers::goBack()  !!}
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
-                <div class="panel panel-default">
+                <div class="panel panel-default  @if( \App\Helpers\BladeHelpers::isMemberDisenrolled($user)) has-error @endif">
                     <div class="panel-heading">Usuario</div>
                     <div class="panel-body">
+                        <h1>{{ $user->name }} {{ $user->last_name }}
+                            @if( \App\Services\BusinessCore::VENDOR_ROLE == $user->role)
+                                <strong style="float:right">{{ $user->administrative_expenses }} %</strong>
+                            @endif
+                        </h1>
                         <div class="row">
                             <div class="col-md-12" style="text-align: right">
                                 <p style="@if(! \App\Helpers\BladeHelpers::isMemberDisenrolled($user)) display:none @endif">
-                                    <a href="/users/disenrolled/{{  $user->id }}/print">Imprimir baja</a>
+                                    <a href="/users/disenrolled/{{  $user->id }}">Imprimir baja</a>
                                 </p>
                                 <p style="@if(\App\Helpers\BladeHelpers::isMemberDisenrolled($user)) display:none @endif">
                                     <a href="{{$user->role === \App\Services\BusinessCore::MEMBER_ROLE ?  '/members/income/' : '/providers/income/'}}{{  $user->id }}">Imprimir Alta</a> |
                                     <a href="/users/cbu/{{  $user->id }}">Gestionar CBU</a> |
                                     <a href="/users/email/{{  $user->id }}">Cambiar E-mail</a> |
                                     <a href="/users/code/{{  $user->id }}">Cambiar Codigo</a>
+
+                                    @if( \App\Services\BusinessCore::VENDOR_ROLE == $user->role)|
+                                    <a href="/users/administrative_expenses/{{  $user->id }}">Gastos Administrativos</a>
+                                    @endif
                                 </p>
                             </div>
                         </div>
@@ -222,7 +231,7 @@
                                 <label for="birth_date" class="col-md-4 control-label">Fecha de Nacimiento</label>
 
                                 <div class="col-md-6">
-                                    <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $user->birth_date }}"  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                    <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $user->birth_date->format('Y-m-d') }}"  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
 
                                     @if ($errors->has('birth_date'))
                                         <span class="help-block">
@@ -306,7 +315,7 @@
                                 <label for="discharge_date" class="col-md-4 control-label">Fecha de Alta</label>
 
                                 <div class="col-md-6">
-                                    <input id="discharge_date" type="date" class="form-control" name="discharge_date" value="{{ $user->discharge_date }}" readonly  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                    <input id="discharge_date" type="date" class="form-control" name="discharge_date" value="{{ $user->discharge_date->format('Y-m-d') }}" readonly  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
 
                                     @if ($errors->has('discharge_date'))
                                         <span class="help-block">
@@ -320,7 +329,7 @@
                                 <label for="leaving_date" class="col-md-4 control-label">Fecha de Baja</label>
 
                                 <div class="col-md-6">
-                                    <input id="leaving_date" type="date" class="form-control" name="leaving_date" value="{{ $user->leaving_date }}" readonly  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                    <input id="leaving_date" type="date" class="form-control" name="leaving_date" value="{{ $user->leaving_date->format('Y-m-d') }}" readonly  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
 
                                     @if ($errors->has('leaving_date'))
                                         <span class="help-block">
@@ -334,7 +343,7 @@
                             <div class="form-group" style="@if(\App\Helpers\BladeHelpers::isMemberDisenrolled($user)) display:none @endif">
                                 <div class="col-md-6 col-md-offset-4">
                                     {!! \App\Helpers\BladeHelpers::buttonSubmit('Actualizar')!!}
-                                    <a href="/users/disenrolled/{{  $user->id }}" class="btn btn-danger">
+                                    <a href="/users/disenrolled/{{  $user->id }}" id="disenrolled_{{  $user->id }}"class="btn btn-danger">
                                         <i class="fa fa-btn fa-user"></i> BAJA
                                     </a>
                                 </div>

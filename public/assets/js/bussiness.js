@@ -1,6 +1,24 @@
 function Bussiness() {
+
     var SalesManager = new SalesManagerSdk();
     var bussiness = this;
+
+    bussiness.CREDIT_MAX = 40000;
+    bussiness.AGENT_ROLE = 9;
+    bussiness.VENDOR_ROLE = 'proveedor';
+    bussiness.MEMBER_ROLE = 'socio';
+    bussiness.EMPLOYEE_ROLE = 'empleado';
+    bussiness.EMPLOYEE_ADMIN_ROLE = 'administrador';
+    bussiness.PERIOD_FORMAT = 'Ym';
+    bussiness.PERIOD_EXP_REG = '/^(\d{4})(\d{2})+$/i';
+    bussiness.PERIOD_EXP_REG_REMP = '${1}-$2-01';
+    bussiness.DUE_DATE_FORMAT = 'Y-m-d';
+    bussiness.DECIMALS_PLACES = 2;
+    bussiness.PRINT_DECIMALS = 2;
+    bussiness.PRINT_DEC_POINT = '.';
+    bussiness.PRINT_THOUSANDS_SEP = ',';
+    bussiness.MEMBER_AFFILIATE = 'afiliado';
+    bussiness.MEMBER_DISENROLLED = 'desafiliado';
 
     bussiness.alerts = {
         create: function (message, type) {
@@ -16,14 +34,38 @@ function Bussiness() {
         },
         inputIsRequired: function (input) {
             var $input = $(input);
-
-            bussiness.alerts.create('El campo es obligatorio','alert-warning');
+            var msg =  'El campo es obligatorio';
+            if($input.attr('name') == 'payer'){
+                msg = 'El comprador es incorrecto, no tiene credito o no esta afiliado';
+            }else if($input.attr('name') == 'collector') {
+                msg = 'El vendedor es incorrecto, faltan datos o no esta afiliado';
+            }
+            bussiness.alerts.create(msg, 'alert-warning');
             $input.addClass('input-error');
             $input.focus();
         }
     };
 
+    bussiness.canSell = function(provider){
+        return (provider.state == bussiness.MEMBER_AFFILIATE && provider.role == bussiness.VENDOR_ROLE && provider.administrative_expenses > 0);
+    };
+
+    bussiness.canBuy = function(member){
+        return (member.state == bussiness.MEMBER_AFFILIATE && member.credit_max > 0);
+    };
+
     bussiness.inputs = {
+        memberOk: function(input, data){
+
+            if($(input).data('sale') && data.state == bussiness.MEMBER_DISENROLLED){
+                throw 'User: ' + data.id + ' -> ' + data.state;
+            }
+            if('payer' == $(input).attr('name') && ! bussiness.canBuy(data)) {
+                throw 'User may not buy';
+            }else if('collector' == $(input).attr('name') && !bussiness.canSell(data)){
+                throw 'User may not sell';
+            }
+        },
         /**
          *
          * @param input

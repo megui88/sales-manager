@@ -15,6 +15,7 @@ class Sale extends SaleRepository
         'collector_id',
         'installments',
         'sale_mode',
+        'concept_id',
         'description',
         'state',
         'first_due_date',
@@ -24,29 +25,4 @@ class Sale extends SaleRepository
     protected $dates = [
         'first_due_date',
     ];
-
-    public function dues()
-    {
-        return $this->hasMany(Due::class);
-    }
-
-    public function accredits()
-    {
-        return $this->hasMany(Accredit::class);
-    }
-
-    public function incomes()
-    {
-        return $this->hasMany(Incomes::class);
-    }
-
-    public function collector()
-    {
-        return $this->belongsTo(User::class, 'collector_id', 'id');
-    }
-
-    public function payer()
-    {
-        return $this->belongsTo(User::class, 'payer_id', 'id');
-    }
 }

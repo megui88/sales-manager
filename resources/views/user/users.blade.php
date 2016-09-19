@@ -34,9 +34,9 @@
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="input-group">
-                                        <input type="text" name="filters[q]" class="form-control" placeholder="Ingrese nombre..." value="{{ !empty($filters['q']) ? $filters['q'] : '' }}">
+                                        <input type="text" id="q" name="filters[q]" class="form-control" placeholder="Ingrese nombre..." value="{{ !empty($filters['q']) ? $filters['q'] : '' }}">
                                         <span class="input-group-btn">
-                                            {!! \App\Helpers\BladeHelpers::buttonSubmit('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>')!!}
+                                            {!! \App\Helpers\BladeHelpers::buttonSubmit('<span class="glyphicon glyphicon-search" aria-hidden="true"></span>', 'users_search')!!}
                                         </span>
                                     </div>
 
@@ -60,7 +60,7 @@
                                     <td> {{ $user->last_name }} </td>
                                     <td> {{ $user->email }} </td>
                                     <td> {{ $user->role }} </td>
-                                    <td> <a href="/profile/{{ $user->id }}" title="Editar usuario">
+                                    <td> <a href="/profile/{{ $user->id }}" id="profile_{{ $user->code }}" title="Editar usuario">
                                             @if(! $user->enable)
                                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                                             @else
@@ -78,4 +78,7 @@
         </div>
     </div>
 
+    <script>
+        var inputFocus = 'q';
+    </script>
 @endsection

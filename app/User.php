@@ -40,6 +40,13 @@ class User extends UserRepository
         'state',
         'role',
         'enable',
+        'administrative_expenses',
+    ];
+
+    protected $dates = [
+        'birth_date',
+        'discharge_date',
+        'leaving_date',
     ];
 
     /**

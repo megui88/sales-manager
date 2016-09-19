@@ -79,6 +79,8 @@
                 @if (Auth::guest())
                 @else
                 <li><a href="{{ url('/home') }}">Venta</a></li>
+                <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
+                <li><a href="{{ url('/purchase_orders') }}">Ordenes de compra</a></li>
                 <li><a href="{{ url('/users') }}">Usuarios</a></li>
                 @endif
             </ul>
@@ -120,7 +122,7 @@
     @foreach (['danger', 'warning', 'success', 'info'] as $msg)
         @if(Session::has('alert-' . $msg))
 
-            <p class="alert alert-{{ $msg }}">{{ Session::get('alert-' . $msg) }} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
+            <p class="alert alert-{{ $msg }}">{!! Session::get('alert-' . $msg) !!} <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></p>
         @endif
     @endforeach
 </div> <!-- end .flash-message -->

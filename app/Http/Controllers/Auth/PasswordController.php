@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Request;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Support\Facades\Password;
 
 class PasswordController extends Controller
 {
@@ -29,5 +31,37 @@ class PasswordController extends Controller
     public function __construct()
     {
         $this->middleware($this->guestMiddleware());
+    }
+
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function reset(Request $request)
+    {
+        $this->validate(
+            $request,
+            $this->getResetValidationRules(),
+            $this->getResetValidationMessages(),
+            $this->getResetValidationCustomAttributes()
+        );
+
+        $credentials = $this->getResetCredentials($request);
+
+        $broker = $this->getBroker();
+
+        $response = Password::broker($broker)->reset($credentials, function ($user, $password) {
+            $this->resetPassword($user, $password);
+        });
+
+        switch ($response) {
+            case Password::PASSWORD_RESET:
+                return $this->getResetSuccessResponse($response);
+            default:
+                return $this->getResetFailureResponse($request, $response);
+        }
     }
 }

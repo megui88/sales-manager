@@ -25,16 +25,18 @@ Route::group(['middleware' => 'auth'], function () {
         return view('welcome');
     });
     Route::get('/home', 'HomeController@index');
+    Route::get('/credit_notes', 'HomeController@creditNotes');
+    Route::get('/purchase_orders', 'HomeController@purchaseOrder');
     Route::get('/users', 'UserController@index');
     Route::post('/users', 'UserController@create');
+    Route::post('/sales', 'SaleController@create');
+    Route::post('/credit_notes', 'SaleController@createCreditNote');
+    Route::post('/purchase_orders', 'SaleController@createPurchaseOrder');
+    Route::get('/purchase_orders/{sale}', 'SaleController@detailsPurchaseOrder');
+    Route::get('/sales/{sale}', 'SaleController@details');
+    Route::get('/sales/{sale}/annul', 'SaleController@annulled');
+    Route::post('/sales/{sale}/annul', 'SaleController@annulled');
     Route::get('/users/new', 'UserController@newUser');
-    Route::post('/users/cbu/{user}', 'UserController@updateCbu');
-    Route::get('/users/cbu/confirm/{user}', 'UserController@confirmCbu');
-    Route::get('/users/cbu/{user}', 'UserController@changeCbu');
-    Route::post('/users/email/{user}', 'UserController@updateEmail');
-    Route::get('/users/email/{user}', 'UserController@changeEmail');
-    Route::post('/users/code/{user}', 'UserController@updateCode');
-    Route::get('/users/code/{user}', 'UserController@changeCode');
     Route::post('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/{user}', 'UserController@details');
@@ -43,6 +45,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/profile/{user}', 'UserController@updateProfile');
     Route::get('/members/income/{user}', 'MemberController@membershipIncome');
     Route::get('/providers/income/{user}', 'ProvidersController@membershipIncome');
+
+    Route::post('/users/cbu/{user}', 'UserController@updateCbu');
+    Route::post('/users/email/{user}', 'UserController@updateEmail');
+    Route::post('/users/code/{user}', 'UserController@updateCode');
+    Route::post('/users/administrative_expenses/{user}', 'UserController@updateAdministrativeExpenses');
+    Route::get('/users/{property}/{user}', 'UserController@changeProperty');
+    Route::get('/users/{property}/confirm/{user}', 'UserController@confirmProperty');
 });
 
 # Users

@@ -9,6 +9,8 @@ use App\Http\Requests\Request;
 use App\Sale;
 use App\Transaction;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -47,6 +49,7 @@ class ModelServiceProvider extends ServiceProvider
 
     private function setTransaction()
     {
+
         return function ($entity){
 
             if ($entity instanceof Transactional) {
@@ -55,7 +58,7 @@ class ModelServiceProvider extends ServiceProvider
                 $data = [
                     'client_id' => 1,
                     'office_id' => 2,
-                    'operator_id' => 3,
+                    'operator_id' => Auth::user()->id,
                     'supervisor_id' => null,
                     'payer_id' => $entity->payer_id,
                     'collector_id' => $entity->collector_id,

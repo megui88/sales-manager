@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
+use App\Periods;
 use App\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BusinessCore
 {
@@ -24,13 +25,32 @@ class BusinessCore
     const MEMBER_AFFILIATE = 'afiliado';
     const MEMBER_DISENROLLED = 'desafiliado';
 
+    public static function getPeriodAndFutures($total)
+    {
+        try {
+            $periods = [];
+            $period = Periods::getCurrentPeriod();
+
+            $periods = array_merge($periods, self::calculateFuturePeriod($period, $total));
+            return $periods;
+        }catch (ModelNotFoundException $e){
+            throw new DoesNotExistOpenPeriodException('Does not exist open period');
+        }
+    }
+
+    public static function nextPeriod($period)
+    {
+        if(!self::isValidPeriodFormat($period)){
+            throw new BusinessException('Period invalid: ' . $period);
+        }
+        $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $period);
+        return self::dateToPeriodFormat($tmp_date_string, 1);
+
+    }
+
     public static function AuthorizationPassword($password)
     {
-
-        $results = DB::select('SELECT * FROM users WHERE  role = :role',
-            [
-                'role' => self::EMPLOYEE_ADMIN_ROLE,
-            ]);
+        $results = User::where('role','=', self::EMPLOYEE_ADMIN_ROLE)->get();
         foreach ($results as $result){
             if( password_verify($password, $result->password) ){
                 return true;
@@ -72,7 +92,7 @@ class BusinessCore
      * @param string $period
      * @return bool
      */
-    public function isValidPeriodFormat($period = null)
+    public static function isValidPeriodFormat($period = null)
     {
         if (is_null($period)) {
             return false;
@@ -96,7 +116,7 @@ class BusinessCore
      * @param int $months
      * @return string
      */
-    public function dateToPeriodFormat($date = null, $months = 0)
+    public static function dateToPeriodFormat($date = null, $months = 0)
     {
         if (is_null($date)) {
             return;
@@ -128,12 +148,13 @@ class BusinessCore
      * @return array|string
      * @throws BusinessException
      */
-    public function calculateFuturePeriod($first_period, $totalInstallment, $installment = null)
+    public static function calculateFuturePeriod($first_period, $totalInstallment, $installment = null)
     {
         $periods = [];
         $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $first_period);
-        for ($i = 0; $i < $totalInstallment; ++$i) {
-            $periods [$i + 1] = $this->dateToPeriodFormat($tmp_date_string, $i);
+        $periods [1]= $period = self::dateToPeriodFormat($tmp_date_string, 0);
+        for ($i = 2; $i <= $totalInstallment; ++$i) {
+            $periods [$i] = $period = self::nextPeriod($period);
         }
         if (!is_null($installment) && !empty($periods[$installment])) {
             return $periods[$installment];

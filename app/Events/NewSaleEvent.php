@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Due;
 use App\Sale;
 use Illuminate\Queue\SerializesModels;
 
