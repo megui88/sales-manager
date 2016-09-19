@@ -51,7 +51,7 @@ class UserController extends Controller
     public function create(UserRequest $request)
     {
         $user = User::create($request->all());
-        $path = $user->role === BusinessCore::MEMBER_ROLE ?  '/members/incoming/' : '/providers/incoming/' ;
+        $path = $user->role === BusinessCore::MEMBER_ROLE ?  '/members/income/' : '/providers/income/' ;
         return redirect()->to($path . $user->id);
     }
 
