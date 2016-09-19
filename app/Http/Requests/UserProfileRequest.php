@@ -31,7 +31,7 @@ class UserProfileRequest extends Request
             'birth_date' => 'date',
             'group_id' => 'numeric',
             'debit_automatic' => 'boolean',
-            'cuil_cuit' => 'numeric|max:255|required_if:role,' . BusinessCore::VENDOR_ROLE,
+            'cuil_cuit' => 'numeric|required_if:role,' . BusinessCore::VENDOR_ROLE,
             'fantasy_name' => 'string|max:255|required_if:role,' . BusinessCore::VENDOR_ROLE,
             'business_name' => 'string|max:255|required_if:role,' . BusinessCore::VENDOR_ROLE,
             'category_id' => 'numeric',
