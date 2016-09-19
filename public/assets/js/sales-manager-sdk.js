@@ -48,7 +48,8 @@ function SalesManagerSdk() {
                 var callback = (typeof callback == 'function') ? callback : function(){};
                 var filters = filters || {};
                 filters.role = 'proveedor';
-                filters.enable = 'true';
+                //filters.enable = 'true';
+                filters.state = bussiness.MEMBER_AFFILIATE;
                 filters.q = q;
                 return SalesManager.ajax({
                     endpoint: '/users',
