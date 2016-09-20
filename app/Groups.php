@@ -10,5 +10,6 @@ class Groups extends Model
     use UuidForKey;
     protected $fillable = [
         'name',
+        'description',
     ];
 }

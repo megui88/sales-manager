@@ -46,3 +46,10 @@ $factory->define(App\Periods::class, function (Faker\Generator $faker) {
         'operator_id_opened' => $user->id,
     ];
 });
+
+$factory->define(App\Groups::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->domainName,
+        'description' => $faker->text,
+    ];
+});
