@@ -139,3 +139,16 @@
         var inputFocus = 'payer';
     </script>
 @endsection
+@section('bottom')
+    <script>
+        $(document).ready(function(){
+            $('#payer').keydown(function(){
+                $('#payer-title').html('&nbsp;');
+                $('#payer_id').val('');
+            });
+            $('#collector').keydown(function(){
+                $('#collector_id').val('');
+            });
+        });
+    </script>
+@endsection
