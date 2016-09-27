@@ -20,7 +20,7 @@
         @foreach([false, true] as $n)
             @if($n)<hr> @endif
             <div @if($n)class="visible-print"@endif>
-                <h4>Orden de Compra @if($n) Proveedor @else Socio @endif</h4>
+                <h4>Orden de Compra @if($n) Proveedor @else Mutual @endif</h4>
             </div>
             <div @if($n)class="visible-print"@endif>
                 <div class="row"  style="text-align: center">
