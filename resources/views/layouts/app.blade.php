@@ -142,5 +142,7 @@
 <script src="{{ url('/assets/js/bussiness.js')}}"></script>
 <script src="{{ url('/assets/js/keyboard.js')}}"></script>
 {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
+
+@yield('bottom')
 </body>
 </html>
