@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Contract\CustomizeQuery;
 use App\Contract\ModelPagination as Pagination;
 use App\Services\BusinessCore;
+use App\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,6 +13,18 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
 {
     use UuidForKey;
     use ModelPagination;
+
+    static public function boot()
+    {
+        parent::boot();
+
+        User::creating(function($user){
+            if(empty($user->email)){
+                $user->email = strtotime('now') . '@no-mail';
+            }
+            return $user;
+        });
+    }
 
     static public function buildMember($data)
     {

@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-3">Fecha de Nacimiento: </div>
-                    <div class="col-xs-3"><strong>{{ $user->birth_date}}</strong></div>
+                    <div class="col-xs-3"><strong>{{\App\Helpers\BladeHelpers::date($user->birth_date)}}</strong></div>
                     <div class="col-xs-3">DNI</div>
                     <div class="col-xs-3"><strong>{{ $user->document}}</strong></div>
                 </div>
@@ -56,7 +56,7 @@
                     <div class="col-xs-3">Cuil/Cuit: </div>
                     <div class="col-xs-3"><strong>{{ $user->cuil_cuit}}</strong></div>
                     <div class="col-xs-2">Correo Electronico</div>
-                    <div class="col-xs-4"><strong>{{ $user->email}}</strong></div>
+                    <div class="col-xs-4"><strong>{{ \App\Helpers\BladeHelpers::email($user->email)}}</strong></div>
                 </div>
             </div>
         </div>

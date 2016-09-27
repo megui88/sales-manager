@@ -119,7 +119,7 @@
                                 <label for="email" class="col-md-4 control-label">Correo Electronico</label>
 
                                 <div class="col-md-6">
-                                    <input id="email" type="email" class="form-control" name="email" value="{{ $user->email }}" disabled>
+                                    <input id="email" type="email" class="form-control" name="email" value="{{ \App\Helpers\BladeHelpers::email($user->email)}}" disabled>
 
                                     @if ($errors->has('email'))
                                         <span class="help-block">
@@ -231,7 +231,7 @@
                                 <label for="birth_date" class="col-md-4 control-label">Fecha de Nacimiento</label>
 
                                 <div class="col-md-6">
-                                    <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $user->birth_date->format('Y-m-d') }}"  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                    <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ \App\Helpers\BladeHelpers::date($user->birth_date) }}"  {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
 
                                     @if ($errors->has('birth_date'))
                                         <span class="help-block">

@@ -58,7 +58,7 @@
                                     <td> {{ $user->code }} </td>
                                     <td> {{ $user->name }} </td>
                                     <td> {{ $user->last_name }} </td>
-                                    <td> {{ $user->email }} </td>
+                                    <td> {{ \App\Helpers\BladeHelpers::email($user->email)}} </td>
                                     <td> {{ $user->role }} </td>
                                     <td> <a href="/profile/{{ $user->id }}" id="profile_{{ $user->code }}" title="Editar usuario">
                                             @if(! $user->enable)

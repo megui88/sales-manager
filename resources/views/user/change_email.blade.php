@@ -11,7 +11,7 @@
             <label for="email" class="col-md-4 control-label">E-Mail</label>
 
             <div class="col-md-6">
-                <input id="email" type="email" class="form-control" name="email" value="{{ !empty($errors->getBags()) ? old('email') : $user->email }}">
+                <input id="email" type="email" class="form-control" name="email" value="{{ !empty($errors->getBags()) ? old('email') : \App\Helpers\BladeHelpers::email($user->email) }}">
                 @if ($errors->has('email'))
                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>

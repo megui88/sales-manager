@@ -3,9 +3,11 @@ namespace App\Helpers;
 
 use App\Concept;
 use App\Services\BusinessCore;
+use Carbon\Carbon;
 
 class BladeHelpers
 {
+    const FORMAT_DATE = 'd/m/Y';
     public static function goBack()
     {
         return '<div class="row hidden-print"><div style="float:right"><a href="javascript:history.back()" class="btn btn-link">Volver</a></div></div>';
@@ -43,7 +45,7 @@ class BladeHelpers
 
     public static function sellConceptSelect($sign = null, $old = null)
     {
-        if(empty($sign)) {
+        if (empty($sign)) {
             $concepts = Concept::all();
         }else{
             $concepts = Concept::where('sign_operation', '=', $sign)->get();
@@ -57,5 +59,24 @@ class BladeHelpers
             $content .=   "<option value='" . $concept->id . "' $select>" . $concept->name . "</option>";
         }
         return $content . "</select>";
+    }
+
+    public static function date($date)
+    {
+        if ($date instanceof Carbon){
+            return ('30/11/-0001' == $date->format(self::FORMAT_DATE)) ? '' : $date->format(self::FORMAT_DATE);
+        }
+        if ($date instanceof \DateTime){
+            return ('00/00/0000' == $date->format(self::FORMAT_DATE)) ? '' : $date->format(self::FORMAT_DATE);
+        }
+
+        if ('string' == gettype($date)){
+            return (new \DateTime($date))->format(self::FORMAT_DATE);
+        }
+    }
+
+    public static function email($email)
+    {
+        return (substr($email,-8) == '@no-mail') ? '' : $email;
     }
 }

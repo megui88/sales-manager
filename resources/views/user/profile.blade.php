@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                {{$user->email}}
+                                {{\App\Helpers\BladeHelpers::email($user->email )}}
                             </div>
                         </div>
                         <div class="row">
@@ -123,7 +123,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                {{$user->birth_date}}
+                                {{\App\Helpers\BladeHelpers::date($user->birth_date)}}
                             </div>
                         </div>
                         <div class="row">
@@ -177,7 +177,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                {{$user->discharge_date}}
+                                {{\App\Helpers\BladeHelpers::date($user->discharge_date )}}
                             </div>
                         </div>
                         <div class="row">
@@ -186,7 +186,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                {{$user->leaving_date}}
+                                {{\App\Helpers\BladeHelpers::date($user->leaving_date )}}
                             </div>
                         </div>
                     </div>
