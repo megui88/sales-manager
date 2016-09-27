@@ -21,7 +21,7 @@ class UserRequest extends Request
         return [
             'name' => 'required|max:255',
             'last_name' => 'required|max:255',
-            'email' => 'unique:users,email|max:255',
+            'email' => 'unique:users,email|max:255|required_if:role,' . BusinessCore::VENDOR_ROLE,
             'code' => 'required|unique:users,code',
             'document' => 'numeric',
             'address' => 'string|max:255|required_if:role,' . BusinessCore::VENDOR_ROLE,

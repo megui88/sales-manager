@@ -3,6 +3,15 @@
 @section('content')
     <div class="container">
         {!! \App\Helpers\BladeHelpers::goBack()  !!}
+        <div class="row hidden-print text-center">
+            <div class="col-xs-4">
+                <a onclick="print()" class="btn btn-lg btn-info">Imprimir</a>
+            </div>
+            <div class="col-xs-4">
+            </div>
+            <div class="col-xs-offset-4 col-xs-4">
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
