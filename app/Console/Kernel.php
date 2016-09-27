@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\UserDetails::class,
         Commands\UpgradeUser::class,
         Commands\DowngradeUser::class,
+        Commands\MemberMigrate::class,
     ];
 
     /**

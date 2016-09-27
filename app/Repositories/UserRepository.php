@@ -20,7 +20,7 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
 
         User::creating(function($user){
             if(empty($user->email)){
-                $user->email = strtotime('now') . '@no-mail';
+                $user->email = strtotime('now') . $user->code . '@no-mail';
             }
             return $user;
         });
@@ -31,6 +31,7 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
         $user = new static;
         $user->builder($data);
         $user->role = BusinessCore::MEMBER_ROLE;
+        $user->state = BusinessCore::MEMBER_AFFILIATE;
         $user->save();
 
         return $user;
@@ -41,6 +42,7 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
         $user = new static;
         $user->builder($data);
         $user->role = BusinessCore::VENDOR_ROLE;
+        $user->state = BusinessCore::MEMBER_AFFILIATE;
         $user->save();
 
         return $user;
@@ -60,6 +62,12 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
 
         return $this;
     }
+
+    static public function createByCodeAndName($code, $name)
+    {
+        return self::buildMember(['code' => $code, 'name' => $name, 'last_name' => ' ']);
+    }
+
 
     /**
      * @param Builder $query
