@@ -19,7 +19,8 @@ $(document).ready(function(){
                         if (bussiness.inputs.setMember(input, {
                                 'full_name': data.last_name + ', ' + data.name,
                                 'code': data.code,
-                                'id': data.id
+                                'id': data.id,
+                                'fantasy_name': data.fantasy_name
                             })) {
                             return bussiness.inputs.nextInput(input);
                         }

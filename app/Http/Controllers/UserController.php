@@ -6,6 +6,7 @@ use App\Http\Requests\AdministrativeExpensesRequest;
 use App\Http\Requests\CbuRequest;
 use App\Http\Requests\CodeRequest;
 use App\Http\Requests\EmailRequest;
+use App\Http\Requests\Request;
 use App\Http\Requests\UserProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Services\BusinessCore;
@@ -130,7 +131,7 @@ class UserController extends Controller
 
     public function disEnrolled(User $user)
     {
-        if(request()->method() == request()::METHOD_POST)
+        if(request()->method() == Request::METHOD_POST)
         {
             $this->validate(request(), [
                 'password' => 'required',

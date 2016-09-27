@@ -88,7 +88,7 @@ function Bussiness() {
         },
         setMember: function(origin, data){
             var data = {
-                full_name: data.full_name || '',
+                full_name: data.fantasy_name || data.full_name || '',
                 code: data.code || '',
                 id: data.id || ''
             };
@@ -101,6 +101,7 @@ function Bussiness() {
             $destination.val(data.id);
             $origin.val(data.code);
             $origin.attr('title',data.full_name);
+            $('#' + $origin.attr('name') + '-title').text(data.full_name);
 
             $origin.removeClass('input-error');
             $.removeData($origin);
@@ -212,7 +213,8 @@ function Bussiness() {
                             done({
                                 'full_name': full_name,
                                 'code': data.code,
-                                'id': data.id
+                                'id': data.id,
+                                'fantasy_name': data.fantasy_name
                             });
                         });
 
