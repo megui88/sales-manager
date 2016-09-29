@@ -48,6 +48,18 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function pharmacySelling()
+    {
+        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::PHARMACY_SELLING)->orderBy('id', 'desc')->paginate(20);
+        return view('sales', compact('sales'));
+    }
+
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function userDisable()
     {
         $user = Auth::user();
