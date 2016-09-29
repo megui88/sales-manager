@@ -17,7 +17,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->get();
+        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->paginate(20);
         return view('sales', compact('sales'));
     }
 
@@ -28,7 +28,7 @@ class HomeController extends Controller
      */
     public function creditNotes()
     {
-        $credit_notes = Sale::where('amount', '<', 0)->orderBy('id', 'desc')->get();
+        $credit_notes = Sale::where('amount', '<', 0)->orderBy('id', 'desc')->paginate(20);
         return view('credit_notes', compact('credit_notes'));
     }
 
@@ -39,7 +39,7 @@ class HomeController extends Controller
      */
     public function purchaseOrder()
     {
-        $purchase_orders = Sale::where('sale_mode', '=', Sale::PURCHASE_ORDER)->orderBy('id', 'desc')->get();
+        $purchase_orders = Sale::where('sale_mode', '=', Sale::PURCHASE_ORDER)->orderBy('id', 'desc')->paginate(20);
         return view('purchase_orders', compact('purchase_orders'));
     }
 
