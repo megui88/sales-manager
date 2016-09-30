@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\BusinessCore;
 use App\User;
 use Closure;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +44,10 @@ class Authenticate
         }
 
         if (! Auth::user()->enable) {
+            return redirect()->to('/user-disable');
+        }
+
+        if (BusinessCore::MEMBER_ROLE === Auth::user()->role) {
             return redirect()->to('/user-disable');
         }
 

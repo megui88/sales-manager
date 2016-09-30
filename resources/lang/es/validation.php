@@ -124,6 +124,7 @@ return [
         'cuil_cuit' => 'cuil/cuit',
         'fantasy_name' => 'nombre de fantasia',
         'business_name' => 'razon social',
+        'pharmacy-file' => 'archivo',
     ],
 
 ];

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Migrate;
 use App\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,10 +49,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function pharmacySelling()
+    public function pharmacy()
     {
-        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::PHARMACY_SELLING)->orderBy('id', 'desc')->paginate(20);
-        return view('sales', compact('sales'));
+        $migrations = Migrate::all();
+        return view('pharmacy', compact('migrations'));
     }
 
 

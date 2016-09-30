@@ -60,6 +60,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');
+    Route::get('/pharmacy', 'HomeController@pharmacy');
+    Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
+    Route::get('/migrate/file/{migrate}/errors', 'MigrateController@errorsFile');
     Route::get('/users', 'UserController@index');
     Route::post('/users', 'UserController@create');
     Route::post('/sales', 'SaleController@create');

@@ -81,6 +81,7 @@
                 <li><a href="{{ url('/home') }}">Venta</a></li>
                 <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
                 <li><a href="{{ url('/purchase_orders') }}">Ordenes de compra</a></li>
+                <li><a href="{{ url('/pharmacy') }}">Farmacia</a></li>
                 <li><a href="{{ url('/users') }}">Usuarios</a></li>
                 @endif
             </ul>
