@@ -10,6 +10,7 @@ use App\Periods;
 use App\Sale;
 use App\User;
 use Illuminate\Support\Facades\Response;
+use Symfony\Component\HttpFoundation\File\File;
 
 class MigrateController extends Controller
 {
@@ -48,6 +49,7 @@ class MigrateController extends Controller
                         'charge' => 100,
                         'state' => Sale::INITIATED,
                         'amount' => $amount,
+                        'migrate_id' => $migrate->id,
                     ]);
                 } catch (\Exception $e) {
                     $buffer[] = $line . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
@@ -79,7 +81,8 @@ class MigrateController extends Controller
         return redirect()->to('/pharmacy');
     }
 
-    public function errorsFile(Migrate $migrate){
-        return Response::download(implode(PHP_EOL,$migrate->errors), 'errors-' . $migrate->name);
+    public function errorsFile(Migrate $migrate)
+    {
+        return Response::make(implode('',$migrate->errors))->header("Content-type"," charset=utf-8")->header("Content-disposition","attachment; filename=\"error-".$migrate->name."\"");
     }
 }
