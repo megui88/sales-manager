@@ -38,15 +38,6 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <strong>Tipo de Rol:</strong>
-                            </div>
-
-                            <div class="col-md-6">
-                                {{$user->role}}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
                                 <strong>Correo Electronico:</strong>
                             </div>
 

@@ -55,5 +55,6 @@ class Kernel extends HttpKernel
         'oauth-client' => \LucaDegasperi\OAuth2Server\Middleware\OAuthClientOwnerMiddleware::class,
         'check-authorization-params' => \LucaDegasperi\OAuth2Server\Middleware\CheckAuthCodeRequestMiddleware::class,
         'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
+        'role' => \App\Http\Middleware\CheckRole::class
     ];
 }

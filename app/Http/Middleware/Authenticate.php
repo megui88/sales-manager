@@ -47,10 +47,10 @@ class Authenticate
             return redirect()->to('/user-disable');
         }
 
-        if (BusinessCore::MEMBER_ROLE === Auth::user()->role) {
+     /*   if (BusinessCore::MEMBER_ROLE === Auth::user()->role) {
             return redirect()->to('/user-disable');
         }
-
+*/
         return $next($request);
     }
 

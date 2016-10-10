@@ -35,9 +35,9 @@
                             {{ csrf_field() }}
 
                             <div class="form-group{{ $errors->has('enable') ? ' has-error' : '' }}">
-                                <label for="role" class="col-md-4 control-label">Activo</label>
+                                <label for="role" class="col-md-4 control-label">Estado</label>
                                 <div class="col-md-6">
-                                    <select id="enable" name="enable" class="form-control" {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                    <select id="enable" name="enable" class="form-control" {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!} >
                                         <option value='1'
                                                 @if($user->enable == 1) selected="selected" @endif
                                         >Activo</option>

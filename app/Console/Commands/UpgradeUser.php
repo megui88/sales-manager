@@ -54,6 +54,10 @@ class UpgradeUser extends Command
                 $q = "Upgrade to $role?";
                 break;
             case BusinessCore::EMPLOYEE_ROLE:
+                $role = BusinessCore::PHARMACIST_ROLE;
+                $q = "Upgrade to $role?";
+                break;
+            case BusinessCore::PHARMACIST_ROLE:
                 $role = BusinessCore::EMPLOYEE_ADMIN_ROLE;
                 $q = "Upgrade to $role?";
                 break;

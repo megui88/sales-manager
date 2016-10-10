@@ -57,8 +57,12 @@ class DowngradeUser extends Command
                 $role = BusinessCore::MEMBER_ROLE;
                 $q = "Downgrade to $role?";
                 break;
-            case BusinessCore::EMPLOYEE_ADMIN_ROLE:
+            case BusinessCore::PHARMACIST_ROLE:
                 $role = BusinessCore::EMPLOYEE_ROLE;
+                $q = "Downgrade to $role?";
+                break;
+            case BusinessCore::EMPLOYEE_ADMIN_ROLE:
+                $role = BusinessCore::PHARMACIST_ROLE;
                 $q = "Downgrade to $role?";
                 break;
         }

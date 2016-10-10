@@ -119,7 +119,7 @@ function SalesManagerSdk() {
             }
             var request = $.ajax({
                 method: options.method || 'GET',
-                url: "http://sm.mutualmp.com.ar/" + options.endpoint,
+                url:  options.endpoint,
                 data: options.data || [],
                 dataType: 'json'
             });

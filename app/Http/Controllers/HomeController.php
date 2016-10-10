@@ -49,9 +49,20 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function bulkImport()
+    {
+        $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE);
+        return view('bulk_import', compact('migrations'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function pharmacy()
     {
-        $migrations = Migrate::all();
+        $migrations = Migrate::where('type', '=', Migrate::PHARMACY_TYPE);
         return view('pharmacy', compact('migrations'));
     }
 

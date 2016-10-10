@@ -205,26 +205,25 @@ function Bussiness() {
                         var $td = $('<td>');
                         $td.text(data.last_name);
                         $tr.append($td);
-                        var full_name = data.last_name + ', ' + data.name;
-                        $tr.data('full_name', full_name);
+                        $tr.data('full_name', data.last_name + ', ' + data.name);
                         $tr.data('code', data.code);
                         $tr.data('id', data.id);
                         $tr.click(function(){
-                            done({
-                                'full_name': full_name,
-                                'code': data.code,
-                                'id': data.id,
-                                'fantasy_name': data.fantasy_name
-                            });
+                            done(data);
                         });
 
                         $tableResult.append($tr);
                     });
 
-                    function done(result){
+                    function done(data){
                         $inputQuery.val('');
                         $('#' + $tableResult.attr('id') + ' tr').remove();
-                        var setter = new bussiness.inputs.setMember($input, result);
+                        var setter = new bussiness.inputs.setMember($input, {
+                            'full_name': data.last_name + ', ' + data.name,
+                            'code': data.code,
+                            'id': data.id,
+                            'fantasy_name': data.fantasy_name
+                        });
                         $modal.modal('hide');
                         bussiness.inputs.nextInput($input);
                         $.removeData($input);
@@ -233,7 +232,7 @@ function Bussiness() {
                         delete $input;
                         delete $goal;
                         delete setter;
-                        callback(null, true);
+                        callback(null, data);
                     }
                 }); },900);
 

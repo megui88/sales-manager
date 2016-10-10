@@ -125,6 +125,13 @@ return [
         'fantasy_name' => 'nombre de fantasia',
         'business_name' => 'razon social',
         'pharmacy-file' => 'archivo',
+        'collector_id' => 'vendedor',
+        'collector' => 'vendedor',
+        'payer_id' => 'comprador',
+        'payer' => 'comprador',
+        'description' => 'descripción',
+        'amount' => 'importe',
+        'installments' => 'cuotas',
     ],
 
 ];

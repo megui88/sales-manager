@@ -78,11 +78,21 @@
             <ul class="nav navbar-nav">
                 @if (Auth::guest())
                 @else
-                <li><a href="{{ url('/home') }}">Venta</a></li>
-                <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
-                <li><a href="{{ url('/purchase_orders') }}">Ordenes de compra</a></li>
-                <li><a href="{{ url('/pharmacy') }}">Farmacia</a></li>
-                <li><a href="{{ url('/users') }}">Usuarios</a></li>
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+                        <li><a href="{{ url('/home') }}">Venta</a></li>
+                        <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
+                        <li><a href="{{ url('/purchase_orders') }}">Ordenes de compra</a></li>
+                        <li><a href="{{ url('/users') }}">Usuarios</a></li>
+                        <li><a href="{{ url('/bulk_import') }}">Importacion Masiva</a></li>
+                    @endif
+
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::PHARMACIST_ROLE))
+                        <li><a href="{{ url('/pharmacy') }}">Farmacia</a></li>
+                    @endif
+
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
+
+                    @endif
                 @endif
             </ul>
 
@@ -108,7 +118,9 @@
                         </a>
 
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="{{ url('/profile/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user"></i>Perfil</a></li>
+                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+                                <li><a href="{{ url('/profile/'.Auth::user()->id) }}"><i class="fa fa-btn fa-user"></i>Perfil</a></li>
+                            @endif
                             <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Salir</a></li>
                         </ul>
                     </li>

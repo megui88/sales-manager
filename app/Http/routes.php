@@ -52,16 +52,25 @@ Route::group([],function () {
     Route::get('/user-disable', 'HomeController@userDisable');
 });
 
+# Url's pharmacy auth
+Route::group(['middleware' => 'auth', 'role:'.\App\Services\BusinessCore::PHARMACIST_ROLE], function () {
+    Route::get('/pharmacy', 'HomeController@pharmacy');
+    Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
+});
+
+# Url's administrator auth
+Route::group(['middleware' => 'auth', 'role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE], function () {
+});
+
 # Url's common auth
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/', function ()    {
         return view('welcome');
     });
+
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');
-    Route::get('/pharmacy', 'HomeController@pharmacy');
-    Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
     Route::get('/migrate/file/{migrate}/errors', 'MigrateController@errorsFile');
     Route::get('/users', 'UserController@index');
     Route::post('/users', 'UserController@create');
@@ -72,6 +81,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/sales/{sale}', 'SaleController@details');
     Route::get('/sales/{sale}/annul', 'SaleController@annulled');
     Route::post('/sales/{sale}/annul', 'SaleController@annulled');
+
     Route::get('/users/new', 'UserController@newUser');
     Route::post('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/disenrolled/{user}', 'UserController@disEnrolled');
@@ -81,13 +91,16 @@ Route::group(['middleware' => 'auth'], function () {
     Route::put('/profile/{user}', 'UserController@updateProfile');
     Route::get('/members/income/{user}', 'MemberController@membershipIncome');
     Route::get('/providers/income/{user}', 'ProvidersController@membershipIncome');
-
     Route::post('/users/cbu/{user}', 'UserController@updateCbu');
     Route::post('/users/email/{user}', 'UserController@updateEmail');
     Route::post('/users/code/{user}', 'UserController@updateCode');
     Route::post('/users/administrative_expenses/{user}', 'UserController@updateAdministrativeExpenses');
     Route::get('/users/{property}/{user}', 'UserController@changeProperty');
     Route::get('/users/{property}/confirm/{user}', 'UserController@confirmProperty');
+
+
+    Route::get('/bulk_import', 'HomeController@bulkImport');
+    Route::post('/bulk_import/file', 'SaleController@bulkImportFile');
 });
 
 # Users

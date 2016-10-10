@@ -14,6 +14,7 @@ class BusinessCore
     const MEMBER_ROLE = 'socio';
     const EMPLOYEE_ROLE = 'empleado';
     const EMPLOYEE_ADMIN_ROLE = 'administrador';
+    const PHARMACIST_ROLE= 'farmaceutico';
     const PERIOD_FORMAT = 'Ym';
     const PERIOD_EXP_REG = '/^(\d{4})(\d{2})+$/i';
     const PERIOD_EXP_REG_REMP = '${1}-$2-01';
