@@ -8,7 +8,7 @@
                     <div class="panel-heading">Farmacia</div>
 
                     <div class="panel-body">
-                        <form method="post" action="/bul_import/file" name="tests"  enctype="multipart/form-data">
+                        <form method="post" action="/bulk_import/file" name="tests"  enctype="multipart/form-data">
                             {{ csrf_field() }}
                             <input type="hidden" name="sale_mode" value="{{ \App\Sale::CURRENT_ACCOUNT }}">
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
@@ -72,8 +72,32 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                    <a href="{{ url('/assets/img/descargar_csv.png') }}" data-toggle="lightbox" data-title="Como descargar la plantilla terminada" data-footer="Archivo -> Descargar Como -> Valores separados por comas (.csv, hoja actual)">
+                        <img src="{{ url('/assets/img/descargar_csv.png') }}" alt="captura de pantalla" class="img-fluid">
+                    </a>
+                    <div class="caption">
+                        <h3>Importación masiva</h3>
+                        <p>La importación masiva consta de un archivo que solo posee datos necesarios para incorporar al sistema ventas en cuentas corrientes.<br>
+                            En la primer columna se ingresa el <strong>codigo de usuario</strong>, en la segunda el <strong>codigo del proveedor</strong>, en la tercera la cantidad de <strong>cuotas</strong> y en la cuarta y ultima el <strong>importe</strong>.
+                        </p>
+                        <p>
+                            Es importante entender que el <strong>importe</strong> es el total que sera dividido en <strong>cuotas</strong>.
+                        </p>
+                        <p>
+                            <a class="btn btn-link" href="https://docs.google.com/a/mutualmp.com.ar/spreadsheets/d/14yP0f54yYENUone6aLbl9lqBtTGhGBU9CTtlUQMadIk/edit?usp=sharing" target="_blank">
+                                Archivo de Ejemplo
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         var inputFocus = 'payer';
+
     </script>
 @endsection

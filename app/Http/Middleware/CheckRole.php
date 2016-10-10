@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Services\AccessControl;
 use Closure;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CheckRole
 {
@@ -13,7 +14,7 @@ class CheckRole
         $user = $request->user();
         if (! AccessControl::hasAccess($user->role, $role))
         {
-            return response('Unauthorized.', 401);
+            throw new AuthorizationException();
         }
 
         return $next($request);

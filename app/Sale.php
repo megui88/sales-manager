@@ -20,6 +20,7 @@ class Sale extends SaleRepository
         'state',
         'first_due_date',
         'period',
+        'migrate_id',
     ];
 
     protected $dates = [

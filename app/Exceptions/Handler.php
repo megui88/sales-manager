@@ -55,6 +55,13 @@ class Handler extends ExceptionHandler
             }
             return new Response('',404);
         }
+        if($e instanceof AuthorizationException)
+        {
+            if($request->isXmlHttpRequest()){
+                return new JsonResponse([],401);
+            }
+            return redirect()->to('/un-authorization');
+        }
 
         return parent::render($request, $e);
     }

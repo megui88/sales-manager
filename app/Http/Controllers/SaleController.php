@@ -107,9 +107,6 @@ class SaleController extends Controller
             'state' => Sale::PENDING,
             'amount' => $data['amount'],
         ]);
-        if($sale->errors){
-            dd($sale->errors);
-        }
         if($request->server('REQUEST_URI') == '/purchase_orders'){
             $request->session()->flash('alert-success', 'Orden de compra cargada <a href="/purchase_orders/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/purchase_orders');
@@ -141,9 +138,6 @@ class SaleController extends Controller
             'state' => Sale::INITIATED,
             'amount' => -1 * $data['amount'],
         ]);
-        if($sale->errors){
-            dd($sale->errors);
-        }
         if($request->server('REQUEST_URI') == '/credit_notes'){
             $request->session()->flash('alert-success', 'Nota de credito cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/credit_notes');

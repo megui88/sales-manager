@@ -50,20 +50,22 @@ Route::group([],function () {
     Route::get('/register/provider', 'ProvidersController@register');
     Route::post('/register/provider', 'ProvidersController@createRegister');
     Route::get('/user-disable', 'HomeController@userDisable');
+    Route::get('/un-authorization', 'HomeController@unAuthorization');
 });
 
 # Url's pharmacy auth
-Route::group(['middleware' => 'auth', 'role:'.\App\Services\BusinessCore::PHARMACIST_ROLE], function () {
+Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::PHARMACIST_ROLE ]], function () {
     Route::get('/pharmacy', 'HomeController@pharmacy');
     Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
 });
 
 # Url's administrator auth
-Route::group(['middleware' => 'auth', 'role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE], function () {
+Route::group(['middleware' => ['role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE,  'auth']], function () {
 });
 
 # Url's common auth
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPLOYEE_ROLE ]], function () {
+
     Route::get('/', function ()    {
         return view('welcome');
     });
@@ -100,7 +102,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 
     Route::get('/bulk_import', 'HomeController@bulkImport');
-    Route::post('/bulk_import/file', 'SaleController@bulkImportFile');
+    Route::post('/bulk_import/file', 'MigrateController@bulkImportFile');
 });
 
 # Users

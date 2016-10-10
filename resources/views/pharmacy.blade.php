@@ -60,7 +60,12 @@
                             </tr>
                             </thead>
                             @foreach($migrations as $migrate)
-                                <tr @if($migrate->status == \App\Contract\States::STOPPED) class="danger"@endif>
+
+                                <tr @if($migrate->status == \App\Contract\States::STOPPED)
+                                    class="danger"
+                                    @elseif($migrate->status == \App\Contract\States::PROCESSED)
+                                    class="warning"
+                                        @endif>
                                     <td>{{ $migrate->name }}</td>
                                     <td>{{ $migrate->description }}</td>
                                     <td>{{ \App\Helpers\BladeHelpers::date($migrate->created_at) }}</td>

@@ -51,7 +51,7 @@ class HomeController extends Controller
      */
     public function bulkImport()
     {
-        $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE);
+        $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE)->get();
         return view('bulk_import', compact('migrations'));
     }
 
@@ -62,8 +62,19 @@ class HomeController extends Controller
      */
     public function pharmacy()
     {
-        $migrations = Migrate::where('type', '=', Migrate::PHARMACY_TYPE);
+        $migrations = Migrate::where('type', '=', Migrate::PHARMACY_TYPE)->get();
         return view('pharmacy', compact('migrations'));
+    }
+
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unAuthorization()
+    {
+        return view('un_authorization');
     }
 
 
