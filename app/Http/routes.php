@@ -57,6 +57,14 @@ Route::group([],function () {
 Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::PHARMACIST_ROLE ]], function () {
     Route::get('/pharmacy', 'HomeController@pharmacy');
     Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
+    Route::get('/users/{user}', 'UserController@details');
+});
+
+# Url's members auth
+Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBER_ROLE]], function () {
+    Route::get('/', 'HomeController@init');
+    Route::get('/details', 'HomeController@details');
+    Route::get('/details/{user}/{init}/{done}', 'UserController@accountDetails');
 });
 
 # Url's administrator auth
@@ -64,30 +72,31 @@ Route::group(['middleware' => ['role:'.\App\Services\BusinessCore::EMPLOYEE_ADMI
 });
 
 # Url's common auth
+Route::group(['middleware' =>  ['auth' ]], function () {
+    Route::get('/users', 'UserController@index');
+    Route::get('/users/{user}', 'UserController@details');
+    Route::get('/sales/{sale}', 'SaleController@details');
+});
+
+# Url's common auth
 Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPLOYEE_ROLE ]], function () {
 
-    Route::get('/', function ()    {
-        return view('welcome');
-    });
 
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');
     Route::get('/migrate/file/{migrate}/errors', 'MigrateController@errorsFile');
-    Route::get('/users', 'UserController@index');
     Route::post('/users', 'UserController@create');
     Route::post('/sales', 'SaleController@create');
     Route::post('/credit_notes', 'SaleController@createCreditNote');
     Route::post('/purchase_orders', 'SaleController@createPurchaseOrder');
     Route::get('/purchase_orders/{sale}', 'SaleController@detailsPurchaseOrder');
-    Route::get('/sales/{sale}', 'SaleController@details');
     Route::get('/sales/{sale}/annul', 'SaleController@annulled');
     Route::post('/sales/{sale}/annul', 'SaleController@annulled');
 
     Route::get('/users/new', 'UserController@newUser');
     Route::post('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/disenrolled/{user}', 'UserController@disEnrolled');
-    Route::get('/users/{user}', 'UserController@details');
     Route::get('/profile/{user}', 'UserController@profile');
     Route::get('/profile/edit/{user}', 'UserController@editProfile');
     Route::put('/profile/{user}', 'UserController@updateProfile');

@@ -8,6 +8,11 @@ use Carbon\Carbon;
 class BladeHelpers
 {
     const FORMAT_DATE = 'd/m/Y';
+    public static function import($number)
+    {
+        return BusinessCore::printAmount($number);
+    }
+
     public static function goBack()
     {
         return '<div class="row hidden-print"><div style="float:right"><a href="javascript:history.back()" class="btn btn-link">Volver</a></div></div>';
@@ -29,10 +34,10 @@ class BladeHelpers
         return '<button type="button" class="btn btn-primary btn-submit" onclick="submit()" '. $html_id .'>' . $message . '</button>';
     }
 
-    public static function sellPeriodSelect($total = 4, $old = null)
+    public static function sellPeriodSelect($total = 4, $old = null, $id = 'period')
     {
         $periods = BusinessCore::getPeriodAndFutures($total);
-        $content = "<select id='period' name='period' class=\"form-control\">";
+        $content = "<select id='$id' name='$id' class=\"form-control\">";
         foreach ($periods as $period){
             $select = '';
             if($old == $period){

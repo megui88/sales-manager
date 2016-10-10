@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Accredit;
+use App\Due;
 use App\Http\Requests\AdministrativeExpensesRequest;
 use App\Http\Requests\CbuRequest;
 use App\Http\Requests\CodeRequest;
@@ -9,9 +11,12 @@ use App\Http\Requests\EmailRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\UserProfileRequest;
 use App\Http\Requests\UserRequest;
+use App\Sale;
 use App\Services\BusinessCore;
 use App\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use DB;
 
 class UserController extends Controller
 {
@@ -176,5 +181,64 @@ class UserController extends Controller
         $user->update($request->all());
         $request->session()->flash('alert-success', 'Los cambios fueron guardados correctamente!');
         return redirect()->to('/profile/' . $user->id);
+    }
+
+    /**
+     * @param $periodInit
+     * @param $periodDone
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function accountDetails(User $user, $periodInit, $periodDone)
+    {
+        if(! BusinessCore::isValidPeriodFormat($periodInit) ||  ! BusinessCore::isValidPeriodFormat($periodDone)){
+            request()->session()->flash('alert-warning', 'El periodo no es valido');
+            return redirect()->to('/details');
+        }
+        if($periodInit > $periodDone){
+            request()->session()->flash('alert-warning', 'El periodo inicial debe ser menor al periodo de fin!');
+            return redirect()->to('/details');
+        }
+
+        $dues =  Due::where('period', '>=', $periodInit)
+            ->where('period', '<=', $periodDone)
+            ->where('payer_id', '=', $user->id)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->orderBy('created_at', 'ASC')
+            ->get();
+        $accredits =  Accredit::where('period', '>=', $periodInit)
+            ->where('period', '<=', $periodDone)
+            ->where('collector_id', '=', $user->id)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->orderBy('created_at', 'ASC')
+            ->get();
+
+        $periods = [];
+
+        //structure
+        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)){
+            $periods[$period] = [
+                'dues' => [],
+                'accredits' => [],
+            ];
+        }
+
+        //populate
+        foreach ($dues as $due) {
+            $periods[$due->period]['dues'] []= $due;
+        }
+
+        foreach ($accredits as $accredit) {
+            $periods[$accredit->period]['accredits'] []= $accredit;
+        }
+
+        $template = 'user.account_detail';
+
+        switch($user->role){
+            case BusinessCore::VENDOR_ROLE:
+                $template = 'providers.account_detail';
+                break;
+        }
+
+        return view($template, compact('periods', 'periodInit', 'periodDone', 'user'));
     }
 }

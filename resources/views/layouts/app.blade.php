@@ -79,6 +79,10 @@
             <ul class="nav navbar-nav">
                 @if (Auth::guest())
                 @else
+
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::MEMBER_ROLE))
+                        <li><a href="{{ url('/details') }}">Detalle de cuenta</a></li>
+                    @endif
                     @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
                         <li><a href="{{ url('/home') }}">Venta</a></li>
                         <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
@@ -156,6 +160,7 @@
 <script src="{{ url('/assets/js/sales-manager-sdk.js')}}"></script>
 <script src="{{ url('/assets/js/bussiness.js')}}"></script>
 <script src="{{ url('/assets/js/keyboard.js')}}"></script>
+<script src="{{ url('/assets/js/functions.js')}}"></script>
 {{-- <script src="{{ elixir('js/app.js') }}"></script> --}}
 
 @yield('bottom')

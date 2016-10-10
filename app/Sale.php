@@ -22,8 +22,4 @@ class Sale extends SaleRepository
         'period',
         'migrate_id',
     ];
-
-    protected $dates = [
-        'first_due_date',
-    ];
 }

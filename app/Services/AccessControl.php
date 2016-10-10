@@ -36,6 +36,7 @@ class AccessControl
     static private function vendorAccess()
     {
         return [
+            BusinessCore::MEMBER_ROLE,
             BusinessCore::VENDOR_ROLE,
         ];
     }

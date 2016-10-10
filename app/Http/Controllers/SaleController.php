@@ -7,6 +7,8 @@ use App\Periods;
 use App\Services\BusinessCore;
 use App\Sale;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
 
 class SaleController extends Controller
 {
@@ -147,6 +149,10 @@ class SaleController extends Controller
 
     public function details(Sale $sale)
     {
+        if( in_array(Auth::user()->role,[BusinessCore::MEMBER_ROLE, BusinessCore::VENDOR_ROLE])
+            && !in_array(Auth::user()->id,[$sale->collector_id, $sale->payer_id])){
+            throw new AuthorizationException();
+        }
         return view('sales.details', compact('sale'));
     }
 

@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Accredit;
+use App\Concept;
 use App\Contract\Channels;
 use App\Contract\States;
 use App\Contract\Transactional;
@@ -101,5 +102,10 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
     public function payer()
     {
         return $this->belongsTo(User::class, 'payer_id', 'id');
+    }
+
+    public function concept()
+    {
+        return $this->belongsTo(Concept::class, 'concept_id', 'id');
     }
 }

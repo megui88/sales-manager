@@ -17,4 +17,9 @@ class Accredit extends Model
         'period',
         'state',
     ];
+
+    public function sale()
+    {
+        return $this->belongsTo(Sale::class, 'sale_id', 'id');
+    }
 }

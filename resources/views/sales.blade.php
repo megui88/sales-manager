@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-lg-7 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Nueva venta</div>
 
@@ -102,31 +102,33 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Ultimas ventas</div>
 
-                    <div class="panel-body">
+                    <div class="panel-body pre-scrollable">
                         <table class="table table-bordered table-responsive">
                             <thead>
 
                             <tr>
+                                <td>Periodo</td>
                                 <td>Comprador</td>
                                 <td>Vendedor</td>
-                                <td>Periodo</td>
                                 <td>C</td>
                                 <td>Importe</td>
+                                <td>Fecha</td>
                                 <td></td>
                             </tr>
                             </thead>
                             @foreach($sales as $sale)
                                 <tr @if($sale->state == \App\Sale::ANNULLED) class="danger"@endif>
+                                    <td>{{ $sale->period }}</td>
                                     <td>{{ $sale->payer->code  }}</td>
                                     <td>{{ $sale->collector->code }}</td>
-                                    <td>{{ $sale->period }}</td>
                                     <td>{{ $sale->installments }}</td>
                                     <td>{{ $sale->amount }}</td>
-                                    <td><a href="/sales/{{$sale->id}}"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+                                    <td>{{ $sale->created_at->format('d-m H:i') }}</td>
+                                    <td><a href="/sales/{{$sale->id}}"><i class="fa fa-print" aria-hidden="true">{{$sale->id}}</i></a></td>
                                 </tr>
                             @endforeach
                         </table>
