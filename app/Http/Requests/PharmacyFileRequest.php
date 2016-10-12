@@ -23,7 +23,7 @@ class PharmacyFileRequest extends Request
 
     public function getValidatorInstance() {
         $validator = parent::getValidatorInstance();
-
+/*
         $validator->after(function() use ($validator) {
             $fileName = $_FILES['pharmacy-file']['name'];
             $aux = explode('.',$fileName);
@@ -36,7 +36,7 @@ class PharmacyFileRequest extends Request
                 $validator->errors ()->add('pharmacy-file', 'el archivo que intenta cargar ya fue cargado');
             }
         });
-
+*/
         return $validator;
     }
 

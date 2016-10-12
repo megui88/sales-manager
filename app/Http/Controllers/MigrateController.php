@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\CodeCompatibilizer;
 use App\Concept;
 use App\Contract\States;
 use App\Http\Requests\BulkImportFileRequest;
@@ -50,7 +51,25 @@ class MigrateController extends Controller
                 $user = User::where('code','=',trim($item[1]))
                     ->orWhere('code','=',trim($item[1]) . 0)->first();
 
-                if (! $user || empty($item[2])) {
+                if (! $user) {
+
+                    //find compatibilizer
+                    $compativilizer = CodeCompatibilizer::where('codigo','=',trim($item[1]) . 0)->first();
+                    if(!$compativilizer){
+
+                        $buffer[] = trim($item[0]);
+                        continue;
+                    }
+
+                    $user = User::where('code','=',$compativilizer->legajo)->first();
+                    if(!$user){
+
+                        $buffer[] = trim($item[0]);
+                        continue;
+                    }
+                }
+
+                if ( empty($item[2])) {
                     $buffer[] = trim($item[0]);
                     continue;
                 }
