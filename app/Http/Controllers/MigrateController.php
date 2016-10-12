@@ -25,61 +25,67 @@ class MigrateController extends Controller
             'status' => States::PENDING,
         ]);
 
+        $content = file_get_contents($file->getRealPath());
 
-        if (($gestor = fopen($file->getRealPath(), "r")) !== FALSE) {
-            $buffer = [];
-            $concept_id = Concept::where('name', '=', 'Venta Farmacia')->first()->id;
-            $period = Periods::getCurrentPeriod();
-            while (!feof($gestor)) {
-                try {
-                    $line = fgets($gestor);
-                    $data = explode("\t", $line);
-                    $user = User::where('code','=',trim($data[0]))->first();
-
-                    if (! $user || empty($data[2])) {
-                        $buffer[] = $line;
-                        continue;
-                    }
-                    $amount = trim(str_replace(',', '.', trim(str_replace('.', '', $data[2]))));
-                    $sale = Sale::create([
-                        'sale_mode' => $request->get('sale_mode'),
-                        'payer_id' => $user->id,
-                        'collector_id' => 0,
-                        'period' => $period,
-                        'concept_id' => $concept_id,
-                        'description' => $request->get('description'),
-                        'installments' => 1,
-                        'charge' => 100,
-                        'state' => Sale::INITIATED,
-                        'amount' => $amount,
-                        'migrate_id' => $migrate->id,
-                    ]);
-                } catch (\Exception $e) {
-                    $buffer[] = $line . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
+        function turn_array($m)
+        {
+            for ($z = 0;$z < count($m);$z++)
+            {
+                for ($x = 0;$x < count($m[$z]);$x++)
+                {
+                    $rt[$x][$z] = $m[$z][$x];
                 }
             }
-            fclose($gestor);
 
-            if (!empty($buffer)) {
-                $migrate->update([
-                    'errors' => $buffer,
-                    'status' => States::PROCESSED,
+            return $rt;
+        }
+        preg_match_all('/\s+(\d+)\s+[a-zA-Z\,\.\s]+([\,\.\d]+)\s+/',$content, $tt);
+
+        $results = turn_array($tt);
+        $buffer = [];
+        $concept_id = Concept::where('name', '=', 'Venta Farmacia')->first()->id;
+        $period = Periods::getCurrentPeriod();
+        foreach ($results as $item) {
+            try {
+                $user = User::where('code','=',trim($item[1]))
+                    ->orWhere('code','=',trim($item[1]) . 0)->first();
+
+                if (! $user || empty($item[2])) {
+                    $buffer[] = trim($item[0]);
+                    continue;
+                }
+                $amount = trim(str_replace(',', '.', trim(str_replace('.', '', $item[2]))));
+                Sale::create([
+                    'sale_mode' => $request->get('sale_mode'),
+                    'payer_id' => $user->id,
+                    'collector_id' => 0,
+                    'period' => $period,
+                    'concept_id' => $concept_id,
+                    'description' => $request->get('description'),
+                    'installments' => 1,
+                    'charge' => 100,
+                    'state' => Sale::INITIATED,
+                    'amount' => $amount,
+                    'migrate_id' => $migrate->id,
                 ]);
-                request()->session()->flash('alert-warning', 'La importación fue parcial.');
-                return redirect()->to('/pharmacy');
+            } catch (\Exception $e) {
+                $buffer[] = trim($item[0]) . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
             }
+        }
 
-        } else {
+        if (!empty($buffer)) {
             $migrate->update([
-                'status' => States::STOPPED,
+                'errors' => $buffer,
+                'status' => States::PROCESSED,
             ]);
-            request()->session()->flash('alert-danger', 'No se puede leer el archivo');
+            request()->session()->flash('alert-warning', 'La importación fue parcial.');
             return redirect()->to('/pharmacy');
         }
 
         $migrate->update([
             'status' => States::CLOSED,
         ]);
+
         request()->session()->flash('alert-success', 'Importado correctamente.');
         return redirect()->to('/pharmacy');
     }
@@ -118,7 +124,7 @@ class MigrateController extends Controller
                     }
                     $installments = trim((int)$data[2]);
                     $amount = trim(str_replace(',', '.', trim($data[3])));
-                    $sale = Sale::create([
+                    Sale::create([
                         'sale_mode' => $request->get('sale_mode'),
                         'payer_id' => $user->id,
                         'collector_id' => 0,
