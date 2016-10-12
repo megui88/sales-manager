@@ -76,6 +76,7 @@ Route::group(['middleware' =>  ['auth' ]], function () {
     Route::get('/users', 'UserController@index');
     Route::get('/users/{user}', 'UserController@details');
     Route::get('/sales/{sale}', 'SaleController@details');
+    Route::get('/migrate/file/{migrate}/errors', 'MigrateController@errorsFile');
 });
 
 # Url's common auth
@@ -85,7 +86,6 @@ Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPL
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');
-    Route::get('/migrate/file/{migrate}/errors', 'MigrateController@errorsFile');
     Route::post('/users', 'UserController@create');
     Route::post('/sales', 'SaleController@create');
     Route::post('/credit_notes', 'SaleController@createCreditNote');

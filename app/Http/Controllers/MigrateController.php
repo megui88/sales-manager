@@ -163,6 +163,6 @@ class MigrateController extends Controller
 
     public function errorsFile(Migrate $migrate)
     {
-        return Response::make(implode('',$migrate->errors))->header("Content-type"," charset=utf-8")->header("Content-disposition","attachment; filename=\"error-".$migrate->name."\"");
+        return Response::make(implode(PHP_EOL,$migrate->errors))->header("Content-type"," charset=utf-8")->header("Content-disposition","attachment; filename=\"error-".$migrate->name."\"");
     }
 }
