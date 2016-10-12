@@ -47,6 +47,7 @@
                         <table class="table">
                             <thead>
                             <td> Empresa </td>
+                            <td> Sede </td>
                             <td> Codigo </td>
                             <td> Nombre </td>
                             <td> Apellido </td>
@@ -57,6 +58,7 @@
                             @foreach($users as $user)
                                 <tr @if(\App\Helpers\BladeHelpers::isMemberDisenrolled($user)) class="danger" @endif>
                                     <td> {{ \App\Company::where('id','=',$user->company_id)->first()->name}} </td>
+                                    <td> {{ \App\Headquarters::where('id','=',$user->headquarters_id)->first()->name}} </td>
                                     <td> {{ $user->code }} </td>
                                     <td> {{ $user->name }} </td>
                                     <td> {{ $user->last_name }} </td>
