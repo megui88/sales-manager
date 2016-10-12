@@ -41,6 +41,8 @@ class User extends UserRepository
         'role',
         'enable',
         'administrative_expenses',
+        'company_id',
+        'headquarters_id',
     ];
 
     protected $dates = [
@@ -57,4 +59,9 @@ class User extends UserRepository
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
 }
