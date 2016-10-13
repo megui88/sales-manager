@@ -89,6 +89,12 @@ class HomeController extends Controller
         $incomes= Incomes::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
 
         $rows = [];
+        $rows [0] = [
+            'name' => 'Mutual 7 de Marzo',
+            'due' => 0,
+            'accredit' => 0,
+            'income' => 0,
+        ];
 
         foreach ($providers as $provider){
             $rows [$provider->id] = [
