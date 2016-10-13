@@ -20,6 +20,24 @@
                         </h1>
                         <div class="row">
                             <div class="col-md-6">
+                                <strong>Sede:</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                {{$user->headquarters->name}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Empresa:</strong>
+                            </div>
+
+                            <div class="col-md-6">
+                                {{$user->company->name}}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
                                 <strong>Estado:</strong>
                             </div>
 

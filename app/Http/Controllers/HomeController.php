@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Accredit;
 use App\Due;
+use App\Incomes;
 use App\Migrate;
 use App\Periods;
 use App\Sale;
 use App\Services\BusinessCore;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
@@ -74,6 +76,43 @@ class HomeController extends Controller
             return redirect()->to('details/' . $userId . '/' . $data['init'] . '/' . $data['done']);
         }
         return view('account_details');
+    }
+
+
+    public function budget()
+    {
+        $period = request()->get('period', Periods::getCurrentPeriod()->uid);
+        $providers = User::where('role','=',BusinessCore::VENDOR_ROLE)->orderBy('fantasy_name','ASC')->get();
+
+        $dues = Due::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
+        $accredits = Accredit::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
+        $incomes= Incomes::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
+
+        $rows = [];
+
+        foreach ($providers as $provider){
+            $rows [$provider->id] = [
+                'name' => 'Farmacia',
+                'due' => 0,
+                'accredit' => 0,
+                'income' => 0,
+            ];
+            $rows [$provider->id]['name'] = $provider->fantasy_name;
+        }
+
+        foreach ($dues as $due){
+            $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
+        }
+
+        foreach ($accredits as $accredit){
+            $rows[$accredit->collector_id]['accredit'] += $accredit->amount_of_quota;
+        }
+
+        foreach ($incomes as $income){
+            $rows[$income->collector_id]['income'] += $income->amount_of_quota;
+        }
+        return view('budget', compact('rows','incomes','accredit','dues','period'));
+
     }
 
 

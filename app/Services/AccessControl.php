@@ -20,7 +20,7 @@ class AccessControl
         ];
     }
 
-    static public function hasAccess($userRole, $role)
+    static public function  hasAccess($userRole, $role)
     {
         $roles = self::getRoles();
         return in_array($role, $roles[$userRole]);

@@ -46,24 +46,24 @@
                         <hr>
                         <table class="table">
                             <thead>
-                            <td> Empresa </td>
-                            <td> Sede </td>
                             <td> Codigo </td>
                             <td> Nombre </td>
                             <td> Apellido </td>
                             <td> Email </td>
                             <td> Role </td>
+                            <td> Empresa </td>
+                            <td> Sede </td>
                             <td> </td>
                             </thead>
                             @foreach($users as $user)
                                 <tr @if(\App\Helpers\BladeHelpers::isMemberDisenrolled($user)) class="danger" @endif>
-                                    <td> {{ \App\Company::where('id','=',$user->company_id)->first()->name}} </td>
-                                    <td> {{ \App\Headquarters::where('id','=',$user->headquarters_id)->first()->name}} </td>
                                     <td> {{ $user->code }} </td>
                                     <td> {{ $user->name }} </td>
                                     <td> {{ $user->last_name }} </td>
                                     <td> {{ \App\Helpers\BladeHelpers::email($user->email)}} </td>
                                     <td> {{ $user->role }} </td>
+                                    <td> {{ \App\Company::where('id','=',$user->company_id)->first()->name}} </td>
+                                    <td> {{ \App\Headquarters::where('id','=',$user->headquarters_id)->first()->name}} </td>
                                     <td> <a href="/profile/{{ $user->id }}" id="profile_{{ $user->code }}" title="Editar usuario">
                                             @if(! $user->enable)
                                                 <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>

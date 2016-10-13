@@ -96,7 +96,7 @@
                     @endif
 
                     @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
-
+                            <li><a href="{{ url('/budget') }}">Presupuesto</a></li>
                     @endif
                 @endif
             </ul>

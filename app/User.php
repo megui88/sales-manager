@@ -64,4 +64,9 @@ class User extends UserRepository
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
     }
+
+    public function headquarters()
+    {
+        return $this->belongsTo(Headquarters::class, 'headquarters_id', 'id');
+    }
 }

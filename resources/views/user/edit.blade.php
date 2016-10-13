@@ -53,6 +53,44 @@
                                 </div>
                             </div>
 
+                            <div class="form-group{{ $errors->has('company_id') ? ' has-error' : '' }}">
+                                <label for="company_id" class="col-md-4 control-label">Empresa</label>
+
+                                <div class="col-md-6">
+                                    <select id="company_id" name="company_id" class="form-control" {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                        @foreach(\App\Company::all() as $company)
+                                        <option value="{{$company->id}}"
+                                                @if(old('company_id') == $company->id or ( !$errors->has('company_id') and $user->company_id == $company->id)) selected="selected" @endif
+                                        >{{$company->name}}</option>
+                                            @endforeach
+                                    </select>
+                                    @if ($errors->has('company_id'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('company_id') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="form-group{{ $errors->has('headquarters_id') ? ' has-error' : '' }}">
+                                <label for="headquarters_id" class="col-md-4 control-label">Sede</label>
+
+                                <div class="col-md-6">
+                                    <select id="headquarters_id" name="headquarters_id" class="form-control" {!! \App\Helpers\BladeHelpers::inputMemberDisenrolled($user)  !!}>
+                                        @foreach(\App\Headquarters::all() as $headquarters)
+                                            <option value="{{$headquarters->id}}"
+                                                    @if(old('headquarters_id') == $headquarters->id or ( !$errors->has('headquarters_id') and $user->headquarters_id == $headquarters->id)) selected="selected" @endif
+                                            >{{$headquarters->name}}</option>
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('headquarters_id'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('headquarters_id') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
                             <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
                                 <label for="role" class="col-md-4 control-label">Tipo de Rol</label>
 

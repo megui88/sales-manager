@@ -68,9 +68,9 @@ Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBE
 });
 
 # Url's administrator auth
-Route::group(['middleware' => ['role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE,  'auth']], function () {
+Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE]], function () {
+    Route::get('/budget', 'HomeController@budget');
 });
-
 # Url's common auth
 Route::group(['middleware' =>  ['auth' ]], function () {
     Route::get('/users', 'UserController@index');
