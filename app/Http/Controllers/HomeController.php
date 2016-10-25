@@ -183,7 +183,6 @@ class HomeController extends Controller
         return view('pharmacy', compact('migrations'));
     }
 
-
     /**
      * Show the application dashboard.
      *
@@ -193,7 +192,6 @@ class HomeController extends Controller
     {
         return view('un_authorization');
     }
-
 
     /**
      * Show the application dashboard.
@@ -208,5 +206,21 @@ class HomeController extends Controller
         }
         Auth::logout();
         return view('user.user_disable', compact('user'));
+    }
+
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function close()
+    {
+        $current = Periods::getCurrentPeriod();
+
+        return view('close', [
+            'current' => $current,
+            'nextPeriod' => BusinessCore::nextPeriod($current),
+        ]);
     }
 }

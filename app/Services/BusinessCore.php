@@ -49,6 +49,17 @@ class BusinessCore
 
     }
 
+
+    public static function previousPeriod($period)
+    {
+        if(!self::isValidPeriodFormat($period)){
+            throw new BusinessException('Period invalid: ' . $period);
+        }
+        $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $period);
+        return self::dateToPeriodFormat($tmp_date_string, -1);
+
+    }
+
     public static function AuthorizationPassword($password)
     {
         $results = User::where('role','=', self::EMPLOYEE_ADMIN_ROLE)->get();

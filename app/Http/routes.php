@@ -70,6 +70,8 @@ Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBE
 # Url's administrator auth
 Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE]], function () {
     Route::get('/budget', 'HomeController@budget');
+    Route::get('/close', 'HomeController@close');
+    Route::post('/close/{step}', 'CloseController@step');
 });
 # Url's common auth
 Route::group(['middleware' =>  ['auth' ]], function () {
