@@ -26,7 +26,7 @@ class BladeHelpers
 
     public static function UserCode($user_id)
     {
-        if(0 == $user_id){
+        if('0' == $user_id){
             return 0;
         }
 
