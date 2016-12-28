@@ -198,8 +198,8 @@ class BusinessCore
         if (!is_numeric($amount) || !is_numeric($recharge)) {
             throw new BusinessException('try to format a nonnumeric');
         }
-
-        return $this->amountFormat($amount * $recharge / 100);
+        $result = ($recharge != 0) ? $amount * $recharge / 100 : 0;
+        return $this->amountFormat($result);
     }
 
     /**
@@ -248,9 +248,9 @@ class BusinessCore
             $quotes[count($quotes)] -=  $partial - $amount;
         }
 
-        if (!is_null($installment) && !empty($quotes[$installment])) {
+        if (!is_null($installment) && isset($quotes[$installment])) {
             return $quotes[$installment];
-        } elseif (!is_null($installment) && empty($quotes[$installment])) {
+        } elseif (!is_null($installment) && !isset($quotes[$installment]) ) {
             throw new BusinessException('The quote requested does not exist');
         }
 

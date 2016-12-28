@@ -30,7 +30,7 @@
                                     <label>Activos <input type="radio" name="filters[enable]" id="enable_2" value="true" onchange="this.form.submit()"@if(isset($filters['enable']) and 'true' == $filters['enable'])checked="checked"@endif</label>
                                 </div>
                                 <div class="col-xs-4">
-                                    <a href="/users/new" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Agregar</a>
+                                    <a href="/users-new" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Agregar</a>
                                 </div>
                                 <div class="col-xs-12">
                                     <div class="input-group">

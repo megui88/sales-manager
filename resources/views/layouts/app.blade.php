@@ -95,6 +95,9 @@
                             Importar <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
+                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
+                                <li><a href="{{ url('/axoft_import') }}">Importacion Axoft</a></li>
+                            @endif
                             @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
                                 <li><a href="{{ url('/bulk_import') }}">Importacion Masiva</a></li>
                             @endif

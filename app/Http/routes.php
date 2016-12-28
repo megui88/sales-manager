@@ -72,6 +72,8 @@ Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOY
     Route::get('/budget', 'HomeController@budget');
     Route::get('/close', 'HomeController@close');
     Route::post('/close/{step}', 'CloseController@step');
+    Route::get('/axoft_import', 'HomeController@AxoftImport');
+    Route::post('/axoft_import/file', 'MigrateController@AxoftImportFile');
 });
 # Url's common auth
 Route::group(['middleware' =>  ['auth' ]], function () {
@@ -96,7 +98,7 @@ Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPL
     Route::get('/sales/{sale}/annul', 'SaleController@annulled');
     Route::post('/sales/{sale}/annul', 'SaleController@annulled');
 
-    Route::get('/users/new', 'UserController@newUser');
+    Route::get('/users-new', 'UserController@newUser');
     Route::post('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/users/disenrolled/{user}', 'UserController@disEnrolled');
     Route::get('/profile/{user}', 'UserController@profile');

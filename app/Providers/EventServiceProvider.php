@@ -6,6 +6,7 @@ use App\Events\NewSaleEvent;
 use App\Listeners\CurrentAccountListener;
 use App\Listeners\PharmacySellingListener;
 use App\Listeners\PurchaseOrdertListener;
+use App\Listeners\SubsidyListener;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -24,6 +25,7 @@ class EventServiceProvider extends ServiceProvider
             CurrentAccountListener::class,
             PurchaseOrdertListener::class,
             PharmacySellingListener::class,
+            SubsidyListener::class,
         ],
     ];
 

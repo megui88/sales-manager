@@ -9,6 +9,7 @@ class Migrate extends Model
 {
     const PHARMACY_TYPE = 'pharmacy';
     const BULK_TYPE = 'bulk';
+    const AXOFT_TYPE = 'axoft';
 
     use UuidForKey;
     protected $fillable = [

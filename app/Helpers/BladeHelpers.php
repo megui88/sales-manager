@@ -28,10 +28,11 @@ class BladeHelpers
         return $user->state == BusinessCore::MEMBER_DISENROLLED;
     }
 
-    public static function buttonSubmit($message, $id = null)
+    public static function buttonSubmit($message, $id = null, $function = null)
     {
         $html_id = $id ? "id=\"$id\"" : '';
-        return '<button type="button" class="btn btn-primary btn-submit" onclick="submit()" '. $html_id .'>' . $message . '</button>';
+        $function = ($function)??'submit()';
+        return '<button type="button" class="btn btn-primary btn-submit" onclick="' . $function . '" '. $html_id .'>' . $message . '</button>';
     }
 
     public static function sellPeriodSelect($total = 4, $old = null, $id = 'period')

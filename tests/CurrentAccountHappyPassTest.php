@@ -50,6 +50,13 @@ class CurrentAccountHappyPassTest extends TestCase
         $this->assertTrue($this->saleHappyPass($data));
     }
 
+    public function testSaleWhenChargeIsZero()
+    {
+        $data = $this->getData();
+        $data['charge'] = 0;
+        $this->assertTrue($this->saleHappyPass($data));
+    }
+
     public function testSaleLastDayOfMonth()
     {
         $data = $this->getData();

@@ -84,9 +84,15 @@ class HomeController extends Controller
         $period = request()->get('period', Periods::getCurrentPeriod()->uid);
         $providers = User::where('role','=',BusinessCore::VENDOR_ROLE)->orderBy('fantasy_name','ASC')->get();
 
-        $dues = Due::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
-        $accredits = Accredit::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
-        $incomes= Incomes::where('period','=',$period)->where('state','!=', Sale::ANNULLED)->get();
+        $dues = Due::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
+        $accredits = Accredit::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
+        $incomes= Incomes::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
 
         $rows = [];
         $rows [0] = [
@@ -107,7 +113,9 @@ class HomeController extends Controller
         }
 
         foreach ($dues as $due){
-            $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
+            if($due->sale->sale_mode != Sale::SUBSIDY) {
+                $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
+            }
         }
 
         foreach ($accredits as $accredit){
@@ -170,6 +178,17 @@ class HomeController extends Controller
     {
         $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE)->get();
         return view('bulk_import', compact('migrations'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function AxoftImport()
+    {
+        $migrations = Migrate::where('type', '=', Migrate::AXOFT_TYPE)->get();
+        return view('axoft_import', compact('migrations'));
     }
 
     /**

@@ -47,7 +47,7 @@
 
                                 <div class="col-md-12  control-label" style="text-align: right">
                                     <p>
-                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Ir al detalle')!!}
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Ir al detalle',null,'')!!}
                                     </p>
                                 </div>
                             </div>

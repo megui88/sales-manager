@@ -13,9 +13,16 @@ abstract class PeriodsRepository extends Model
     use UuidForKey;
     public static function getPeriod($date = 'now')
     {
-        $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
+        $period = Periods::where('created_at','<=', $date)
+            ->where('closed_at','>=', $date)
+            ->first();
+        if(!$period){
+            $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
-        return $dateTime->format(BusinessCore::PERIOD_FORMAT);
+            return $dateTime->format(BusinessCore::PERIOD_FORMAT);
+        }
+
+        return $period->uid;
     }
 
     /**

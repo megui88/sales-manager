@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
         Commands\UpgradeUser::class,
         Commands\DowngradeUser::class,
         Commands\MemberMigrate::class,
+        Commands\AxoftMigrate::class,
     ];
 
     /**

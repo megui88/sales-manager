@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Farmacia</div>
+                    <div class="panel-heading">Importacion masiva</div>
 
                     <div class="panel-body">
                         <form method="post" action="/bulk_import/file" name="tests"  enctype="multipart/form-data">

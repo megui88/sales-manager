@@ -30,7 +30,7 @@ function SalesManagerSdk() {
                 var callback = (typeof callback == 'function') ? callback : function(){};
                 var filters = filters || {};
                 filters.q = q;
-                filters.enable = 'true';
+                //filters.enable = 'true';
                 return SalesManager.ajax({
                     endpoint: '/users',
                     data: {
@@ -68,7 +68,7 @@ function SalesManagerSdk() {
                 var callback = (typeof callback == 'function') ? callback : function(){};
                 var filters = filters || {};
                 filters.role = 'socio';
-                filters.enable = 'true';
+                //filters.enable = 'true';
                 filters.q = q;
                 return SalesManager.ajax({
                     endpoint: '/users',
