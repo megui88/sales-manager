@@ -3,6 +3,7 @@ namespace App\Helpers;
 
 use App\Concept;
 use App\Services\BusinessCore;
+use App\User;
 use Carbon\Carbon;
 
 class BladeHelpers
@@ -21,6 +22,15 @@ class BladeHelpers
     public static function inputMemberDisenrolled($user)
     {
         return self::isMemberDisenrolled($user) ? 'disabled' : '';
+    }
+
+    public static function UserCode($user_id)
+    {
+        if(0 == $user_id){
+            return 0;
+        }
+
+        return User::where('id', '=', $user_id)->first()->code;
     }
 
     public static function isMemberDisenrolled($user)

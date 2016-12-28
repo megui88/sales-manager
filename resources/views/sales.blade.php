@@ -123,8 +123,8 @@
                             @foreach($sales as $sale)
                                 <tr @if($sale->state == \App\Sale::ANNULLED) class="danger"@endif>
                                     <td>{{ $sale->period }}</td>
-                                    <td>{{ $sale->payer->code  }}</td>
-                                    <td>{{ $sale->collector->code }}</td>
+                                    <td>{{ \App\Helpers\BladeHelpers::UserCode($sale->payer_id)  }}</td>
+                                    <td>{{ \App\Helpers\BladeHelpers::UserCode($sale->collector_id)  }}</td>
                                     <td>{{ $sale->installments }}</td>
                                     <td>{{ $sale->amount }}</td>
                                     <td>{{ $sale->created_at->format('d-m H:i') }}</td>
