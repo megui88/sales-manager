@@ -31,6 +31,7 @@ class BusinessCore
         try {
             $periods = [];
             $period = Periods::getCurrentPeriod();
+            $period = '201607';
 
             $periods = array_merge($periods, self::calculateFuturePeriod($period, $total));
             return $periods;

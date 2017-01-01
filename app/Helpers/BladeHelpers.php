@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use App\Concept;
+use App\Periods;
 use App\Services\BusinessCore;
 use App\User;
 use Carbon\Carbon;
@@ -47,6 +48,9 @@ class BladeHelpers
 
     public static function sellPeriodSelect($total = 4, $old = null, $id = 'period')
     {
+        if(is_null($old)){
+            $old = Periods::getCurrentPeriod()->uid;
+        }
         $periods = BusinessCore::getPeriodAndFutures($total);
         $content = "<select id='$id' name='$id' class=\"form-control\">";
         foreach ($periods as $period){

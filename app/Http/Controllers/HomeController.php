@@ -84,15 +84,6 @@ class HomeController extends Controller
         $period = request()->get('period', Periods::getCurrentPeriod()->uid);
         $providers = User::where('role','=',BusinessCore::VENDOR_ROLE)->orderBy('fantasy_name','ASC')->get();
 
-        $dues = Due::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
-            ->get();
-        $accredits = Accredit::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
-            ->get();
-        $incomes= Incomes::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
-            ->get();
 
         $rows = [];
         $rows [0] = [
@@ -112,29 +103,35 @@ class HomeController extends Controller
             $rows [$provider->id]['name'] = $provider->fantasy_name;
         }
 
+        $dues = Due::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
+        $accredits = Accredit::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
+        $incomes= Incomes::where('period','=',$period)
+            ->where('state','!=', Sale::ANNULLED)
+            ->get();
+
+
         foreach ($dues as $due){
-            if($due->sale->sale_mode != Sale::SUBSIDY) {
+            if($due->sale->sale_mode != Sale::SUBSIDY && isset($rows[$due->sale->collector_id])) {
                 $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
             }
         }
 
         foreach ($accredits as $accredit){
-            $rows[$accredit->collector_id]['accredit'] += $accredit->amount_of_quota;
+            if(isset($rows[$accredit->collector_id])) {
+                $rows[$accredit->collector_id]['accredit'] += $accredit->amount_of_quota;
+            }
         }
 
         foreach ($incomes as $income){
-            $rows[$income->collector_id]['income'] += $income->amount_of_quota;
+                $rows[$income->collector_id]['income'] += $income->amount_of_quota;
         }
         return view('budget', compact('rows','incomes','accredit','dues','period'));
 
     }
-
-
-    public function detailsMember()
-    {
-
-    }
-
 
     /**
      * Show the application dashboard.
