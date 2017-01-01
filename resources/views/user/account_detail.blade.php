@@ -2,6 +2,15 @@
 
 @section('content')
     <div class="container">
+        <div class="row hidden-print text-center">
+            <div class="col-xs-4">
+                <a onclick="detailsPrint()" class="btn btn-lg btn-info">Imprimir</a>
+            </div>
+            <div class="col-xs-4">
+            </div>
+            <div class="col-xs-offset-4 col-xs-4">
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
@@ -36,7 +45,7 @@
                                                 @foreach($items['dues'] as $due)
                                                     <tr style="text-align: right">
                                                         <td style="text-align: center">{{ $due->sale->concept->name }}</td>
-                                                        <td>{{ $due->sale->id }}</td>
+                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ $due->sale->description }}</td>
                                                         <td>{{ $due->number_of_quota }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
@@ -48,7 +57,7 @@
                                                 @foreach($items['accredits'] as $accredit)
                                                     <tr style="text-align: right">
                                                         <td style="text-align: center">{{ $accredit->sale->concept->name }}</td>
-                                                        <td>{{ $accredit->sale->id }}</td>
+                                                        <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ $accredit->sale->description }}</td>
                                                         <td>{{ $accredit->number_of_quota }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>

@@ -43,7 +43,7 @@ class MigrateController extends Controller
 
             return $rt;
         }
-        preg_match_all('/\s+(\d+)\s+[a-zA-Z\,\.\s]+([\,\.\d]+)\s+/',$content, $tt);
+        preg_match_all('/\s+(\d+)\s+[a-z¥A-Z\,\.\s]+([\,\.\d]+)\s+/',$content, $tt);
 
         $results = turn_array($tt);
         $buffer = [];
@@ -59,21 +59,21 @@ class MigrateController extends Controller
                     $compativilizer = CodeCompatibilizer::where('codigo','=',trim($item[1]) . 0)->first();
                     if(!$compativilizer){
 
-                        $buffer[] = trim($item[0]);
+                        $buffer[] = "\t" . trim($item[0]) . "\t" . 'No compatibilizado';
                         continue;
                     }
                     $user = User::where('code','=',$compativilizer->legajo)->first();
                     if(!$user){
-                        $buffer[] = trim($item[0]);
+                        $buffer[] = "\t" . trim($item[0]) . "\t" . 'No sin ingresar al sistema';
                         continue;
                     }
                 }
                 if ( empty($item[2])) {
-                    $buffer[] = trim($item[0]);
+                    $buffer[] = "\t" . trim($item[0]) . "\t" . 'No reconoce monto';
                     continue;
                 }
                 $amount = trim(str_replace(',', '.', trim(str_replace('.', '', $item[2]))));
-                Sale::create([
+                $sale = Sale::create([
                     'sale_mode' => $request->get('sale_mode'),
                     'payer_id' => $user->id,
                     'collector_id' => 0,
@@ -86,8 +86,12 @@ class MigrateController extends Controller
                     'amount' => $amount,
                     'migrate_id' => $migrate->id,
                 ]);
+
+                if(empty($sale->id) OR !empty($sale->errors)){
+                    $buffer[] = "\t" . trim($item[0]) . ' ' . json_encode($sale->errors);
+                }
             } catch (\Exception $e) {
-                $buffer[] = trim($item[0]) . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
+                $buffer[] = "\t" . trim($item[0]) . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
             }
         }
 
