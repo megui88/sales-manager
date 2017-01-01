@@ -32,7 +32,7 @@ class SaleRequest extends Request
             'collector_id' => 'string|required',
             'installments' => 'numeric|required',
             'sale_mode' => 'string|required',
-            'description' => 'string|required',
+            'description' => 'string',
             'state' => 'string',
             'first_due_date' => 'date',
             'period' => 'string|required',

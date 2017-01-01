@@ -108,4 +108,23 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
     {
         return $this->belongsTo(Concept::class, 'concept_id', 'id');
     }
+
+    public function getMutualUser()
+    {
+        $user = new User();
+        $user->id = 'no-id';
+        $user->code = 'M7M';
+        $user->name = 'Mutual';
+        $user->last_name = '7 de Marzo';
+        $user->fantasy_name = 'Mutual 7 de Marzo';
+        $user->business_name = 'Mutual 7 de Marzo';
+        $user->address = 'Av. Bicentenario 1503';
+        $user->location = 'Merlo';
+        $user->phone = '0220 489 3671';
+        $user->dni = '30551304686';
+        $user->cuil_cuit = '30551304686';
+        $user->state = '30551304686';
+
+        return $user;
+    }
 }

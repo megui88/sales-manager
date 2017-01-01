@@ -78,10 +78,10 @@ class SaleController extends Controller
             'state' => Sale::INITIATED,
             'amount' => $data['amount'],
         ]);
-        if($request->server('REQUEST_URI') == '/home'){
+/*        if($request->server('REQUEST_URI') == '/home'){
             $request->session()->flash('alert-success', 'Venta cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/home');
-        };
+        };*/
         return redirect()->to('/sales/' . $sale->id);
     }
 
@@ -109,10 +109,10 @@ class SaleController extends Controller
             'state' => Sale::PENDING,
             'amount' => $data['amount'],
         ]);
-        if($request->server('REQUEST_URI') == '/purchase_orders'){
+/*        if($request->server('REQUEST_URI') == '/purchase_orders'){
             $request->session()->flash('alert-success', 'Orden de compra cargada <a href="/purchase_orders/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/purchase_orders');
-        };
+        };*/
         return redirect()->to('/purchase_orders/' . $sale->id);
     }
 
@@ -140,10 +140,10 @@ class SaleController extends Controller
             'state' => Sale::INITIATED,
             'amount' => -1 * $data['amount'],
         ]);
-        if($request->server('REQUEST_URI') == '/credit_notes'){
+/*        if($request->server('REQUEST_URI') == '/credit_notes'){
             $request->session()->flash('alert-success', 'Nota de credito cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/credit_notes');
-        };
+        };*/
         return redirect()->to('/sales/' . $sale->id);
     }
 
@@ -153,7 +153,10 @@ class SaleController extends Controller
             && !in_array(Auth::user()->id,[$sale->collector_id, $sale->payer_id])){
             throw new AuthorizationException();
         }
-        return view('sales.details', compact('sale'));
+        $view = 'sales.details';
+        $view = ($sale->payer_id === '0') ? 'sales.payer0_details' : $view;
+        $view = ($sale->collector_id === '0') ? 'sales.collector0_details' : $view;
+        return view($view, compact('sale'));
     }
 
     public function detailsPurchaseOrder(Sale $sale)

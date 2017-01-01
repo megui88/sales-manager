@@ -52,9 +52,9 @@
                 <div class="row" >
                     <h4>Socio:</h4>
                     <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif><strong>Codigo:</strong></div>
-                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->payer->code }}</div>
+                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->getMutualUser()->code }}</div>
                     <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif><strong>Apellido/Nombre:</strong></div>
-                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->payer->fullName() }}</div>
+                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->getMutualUser()->fullName() }}</div>
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
                     <tr>
                         <td>{{ $due->period }}</td>
                         <td>{{ $due->number_of_quota }}</td>
-                        <td>{{ $sale->description | $sale->concept->name }}</td>
+                        <td>{!! $sale->description | $sale->concept->name  !!} </td>
                         <td>{{ \App\Services\BusinessCore::printAmount($due->amount_of_quota) }}</td>
                     </tr>
                 @endforeach

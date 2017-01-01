@@ -62,9 +62,9 @@
                 <div class="row">
                     <h4>Vendedor:</h4>
                     <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif><strong>Codigo:</strong></div>
-                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->collector->code }}</div>
+                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->getMutualUser()->code }}</div>
                     <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif><strong>Nombre:</strong></div>
-                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->collector->fantasy_name }}</div>
+                    <div class="col-xs-6" @if($sale->state == \App\Sale::ANNULLED) style="text-decoration:line-through;"@endif>{{ $sale->getMutualUser()->fantasy_name }}</div>
                 </div>
             </div>
         </div>
