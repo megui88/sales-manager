@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="period" class="col-md-4 control-label">Periodo</label>
-                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(5, old('period')) !!}
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(5, old('period'), 'period', true) !!}
 
                                     @if ($errors->has('period'))
                                         <span class="help-block">

@@ -47,7 +47,7 @@
 
                                 <div class="col-md-12  control-label" style="text-align: right">
                                     <p>
-                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Ir al detalle',null,'')!!}
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Ir al detalle',null,'javascript: detailsSubmit(this)')!!}
                                     </p>
                                 </div>
                             </div>
@@ -57,4 +57,35 @@
             </div>
         </div>
     </div>
+@endsection
+@section('bottom')
+    <script type="application/javascript">
+        function detailsSubmit(that) {
+            var input = $('#member');
+
+            if(input.is(':visible')) {
+                bussiness.inputs.inputMember(input)
+                        .then(function (data) {
+                            bussiness.inputs.memberOk(input, data);
+
+                            if (bussiness.inputs.setMember(input, {
+                                        'full_name': data.last_name + ', ' + data.name,
+                                        'code': data.code,
+                                        'id': data.id,
+                                        'fantasy_name': data.fantasy_name
+                                    })) {
+                                return bussiness.inputs.nextInput(input);
+                            }
+                        })
+                        .catch(function(msg){if ($(input).prop('required')){
+                            bussiness.alerts.inputIsRequired(input);
+                            console.log(msg);
+                        } else {
+                            bussiness.inputs.nextInput(input);
+                        }});
+            }else {
+               that.form.submit();
+            }
+        }
+    </script>
 @endsection

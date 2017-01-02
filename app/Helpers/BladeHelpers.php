@@ -43,15 +43,15 @@ class BladeHelpers
     {
         $html_id = $id ? "id=\"$id\"" : '';
         $function = ($function)??'submit()';
-        return '<button type="button" class="btn btn-primary btn-submit" onclick="' . $function . '" '. $html_id .'>' . $message . '</button>';
+        return '<button type="button" class="btn btn-primary btn-submit" onclick="' . $function . '"  onfocus="' . $function . '" '. $html_id .'>' . $message . '</button>';
     }
 
-    public static function sellPeriodSelect($total = 4, $old = null, $id = 'period')
+    public static function sellPeriodSelect($total = 4, $old = null, $id = 'period' , $current = false)
     {
         if(is_null($old)){
             $old = Periods::getCurrentPeriod()->uid;
         }
-        $periods = BusinessCore::getPeriodAndFutures($total);
+        $periods = BusinessCore::getPeriodAndFutures($total, $current);
         $content = "<select id='$id' name='$id' class=\"form-control\">";
         foreach ($periods as $period){
             $select = '';

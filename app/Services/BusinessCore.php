@@ -26,12 +26,11 @@ class BusinessCore
     const MEMBER_AFFILIATE = 'afiliado';
     const MEMBER_DISENROLLED = 'desafiliado';
 
-    public static function getPeriodAndFutures($total)
+    public static function getPeriodAndFutures($total, $current = false)
     {
         try {
             $periods = [];
-            $period = Periods::getCurrentPeriod();
-            $period = '201607';
+            $period = ($current) ? Periods::getCurrentPeriod() : '201607';
 
             $periods = array_merge($periods, self::calculateFuturePeriod($period, $total));
             return $periods;

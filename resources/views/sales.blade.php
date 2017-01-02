@@ -43,7 +43,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="period" class="col-md-4 control-label">Periodo</label>
-                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(5, old('period')) !!}
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(5, old('period'), 'period', true) !!}
 
                                     @if ($errors->has('period'))
                                         <span class="help-block">
@@ -94,7 +94,7 @@
                                 </div>
                                 <div class="col-md-12" style="text-align: right">
                                     <p>
-                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Vender')!!}
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Vender', null, 'javascript: saleFormSubmit(this)')!!}
                                     </p>
                                 </div>
                             </div>
@@ -152,5 +152,51 @@
                 $('#collector_id').val('');
             });
         });
+    </script>
+    <script type="application/javascript">
+        function saleFormSubmit(that) {
+            var payer = $('#payer');
+
+            bussiness.inputs.inputMember(payer)
+                    .then(function (data) {
+                        bussiness.inputs.memberOk(payer, data);
+
+                        if (bussiness.inputs.setMember(payer, {
+                                    'full_name': data.last_name + ', ' + data.name,
+                                    'code': data.code,
+                                    'id': data.id,
+                                    'fantasy_name': data.fantasy_name
+                                })) {
+                            var collector = $('#collector');
+                            bussiness.inputs.inputMember(collector)
+                                    .then(function (data) {
+                                        bussiness.inputs.memberOk(collector, data);
+
+                                        if (bussiness.inputs.setMember(collector, {
+                                                    'full_name': data.last_name + ', ' + data.name,
+                                                    'code': data.code,
+                                                    'id': data.id,
+                                                    'fantasy_name': data.fantasy_name
+                                                })) {
+                                            console.log('mando form');
+                                            return that.form.submit();
+                                        }
+                                    })
+                                    .catch(function(msg){if ($(collector).prop('required')){
+                                        bussiness.alerts.inputIsRequired(collector);
+                                        console.log(msg);
+                                    } else {
+                                        bussiness.inputs.nextInput(collector);
+                                    }});
+                        }
+
+                    })
+                    .catch(function(msg){if ($(payer).prop('required')){
+                        bussiness.alerts.inputIsRequired(payer);
+                        console.log(msg);
+                    } else {
+                        bussiness.inputs.nextInput(payer);
+                    }});
+        }
     </script>
 @endsection
