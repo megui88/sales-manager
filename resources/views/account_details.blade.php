@@ -63,6 +63,11 @@
         function detailsSubmit(that) {
             var input = $('#member');
 
+            if('0' === input.val()){
+                $('#member_id').val('M7M');
+                return that.form.submit();
+            }
+
             if(input.is(':visible')) {
                 bussiness.inputs.inputMember(input)
                         .then(function (data) {

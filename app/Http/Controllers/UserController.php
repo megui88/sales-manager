@@ -11,6 +11,7 @@ use App\Http\Requests\EmailRequest;
 use App\Http\Requests\Request;
 use App\Http\Requests\UserProfileRequest;
 use App\Http\Requests\UserRequest;
+use App\Incomes;
 use App\Sale;
 use App\Services\BusinessCore;
 use App\User;
@@ -240,5 +241,68 @@ class UserController extends Controller
         }
 
         return view($template, compact('periods', 'periodInit', 'periodDone', 'user'));
+    }
+
+    /**
+     * @param $periodInit
+     * @param $periodDone
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function account0Details($periodInit, $periodDone)
+    {
+        if(! BusinessCore::isValidPeriodFormat($periodInit) ||  ! BusinessCore::isValidPeriodFormat($periodDone)){
+            request()->session()->flash('alert-warning', 'El periodo no es valido');
+            return redirect()->to('/details');
+        }
+        if($periodInit > $periodDone){
+            request()->session()->flash('alert-warning', 'El periodo inicial debe ser menor al periodo de fin!');
+            return redirect()->to('/details');
+        }
+
+        $dues =  Due::where('period', '>=', $periodInit)
+            ->where('period', '<=', $periodDone)
+            ->where('payer_id', '=', '0')
+            ->where('state', '!=', Sale::ANNULLED)
+            ->orderBy('created_at', 'ASC')
+            ->get();
+        $accredits =  Accredit::where('period', '>=', $periodInit)
+            ->where('period', '<=', $periodDone)
+            ->where('collector_id', '=', '0')
+            ->where('state', '!=', Sale::ANNULLED)
+            ->orderBy('created_at', 'ASC')
+            ->get();
+        $incomes =  Incomes::where('period', '>=', $periodInit)
+            ->where('period', '<=', $periodDone)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->orderBy('created_at', 'ASC')
+            ->get();
+
+        $periods = [];
+
+        //structure
+        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)){
+            $periods[$period] = [
+                'dues' => [],
+                'accredits' => [],
+            ];
+        }
+
+        //populate
+        foreach ($dues as $due) {
+            $periods[$due->period]['dues'] []= $due;
+        }
+
+        foreach ($accredits as $accredit) {
+            $periods[$accredit->period]['accredits'] []= $accredit;
+        }
+
+        foreach ($incomes as $income) {
+            $periods[$income->period]['incomes'] []= $income;
+        }
+
+        $sale = new Sale();
+        $user = $sale->getMutualUser();
+
+        return view('providers.account0_detail', compact('periods', 'periodInit', 'periodDone', 'user'));
     }
 }

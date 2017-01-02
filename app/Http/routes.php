@@ -64,6 +64,7 @@ Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::PHARM
 Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBER_ROLE]], function () {
     Route::get('/', 'HomeController@init');
     Route::get('/details', 'HomeController@details');
+    Route::get('/details/M7M/{init}/{done}', 'UserController@account0Details');
     Route::get('/details/{user}/{init}/{done}', 'UserController@accountDetails');
 });
 
