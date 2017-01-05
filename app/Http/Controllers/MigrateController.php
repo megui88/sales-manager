@@ -141,12 +141,12 @@ class MigrateController extends Controller
                     $provider = User::where('code','=',trim($data[1]))->first();
 
                     if (! $user || ! $provider || empty($data[2]) || empty($data[3])) {
-                        $buffer[] = $line;
+                        $buffer[] = $line . ',' . 'Sin usuario/proveedor/cuotas/monto';
                         continue;
                     }
                     $installments = trim((int)$data[2]);
                     $amount = trim(str_replace(',', '.', trim($data[3])));
-                    Sale::create([
+                    $sale = Sale::create([
                         'sale_mode' => $request->get('sale_mode'),
                         'payer_id' => $user->id,
                         'collector_id' => 0,
@@ -159,6 +159,11 @@ class MigrateController extends Controller
                         'amount' => $amount,
                         'migrate_id' => $migrate->id,
                     ]);
+
+                    if(!empty($sale->errors)){
+                        $buffer[] = $line. ',' . json_encode($sale->errors);
+                    }
+
                 } catch (\Exception $e) {
                     $buffer[] = $line . "," . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
                 }

@@ -48,8 +48,8 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
             }
 
             foreach (self::$required as $key) {
-                if (empty($entity->$key) && 0 !== $entity->$key) {
-                    $entity->errors [] = "The attribute $key is required.";
+                if (empty($entity->$key) && (0 !=$entity->$key or '0' != $entity->$key)) {
+                    $entity->errors [] = "The attribute $key is required.: (" . $entity->$key . ")";
                 }
             }
             return empty($entity->errors);
