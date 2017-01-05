@@ -31,13 +31,14 @@
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapse{{$period}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{$period}}">
+                                    <div id="collapse{{$period}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading{{$period}}" style="font-size: 10px">
                                         <div class="panel-body">
                                             <table class="table table-bordered">
                                                 <thead style="text-align: center; font-weight: bolder">
-                                                <td>Tipo</td>
+                                                <!--td>Tipo</td-->
                                                 <td>Comprobante</td>
-                                                <td>Descripción</td>
+                                                <td>Socio</td>
+                                                <!--td>Descripción</td-->
                                                 <td>Numero de Cuota</td>
                                                 <td>Importe de Cuota</td>
                                                 </thead>
@@ -45,8 +46,9 @@
                                                 @foreach($items['dues'] as $due)
                                                     <tr style="text-align: right">
                                                         <td style="text-align: center">{{ $due->sale->concept->name }}</td>
+                                                        <td>{{ $due->sale->collector->code . ' - ' . $due->sale->collector->fullName }}</td>
                                                         <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
-                                                        <td style="text-align: center">{{ $due->sale->description }}</td>
+                                                        <!--td style="text-align: center">{{ $due->sale->description }}</td-->
                                                         <td>{{ $due->number_of_quota }} / {{ $due->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
                                                     </tr>
@@ -55,10 +57,11 @@
                                                 </tbody>
                                                 <tbody>
                                                 @foreach($items['accredits'] as $accredit)
-                                                    <tr style="text-align: right">
-                                                        <td style="text-align: center">{{ $accredit->sale->concept->name }}</td>
-                                                        <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
-                                                        <td style="text-align: center">{{ $accredit->sale->description }}</td>
+                                                    <tr style="text-align: right;">
+                                                    <!--td style="text-align: center">{{ $accredit->sale->concept->name }}</td-->
+                                                        <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link"  style="font-size: 10px">{{ $accredit->sale->id }}</a></td>
+                                                        <td>{{  $accredit->sale->payer->code . ' - ' .$accredit->sale->payer->fullName() }}</td>
+                                                        <!--td style="text-align: center">{{ $accredit->sale->description }}</-td-->
                                                         <td>{{ $accredit->number_of_quota }} / {{ $accredit->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>
                                                     </tr>
@@ -66,11 +69,11 @@
                                                 @endforeach
                                                 </tbody>
                                                 <tfoot  style="text-align: right; font-weight: bold">
-                                                    <td>Periodo: {{$period}}</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td>Total:</td>
-                                                    <td>{{ \App\Helpers\BladeHelpers::import($total)}}</td>
+                                                <td>Periodo: {{$period}}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>Total:</td>
+                                                <td>{{ \App\Helpers\BladeHelpers::import($total)}}</td>
                                                 </tfoot>
                                             </table>
                                         </div>
