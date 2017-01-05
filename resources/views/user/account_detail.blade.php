@@ -35,18 +35,18 @@
                                         <div class="panel-body">
                                             <table class="table table-bordered">
                                                 <thead style="text-align: center; font-weight: bolder">
-                                                <td>Tipo</td>
                                                 <td>Comprobante</td>
-                                                <td>Descripción</td>
+                                                <td>Usuario</td>
+                                                <!--td>Descripción</td-->
                                                 <td>Numero de Cuota</td>
                                                 <td>Importe de Cuota</td>
                                                 </thead>
                                                 <tbody>
                                                 @foreach($items['dues'] as $due)
                                                     <tr style="text-align: right">
-                                                        <td style="text-align: center">{{ $due->sale->concept->name }}</td>
                                                         <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
-                                                        <td style="text-align: center">{{ $due->sale->description }}</td>
+                                                        <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($due->sale->collector_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($due->sale->collector_id) != '0') {{$due->sale->collector->fantasy_name}}@endif</td>
+                                                        <!--td style="text-align: center">{{ $due->sale->description }}</td-->
                                                         <td>{{ $due->number_of_quota }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
                                                     </tr>
@@ -56,9 +56,9 @@
                                                 <tbody>
                                                 @foreach($items['accredits'] as $accredit)
                                                     <tr style="text-align: right">
-                                                        <td style="text-align: center">{{ $accredit->sale->concept->name }}</td>
                                                         <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
-                                                        <td style="text-align: center">{{ $accredit->sale->description }}</td>
+                                                        <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id) != '0') {{$accredit->sale->payer->fullName()}}@endif</td>
+                                                        <!--td style="text-align: center">{{ $accredit->sale->description }}</td-->
                                                         <td>{{ $accredit->number_of_quota }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>
                                                     </tr>
