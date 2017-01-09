@@ -47,7 +47,7 @@
                                                         <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($due->sale->collector_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($due->sale->collector_id) != '0') {{$due->sale->collector->fantasy_name}}@endif</td>
                                                         <!--td style="text-align: center">{{ $due->sale->description }}</td-->
-                                                        <td>{{ $due->number_of_quota }}</td>
+                                                        <td>{{ $due->number_of_quota }} / {{ $due->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
                                                     </tr>
                                                     <?php $total += $due->amount_of_quota; ?>
@@ -59,7 +59,7 @@
                                                         <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id) != '0') {{$accredit->sale->payer->fullName()}}@endif</td>
                                                         <!--td style="text-align: center">{{ $accredit->sale->description }}</td-->
-                                                        <td>{{ $accredit->number_of_quota }}</td>
+                                                        <td>{{ $accredit->number_of_quota }} / {{ $accredit->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>
                                                     </tr>
                                                     <?php $total -= $accredit->amount_of_quota; ?>
