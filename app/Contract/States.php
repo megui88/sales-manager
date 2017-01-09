@@ -6,6 +6,7 @@ interface States
 {
     const INITIATED = 'initiated'; //Default state
     const OPENED = 'opened';
+    const REPROCESSED = 'reprocess';
     const PROCESSED = 'processed';
     const PENDING = 'pending';
     const WAITING = 'waiting';

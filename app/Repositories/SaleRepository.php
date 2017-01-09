@@ -8,6 +8,7 @@ use App\Contract\States;
 use App\Contract\Transactional;
 use App\Due;
 use App\Events\NewSaleEvent;
+use App\Events\ReProcessSaleEvent;
 use App\Incomes;
 use App\Periods;
 use App\Transaction;
@@ -57,6 +58,10 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
 
         self::created(function ($sale) {
             Event::fire(new NewSaleEvent($sale));
+        });
+
+        self::saved(function ($sale) {
+            Event::fire(new ReProcessSaleEvent($sale));
         });
     }
 

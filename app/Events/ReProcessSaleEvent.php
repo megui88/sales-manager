@@ -5,9 +5,9 @@ namespace App\Events;
 use App\Sale;
 use Illuminate\Queue\SerializesModels;
 
-class NewSaleEvent extends Event
+class ReProcessSaleEvent extends Event
 {
-    const TYPE = 'new';
+    const TYPE = 'reprocess';
 
     use SerializesModels;
 

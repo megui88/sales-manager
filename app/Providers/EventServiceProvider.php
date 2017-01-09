@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\NewSaleEvent;
+use App\Events\ReProcessSaleEvent;
 use App\Listeners\CurrentAccountListener;
 use App\Listeners\PharmacySellingListener;
 use App\Listeners\PurchaseOrdertListener;
@@ -26,6 +27,11 @@ class EventServiceProvider extends ServiceProvider
             PurchaseOrdertListener::class,
             PharmacySellingListener::class,
             SubsidyListener::class,
+        ],
+        ReProcessSaleEvent::class => [
+            CurrentAccountListener::class,
+            PurchaseOrdertListener::class,
+            PharmacySellingListener::class,
         ],
     ];
 

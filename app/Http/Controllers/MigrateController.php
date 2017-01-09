@@ -73,15 +73,16 @@ class MigrateController extends Controller
                     continue;
                 }
                 $amount = trim(str_replace(',', '.', trim(str_replace('.', '', $item[2]))));
+                $pharmacyProvider = User::where('code', '=', '53')->first;
                 $sale = Sale::create([
                     'sale_mode' => $request->get('sale_mode'),
                     'payer_id' => $user->id,
-                    'collector_id' => 0,
+                    'collector_id' => $pharmacyProvider->id,
                     'period' => $period,
                     'concept_id' => $concept_id,
                     'description' => $request->get('description'),
                     'installments' => 1,
-                    'charge' => 100,
+                    'charge' => $pharmacyProvider->administrative_expenses,
                     'state' => Sale::INITIATED,
                     'amount' => $amount,
                     'migrate_id' => $migrate->id,
@@ -149,7 +150,7 @@ class MigrateController extends Controller
                     $sale = Sale::create([
                         'sale_mode' => $request->get('sale_mode'),
                         'payer_id' => $user->id,
-                        'collector_id' => 0,
+                        'collector_id' => $provider->code,
                         'period' => $period,
                         'concept_id' => $concept_id,
                         'description' => $request->get('description'),

@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Accredit;
+use App\Events\Event;
 use App\Events\NewSaleEvent;
+use App\Events\ReProcessSaleEvent;
 use App\Incomes;
 use App\Sale;
 use App\Due;
@@ -22,11 +24,22 @@ class PharmacySellingListener
         $this->business = $business;
     }
 
-    public function handle(NewSaleEvent $event)
+    /**
+     * @param NewSaleEvent|ReProcessSaleEvent|Event $event
+     * @return bool
+     */
+    public function handle(Event $event)
     {
         $sale = $event->getSale();
         if ($sale->getAttribute('sale_mode') !== Sale::PHARMACY_SELLING) {
             return true;
+        }
+
+        if ($event::TYPE == Sale::REPROCESSED){
+            ($sale->dues())?$sale->dues()->delete():null;
+            ($sale->accredits())?$sale->accredits()->delete():null;
+            ($sale->incomes())?$sale->incomes()->delete():null;
+            $sale->state = Sale::INITIATED;
         }
 
         $this->createDuesAndAccredits($sale);
@@ -55,10 +68,10 @@ class PharmacySellingListener
                 'state' => Sale::INITIATED,
             ];
             Due::create($data);
-        /*
+
             $data['amount_of_quota'] = $accreditAmountOfQuotes[$quote];
             Accredit::create($data);
-        */
+
             $data['amount_of_quota'] = $incomeAmountOfQuotes[$quote];
             Incomes::create($data);
         }
