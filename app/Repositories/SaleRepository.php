@@ -30,6 +30,10 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
         'sale_mode',
         'state',
     ];
+    protected $casts = [
+        'description' => 'text',
+    ];
+
 
     protected static function boot()
     {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Accredit;
+use App\Contract\Channels;
 use App\Due;
 use App\Incomes;
 use App\Migrate;
@@ -140,7 +141,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->paginate(1000);
+        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->paginate(100);
         return view('sales', compact('sales'));
     }
 
@@ -151,8 +152,19 @@ class HomeController extends Controller
      */
     public function creditNotes()
     {
-        $credit_notes = Sale::where('amount', '<', 0)->orderBy('id', 'desc')->paginate(20);
+        $credit_notes = Sale::where('amount', '<', 0)->orderBy('id', 'desc')->paginate(100);
         return view('credit_notes', compact('credit_notes'));
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function checkBook()
+    {
+        $check_books = Sale::where('sale_mode', '=', Sale::DISCOUNT_SUPPLIER)->orderBy('id', 'desc')->paginate(100);
+        return view('check_book', compact('check_books'));
     }
 
     /**
@@ -162,7 +174,7 @@ class HomeController extends Controller
      */
     public function purchaseOrder()
     {
-        $purchase_orders = Sale::where('sale_mode', '=', Sale::PURCHASE_ORDER)->orderBy('id', 'desc')->paginate(20);
+        $purchase_orders = Sale::where('sale_mode', '=', Sale::PURCHASE_ORDER)->orderBy('id', 'desc')->paginate(100);
         return view('purchase_orders', compact('purchase_orders'));
     }
 

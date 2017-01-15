@@ -50,6 +50,7 @@
                             <td> Nombre </td>
                             <td> Apellido </td>
                             <td> Email </td>
+                            <td> Nombre de fantasia </td>
                             <td> Role </td>
                             <td> Empresa </td>
                             <td> Sede </td>
@@ -61,6 +62,7 @@
                                     <td> {{ $user->name }} </td>
                                     <td> {{ $user->last_name }} </td>
                                     <td> {{ \App\Helpers\BladeHelpers::email($user->email)}} </td>
+                                    <td> {{ $user->fantasy_name }} </td>
                                     <td> {{ $user->role }} </td>
                                     <td> {{ \App\Company::where('id','=',$user->company_id)->first()->name}} </td>
                                     <td> {{ \App\Headquarters::where('id','=',$user->headquarters_id)->first()->name}} </td>

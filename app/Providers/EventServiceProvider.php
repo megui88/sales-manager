@@ -8,6 +8,7 @@ use App\Listeners\CurrentAccountListener;
 use App\Listeners\PharmacySellingListener;
 use App\Listeners\PurchaseOrdertListener;
 use App\Listeners\SubsidyListener;
+use App\Listeners\SupplierListener;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
             PurchaseOrdertListener::class,
             PharmacySellingListener::class,
             SubsidyListener::class,
+            SupplierListener::class,
         ],
         ReProcessSaleEvent::class => [
             CurrentAccountListener::class,

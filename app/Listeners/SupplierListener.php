@@ -13,7 +13,7 @@ use App\Services\BusinessCore;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-class CurrentAccountListener
+class SupplierListener
 {
     private $business;
 
@@ -31,7 +31,7 @@ class CurrentAccountListener
     public function handle(Event $event)
     {
         $sale = $event->getSale();
-        if (!in_array($sale->getAttribute('sale_mode'),[Sale::CURRENT_ACCOUNT])) {
+        if (!in_array($sale->getAttribute('sale_mode'),[Sale::DISCOUNT_SUPPLIER])) {
             return true;
         }
 
@@ -60,7 +60,7 @@ class CurrentAccountListener
                 'sale_id' => $sale->id,
                 'charge' => $sale->charge,
                 'payer_id' => $sale->payer_id,
-                'collector_id' => $sale->collector_id,
+                'collector_id' => 0,
                 'number_of_quota' => $quote,
                 'amount_of_quota' => $dueAmountOfQuotes[$quote],
                 'due_date' => $due_dates[$quote],

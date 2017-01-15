@@ -12,13 +12,17 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="sale_mode" value="{{ \App\Sale::CURRENT_ACCOUNT }}">
 
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="payer" class="col-md-6 control-label" id="payer-title">&nbsp;</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="collector" class="col-md-6 control-label" id="collector-title">&nbsp;</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
-                                <div class="col-md-6">
-                                    <label for="payer" class="col-md-6 control-label" id="payer-title">&nbsp;</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="collector" class="col-md-6 control-label" id="collector-title">&nbsp;</label>
-                                </div>
                                 <div class="col-md-4">
                                     <label for="payer" class="col-md-4 control-label">Comprador</label>
                                     <input id="payer" type="text" class="form-control" name="payer" data-sale=true required value="{{old('payer')}}">

@@ -44,7 +44,7 @@
                                                 <tbody>
                                                 @foreach($items['dues'] as $due)
                                                     <tr style="text-align: right">
-                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
+                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{\App\Helpers\BladeHelpers::saleMode($due->sale->sale_mode)}} {{ $due->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($due->sale->collector_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($due->sale->collector_id) != '0') {{$due->sale->collector->fantasy_name}}@endif</td>
                                                         <!--td style="text-align: center">{{ $due->sale->description }}</td-->
                                                         <td>{{ $due->number_of_quota }} / {{ $due->sale->installments }}</td>

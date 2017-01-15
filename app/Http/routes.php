@@ -93,6 +93,8 @@ Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPL
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');
+    Route::get('/check_book', 'HomeController@checkBook');
+    Route::post('/check_book', 'SaleController@createSupplier');
     Route::post('/users', 'UserController@create');
     Route::post('/sales', 'SaleController@create');
     Route::post('/credit_notes', 'SaleController@createCreditNote');

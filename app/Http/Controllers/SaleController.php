@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SaleRequest;
+use App\Http\Requests\SupplierRequest;
 use App\Periods;
 use App\Services\BusinessCore;
 use App\Sale;
@@ -144,6 +145,32 @@ class SaleController extends Controller
             $request->session()->flash('alert-success', 'Nota de credito cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
             return redirect()->to('/credit_notes');
         };*/
+        return redirect()->to('/sales/' . $sale->id);
+    }
+
+    public function createSupplier(SupplierRequest $request)
+    {
+        $data = $request->all();
+
+        $period = Periods::where('uid','=', $data['period'])->first();
+
+        if($period && !is_null($period->closed_at) ){
+            $request->session()->flash('alert-danger', 'El periodo indicado ya cerro.');
+            return redirect()->to('/credit_notes');
+        }
+
+        $sale = Sale::create([
+            'sale_mode' => $data['sale_mode'],
+            'payer_id' => $data['payer_id'],
+            'collector_id' => 0,
+            'period' => $data['period'],
+            'concept_id' => $data['concept_id'],
+            'description' => $data['description'],
+            'installments' => $data['installments'],
+            'charge' => 100,
+            'state' => Sale::INITIATED,
+            'amount' => $data['amount'],
+        ]);
         return redirect()->to('/sales/' . $sale->id);
     }
 

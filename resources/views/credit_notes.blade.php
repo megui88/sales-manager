@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-lg-7 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Nueva Nota de Credito</div>
 
@@ -12,14 +12,17 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="sale_mode" value="{{ \App\Sale::CURRENT_ACCOUNT }}">
 
+                            <div class="form-group">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="payer" class="col-md-6 control-label" id="payer-title">&nbsp;</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="collector" class="col-md-6 control-label" id="collector-title">&nbsp;</label>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
-                                <div class="col-md-6">
-                                    <label for="payer" class="col-md-6 control-label" id="payer-title">&nbsp;</label>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="collector" class="col-md-6 control-label" id="collector-title">&nbsp;</label>
-                                </div>
-
                                 <div class="col-md-4">
                                     <label for="payer" class="col-md-4 control-label">Comprador</label>
                                     <input id="payer" type="text" class="form-control" name="payer" data-sale=true required value="{{old('payer')}}">
@@ -54,7 +57,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="concept" class="col-md-4 control-label">Concepto</label>
-                                    {!! \App\Helpers\BladeHelpers::sellConceptSelect('-', old('concept_id')) !!}
+                                    {!! \App\Helpers\BladeHelpers::sellConceptSelect('-', old('concept_id'), 'c418cb0e-7e10-11e6-91cb-04011111c601') !!}
 
                                     @if ($errors->has('concept_id'))
                                         <span class="help-block">
@@ -95,7 +98,7 @@
                                 </div>
                                 <div class="col-md-12" style="text-align: right">
                                     <p>
-                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Vender')!!}
+                                        {!! \App\Helpers\BladeHelpers::buttonSubmit('Vender', null, 'javascript: saleFormSubmit(this)')!!}
                                     </p>
                                 </div>
                             </div>
@@ -103,7 +106,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 col-md-12">
+            <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">Ultimas notas de credito</div>
 
@@ -151,5 +154,51 @@
                 $('#collector_id').val('');
             });
         });
+    </script>
+    <script type="application/javascript">
+        function saleFormSubmit(that) {
+            var payer = $('#payer');
+
+            bussiness.inputs.inputMember(payer)
+                    .then(function (data) {
+                        bussiness.inputs.memberOk(payer, data);
+
+                        if (bussiness.inputs.setMember(payer, {
+                                    'full_name': data.last_name + ', ' + data.name,
+                                    'code': data.code,
+                                    'id': data.id,
+                                    'fantasy_name': data.fantasy_name
+                                })) {
+                            var collector = $('#collector');
+                            bussiness.inputs.inputMember(collector)
+                                    .then(function (data) {
+                                        bussiness.inputs.memberOk(collector, data);
+
+                                        if (bussiness.inputs.setMember(collector, {
+                                                    'full_name': data.last_name + ', ' + data.name,
+                                                    'code': data.code,
+                                                    'id': data.id,
+                                                    'fantasy_name': data.fantasy_name
+                                                })) {
+                                            console.log('mando form');
+                                            return that.form.submit();
+                                        }
+                                    })
+                                    .catch(function(msg){if ($(collector).prop('required')){
+                                        bussiness.alerts.inputIsRequired(collector);
+                                        console.log(msg);
+                                    } else {
+                                        bussiness.inputs.nextInput(collector);
+                                    }});
+                        }
+
+                    })
+                    .catch(function(msg){if ($(payer).prop('required')){
+                        bussiness.alerts.inputIsRequired(payer);
+                        console.log(msg);
+                    } else {
+                        bussiness.inputs.nextInput(payer);
+                    }});
+        }
     </script>
 @endsection

@@ -84,7 +84,7 @@
                     <tr>
                         <td>{{ $due->period }}</td>
                         <td>{{ $due->number_of_quota }}</td>
-                        <td>{{ $sale->description | $sale->concept->name }}</td>
+                        <td>@if(!empty($sale->description)){{ $sale->description}}@else{{ $sale->concept->name }}@endif</td>
                         <td>{{ \App\Services\BusinessCore::printAmount($due->amount_of_quota) }}</td>
                     </tr>
                 @endforeach

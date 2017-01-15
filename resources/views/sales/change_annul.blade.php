@@ -3,8 +3,8 @@
     Anulacion de venta: <strong>{{ $sale->id }}</strong>
 @endsection
 @section('form_content')
-    <p>Se realizara la anulacion de la venta <strong>{{ $sale->id}}</strong> del comprador <strong>{{ $sale->payer->code}}</strong><br>
-        y el vendedor <strong>{{ $sale->collector->code}}</strong> por el importe de: <strong>{{ $sale->amount}}</strong></p>
+    <p>Se realizara la anulacion de la venta <strong>{{ $sale->id}}</strong><br>
+         por el importe de: <strong>{{ $sale->amount}}</strong></p>
     <form action="/sales/{{ $sale->id }}/annul" method="post">
 
         <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">

@@ -5,12 +5,12 @@
         <div class="row">
             <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Orden de compra</div>
+                    <div class="panel-heading">Nuevo Descuento a Proveedor</div>
 
                     <div class="panel-body">
-                        <form method="post" action="/purchase_orders" name="tests">
+                        <form method="post" action="/check_book" name="tests">
                             {{ csrf_field() }}
-                            <input type="hidden" name="sale_mode" value="{{ \App\Sale::PURCHASE_ORDER }}">
+                            <input type="hidden" name="sale_mode" value="{{ \App\Sale::DISCOUNT_SUPPLIER }}">
 
                             <div class="form-group">
                                 <div class="row">
@@ -24,24 +24,13 @@
                             </div>
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
                                 <div class="col-md-4">
-                                    <label for="payer" class="col-md-4 control-label">Comprador</label>
+                                    <label for="payer" class="col-md-4 control-label">Proveedor</label>
                                     <input id="payer" type="text" class="form-control" name="payer" data-sale=true required value="{{old('payer')}}">
                                     <input id="payer_id" type="hidden" class="form-control" name="payer_id" value="{{old('payer_id')}}">
 
                                     @if ($errors->has('payer_id'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('payer_id') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="collector" class="col-md-4 control-label">Vendedor</label>
-                                    <input id="collector" type="text" class="form-control" name="collector" data-sale=true required value="{{old('collector')}}">
-                                    <input id="collector_id" type="hidden" class="form-control" name="collector_id" value="{{old('collector_id')}}">
-
-                                    @if ($errors->has('collector_id'))
-                                        <span class="help-block">
-                                        <strong>{{ $errors->first('collector_id') }}</strong>
                                     </span>
                                     @endif
                                 </div>
@@ -57,7 +46,7 @@
                                 </div>
                                 <div class="col-md-3">
                                     <label for="concept" class="col-md-4 control-label">Concepto</label>
-                                    {!! \App\Helpers\BladeHelpers::sellConceptSelect('+', old('concept_id')) !!}
+                                    {!! \App\Helpers\BladeHelpers::sellConceptSelect('*', old('concept_id'), 'c418cb0e-7e10-11e6-91cb-04011111c601') !!}
 
                                     @if ($errors->has('concept_id'))
                                         <span class="help-block">
@@ -108,29 +97,27 @@
             </div>
             <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Ultimas ordene de compras</div>
+                    <div class="panel-heading">Ultimos descuentos</div>
 
                     <div class="panel-body">
                         <table class="table table-bordered table-responsive">
                             <thead>
 
                             <tr>
-                                <td>Comprador</td>
-                                <td>Vendedor</td>
+                                <td>Proveedor</td>
                                 <td>Periodo</td>
                                 <td>C</td>
                                 <td>Importe</td>
                                 <td></td>
                             </tr>
                             </thead>
-                            @foreach($purchase_orders as $purchase_order)
-                                <tr @if($purchase_order->state == \App\Sale::ANNULLED) class="danger"@endif>
-                                    <td>{{ $purchase_order->payer->code  }}</td>
-                                    <td>{{ $purchase_order->collector->code }}</td>
-                                    <td>{{ $purchase_order->period }}</td>
-                                    <td>{{ $purchase_order->installments }}</td>
-                                    <td>{{ $purchase_order->amount }}</td>
-                                    <td><a href="/purchase_orders/{{$purchase_order->id}}"><i class="fa fa-print" aria-hidden="true"></i></a></td>
+                            @foreach($check_books as $check_book)
+                                <tr @if($check_book->state == \App\Sale::ANNULLED) class="danger"@endif>
+                                    <td>{{ $check_book->payer->code  }}</td>
+                                    <td>{{ $check_book->period }}</td>
+                                    <td>{{ $check_book->installments }}</td>
+                                    <td>{{ $check_book->amount }}</td>
+                                    <td><a href="/sales/{{$check_book->id}}"><i class="fa fa-print" aria-hidden="true"></i></a></td>
                                 </tr>
                             @endforeach
                         </table>

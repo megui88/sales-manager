@@ -2,6 +2,7 @@
 namespace App\Helpers;
 
 use App\Concept;
+use App\Contract\Channels;
 use App\Periods;
 use App\Services\BusinessCore;
 use App\User;
@@ -18,6 +19,24 @@ class BladeHelpers
     public static function goBack()
     {
         return '<div class="row hidden-print"><div style="float:right"><a href="javascript:history.back()" class="btn btn-link">Volver</a></div></div>';
+    }
+
+    public static function saleMode($sale_mode)
+    {
+        switch ($sale_mode){
+            case Channels::CURRENT_ACCOUNT:
+                return 'V';
+                break;
+            case Channels::SUBSIDY:
+                return 'S';
+                break;
+            case Channels::PHARMACY_SELLING:
+                return 'F';
+                break;
+            case Channels::PURCHASE_ORDER:
+                return 'OC';
+                break;
+        }
     }
 
     public static function inputMemberDisenrolled($user)
@@ -63,7 +82,7 @@ class BladeHelpers
         return $content . "</select>";
     }
 
-    public static function sellConceptSelect($sign = null, $old = null)
+    public static function sellConceptSelect($sign = null, $old = null, $default = null)
     {
         if (empty($sign)) {
             $concepts = Concept::all();
@@ -73,7 +92,7 @@ class BladeHelpers
         $content = "<select id='concept_id' name='concept_id' class=\"form-control\">";
         foreach ($concepts as $concept){
             $select = '';
-            if($old == $concept){
+            if((is_null($old) && $concept->id == $default ) || $old == $concept->id){
                 $select = 'selected';
             }
             $content .=   "<option value='" . $concept->id . "' $select>" . $concept->name . "</option>";

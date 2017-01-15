@@ -82,7 +82,8 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
             $q->where('name', 'like', $value . '%')
                 ->orWhere('last_name', 'like', $value . '%')
                 ->orWhere('code', 'like', $value . '%')
-                ->orWhere('email', 'like', '%' . $value . '%');
+                ->orWhere('email', 'like', '%' . $value . '%')
+                ->orWhere('fantasy_name', 'like', '%' . $value . '%');
         });
     }
 
