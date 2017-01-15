@@ -61,7 +61,10 @@ class HomeController extends Controller
         foreach ($accredits as $accredit){
             $accreditImport += $accredit->amount_of_quota;
         }
-        $dues = Due::where('payer_id','=', $user->id)->where('period', '=', $period->uid)->get();
+        $dues = Due::where('payer_id','=', $user->id)
+            ->where('period', '=', $period->uid)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->get();
         $dueImport = 0;
         foreach ($dues as $due){
             $dueImport += $due->amount_of_quota;

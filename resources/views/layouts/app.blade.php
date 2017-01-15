@@ -90,33 +90,37 @@
                         <li><a href="{{ url('/check_book') }}">Decuento</a></li>
                         <li><a href="{{ url('/users') }}">Usuarios</a></li>
                     @endif
-                    <li>
 
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            Importar <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
-                                <li><a href="{{ url('/axoft_import') }}">Importacion Axoft</a></li>
-                            @endif
-                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
-                                <li><a href="{{ url('/bulk_import') }}">Importacion Masiva</a></li>
-                            @endif
-                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::PHARMACIST_ROLE))
-                                <li><a href="{{ url('/pharmacy') }}">Farmacia</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            Reportes <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
-                                <li><a href="{{ url('/budget') }}">Presupuesto</a></li>
-                            @endif
-                        </ul>
-                    </li>
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE) or \App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::PHARMACIST_ROLE))
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                Importar <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
+                                    <li><a href="{{ url('/axoft_import') }}">Importacion Axoft</a></li>
+                                @endif
+                                @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+                                    <li><a href="{{ url('/bulk_import') }}">Importacion Masiva</a></li>
+                                @endif
+                                @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::PHARMACIST_ROLE))
+                                    <li><a href="{{ url('/pharmacy') }}">Farmacia</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                Reportes <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
+                                    <li><a href="{{ url('/budget') }}">Presupuesto</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                    @endif
 
                     @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
                         <li><a href="{{ url('/close') }}">Cierre</a></li>
