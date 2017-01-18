@@ -45,10 +45,8 @@
                                                 <tbody>
                                                 @foreach($items['dues'] as $due)
                                                     <tr style="text-align: right">
-                                                        <td style="text-align: center">{{ $due->sale->concept->name }}</td>
-                                                        <td>{{ $due->sale->collector->code . ' - ' . $due->sale->collector->fullName }}</td>
-                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{ $due->sale->id }}</a></td>
-                                                        <!--td style="text-align: center">{{ $due->sale->description }}</td-->
+                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link"  style="font-size: 10px">{{ $due->sale->id }}</a></td>
+                                                        <td>{{ \App\Helpers\BladeHelpers::UserCode($due->sale->collector_id)  }} {{ $due->sale->concept->name }}</td>
                                                         <td>{{ $due->number_of_quota }} / {{ $due->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
                                                     </tr>
