@@ -51,6 +51,10 @@ class AxoftMigrate extends Command
             'role', '=', \App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE
         )->first();
         Auth::login($operator);
+        $this->_saldonegativo();
+        $this->_sportClub();
+        $this->_seguro();
+        return;
         $this->_currentAccount();
         $this->_pharmacySelling();
         $this->_NCpharmacySelling();
@@ -72,7 +76,7 @@ class AxoftMigrate extends Command
             ->where('cod_comprobante', '=', 'EGR')
             ->where('debe', '<>', 0)
             ->whereIn('cod_cuenta', [59])
-          //  ->whereNotIn('cod_cuenta', [2])
+            //  ->whereNotIn('cod_cuenta', [2])
             ->groupBy('comprobante')
             ->having('counting', '=', 1)
             ->get();
@@ -84,7 +88,7 @@ class AxoftMigrate extends Command
                     ->where('debe', '<>', 0)
                     ->where('comprobante', '=', $comprobante->comprobante)
                     ->whereIn('cod_cuenta', [59])
-                  //  ->whereNotIn('cod_cuenta', [2])
+                    //  ->whereNotIn('cod_cuenta', [2])
                     ->first();
                 if (!$comp_user) {
                     echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
@@ -753,6 +757,170 @@ class AxoftMigrate extends Command
 
             }catch (\Exception $e){
                 dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            }
+        }
+    }
+
+
+    private function _saldonegativo()
+    {
+        $comprobantes = DB::table('temp_axoft_mig')
+            ->select(DB::raw('comprobante'))
+            ->where('process','=', 0)
+            ->where('fecha','>=', '2016-06-14')
+            ->where('cod_comprobante', '=', 'EGR')
+            ->whereIn('cod_cuenta',[51])
+            ->where('leyenda', 'not like','%club%')
+            ->where('leyenda', 'not like','%segur%')
+            ->groupBy('comprobante')
+            ->get();
+        $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
+        $collector = User::where('code','=','51')->first();
+
+        foreach($comprobantes as $comprobante){
+            try {
+                $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
+                    ->where('comprobante', '=', $comprobante->comprobante)
+                    ->where('process', '=', 0)
+                    ->whereNotIn('cod_cuenta', [51])
+                    ->where('debe', '<>', 0)
+                    ->where('leyenda', 'not like','%club%')
+                    ->where('leyenda', 'not like','%segur%')
+                    ->get();
+                if (1 > $comps->count()) {
+                    continue;
+                }
+                echo PHP_EOL;
+                foreach ($comps as $comp_user) {
+                    $payer = $this->getuser($comp_user->user_id);
+
+                    Sale::create([
+                        'sale_mode' => Sale::CURRENT_ACCOUNT,
+                        'payer_id' => $payer->id,
+                        'collector_id' => $collector->id,
+                        'period' => $this->_getPeriods($comp_user->fecha),
+                        'concept_id' => $concepts,
+                        'description' => '[ EGR' . $comp_user->comprobante . '] ' . $comp_user->leyenda,
+                        'installments' => 1,
+                        'charge' => $collector->administrative_expenses,
+                        'state' => Sale::INITIATED,
+                        'amount' => $comp_user->debe,
+                    ]);
+                    $comp_user->update([
+                        'process' => 1
+                    ]);
+                }
+
+            }catch (\Exception $e){
+                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
+            }
+        }
+    }
+
+    private function _sportClub()
+    {
+        $comprobantes = DB::table('temp_axoft_mig')
+            ->select(DB::raw('comprobante'))
+            ->where('process','=', 0)
+            ->where('fecha','>=', '2016-06-14')
+            ->where('cod_comprobante', '=', 'EGR')
+            ->whereIn('cod_cuenta',[51])
+            ->where('leyenda', 'like','%club%')
+            ->groupBy('comprobante')
+            ->get();
+        $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
+        $collector = User::where('code','=','301')->first();
+
+        foreach($comprobantes as $comprobante){
+            try {
+                $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
+                    ->where('comprobante', '=', $comprobante->comprobante)
+                    ->where('process', '=', 0)
+                    ->whereNotIn('cod_cuenta', [51])
+                    ->where('debe', '<>', 0)
+                  #  ->where('leyenda', 'like','%club%')
+                    ->get();
+                if (1 > $comps->count()) {
+                    continue;
+                }
+                echo PHP_EOL;
+                foreach ($comps as $comp_user) {
+                    $payer = $this->getuser($comp_user->user_id);
+
+                    Sale::create([
+                        'sale_mode' => Sale::CURRENT_ACCOUNT,
+                        'payer_id' => $payer->id,
+                        'collector_id' => $collector->id,
+                        'period' => $this->_getPeriods($comp_user->fecha),
+                        'concept_id' => $concepts,
+                        'description' => '[ EGR' . $comp_user->comprobante . '] ' . $comp_user->leyenda,
+                        'installments' => 1,
+                        'charge' => $collector->administrative_expenses,
+                        'state' => Sale::INITIATED,
+                        'amount' => $comp_user->debe,
+                    ]);
+                    $comp_user->update([
+                        'process' => 1
+                    ]);
+                }
+
+            }catch (\Exception $e){
+                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
+            }
+        }
+    }
+
+    private function _seguro()
+    {
+        $comprobantes = DB::table('temp_axoft_mig')
+            ->select(DB::raw('comprobante'))
+            ->where('process','=', 0)
+            ->where('fecha','>=', '2016-06-14')
+            ->where('cod_comprobante', '=', 'EGR')
+            ->whereIn('cod_cuenta',[51])
+          #  ->where('leyenda', 'like','%segur%')
+            ->groupBy('comprobante')
+            ->get();
+        $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
+        $collector = User::where('code','=','339')->first();
+
+        foreach($comprobantes as $comprobante){
+            print_r('comprobante: ' . $comprobante->comprobante   . ' .');
+            try {
+                $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
+                    ->where('comprobante', '=', $comprobante->comprobante)
+                    ->where('process', '=', 0)
+                    ->whereNotIn('cod_cuenta', [51])
+                    ->where('debe', '<>', 0)
+                    ->where('leyenda', 'like','%segur%')
+                    ->get();
+                if (1 > $comps->count()) {
+                    print_r('fail: ' . $comprobante->comprobante   . PHP_EOL);
+                    continue;
+                }
+                echo PHP_EOL;
+                foreach ($comps as $comp_user) {
+                    $payer = $this->getuser($comp_user->user_id);
+
+                    Sale::create([
+                        'sale_mode' => Sale::CURRENT_ACCOUNT,
+                        'payer_id' => $payer->id,
+                        'collector_id' => $collector->id,
+                        'period' => $this->_getPeriods($comp_user->fecha),
+                        'concept_id' => $concepts,
+                        'description' => '[ EGR' . $comp_user->comprobante . '] ' . $comp_user->leyenda,
+                        'installments' => 1,
+                        'charge' => $collector->administrative_expenses,
+                        'state' => Sale::INITIATED,
+                        'amount' => $comp_user->debe,
+                    ]);
+                    $comp_user->update([
+                        'process' => 1
+                    ]);
+                }
+
+            }catch (\Exception $e){
+                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
             }
         }
     }

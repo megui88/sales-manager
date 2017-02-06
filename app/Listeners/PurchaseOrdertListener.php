@@ -34,6 +34,11 @@ class PurchaseOrdertListener
         if ($sale->getAttribute('sale_mode') !== Sale::PURCHASE_ORDER) {
             return true;
         }
+
+        if (!in_array($sale->getAttribute('state'),[Sale::INITIATED])) {
+            return true;
+        }
+
         if ($event::TYPE == Sale::REPROCESSED){
             ($sale->dues())?$sale->dues()->delete():null;
             ($sale->accredits())?$sale->accredits()->delete():null;

@@ -29,6 +29,10 @@ class SubsidyListener
             return true;
         }
 
+        if (!in_array($sale->getAttribute('state'),[Sale::INITIATED])) {
+            return true;
+        }
+
         $this->createDuesAndAccredits($sale);
     }
 

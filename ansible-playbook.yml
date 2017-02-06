@@ -1,0 +1,65 @@
+---
+- name: Provision
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Instalacion de paquetes
+      apt: name={{item}} state=present update_cache=yes force=yes
+      with_items:
+        - php7.0
+        - php7.0-cli
+        - php7.0-common
+        - php7.0-gd
+        - php7.0-intl
+        - php7.0-zip
+        - php7.0-xml
+        - php7.0-fpm
+        - php7.0-curl
+        - php7.0-json
+        - php7.0-soap
+        - php7.0-mbstring
+        - php7.0-mysql
+        - php7.0-mcrypt
+        - php-imagick
+        - nginx
+        - mysql-server
+        - python-mysqldb
+        - python-software-properties
+        - apt-transport-https
+        - build-essential
+      become: yes
+      tags: install
+
+    - name: 'Download composer'
+      shell: curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer creates=/usr/local/bin/composer
+      become: yes
+      tags: install
+
+    - name: 'Configurando nginx'
+      template: src=./infrastructure/templates/nginx/vhost.conf.j2 dest=/etc/nginx/sites-available/default
+      become: yes
+      tags: configure
+
+    - name: 'Configurando nginx'
+      template: src=./infrastructure/templates/nginx/conf.d/upstream-fastcgi-backend.conf.j2 dest=/etc/nginx/conf.d/upstream-fastcgi-backend.conf
+      become: yes
+
+    - name: 'Restart nginx'
+      service: name=nginx state=reloaded
+      become: yes
+
+    - name: 'Restart fpm'
+      service: name=php7.0-fpm state=restarted
+      become: yes
+    
+    - name: 'Copy magento env'
+      command: cp /vagrant/.env.example /vagrant/.env
+
+    - name: 'Composer install'
+      command: composer install chdir=/vagrant warn=no
+
+    - name: 'Cambiando permisos vendor'
+      file: dest={{item}} owner=ubuntu group=www-data mode=0775 recurse=yes
+      with_items:
+        - /vagrant/storage
+      become: yes

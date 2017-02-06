@@ -34,6 +34,9 @@ class CurrentAccountListener
         if (!in_array($sale->getAttribute('sale_mode'),[Sale::CURRENT_ACCOUNT])) {
             return true;
         }
+        if (!in_array($sale->getAttribute('state'),[Sale::INITIATED])) {
+            return true;
+        }
 
         if ($event::TYPE == Sale::REPROCESSED){
             ($sale->dues())?$sale->dues()->delete():null;

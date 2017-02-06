@@ -30,15 +30,15 @@ class SaleController extends Controller
                     return redirect()->to(request()->server('REQUEST_URI'));
                 }
                 $sale->state = Sale::ANNULLED;
-                foreach ($sale->dues as $due){
+                foreach ($sale->dues()->get() as $due){
                     $due->state = Sale::ANNULLED;
                     $due->save();
                 }
-                foreach ($sale->incomes as $income){
+                foreach ($sale->incomes()->get() as $income){
                     $income->state = Sale::ANNULLED;
                     $income->save();
                 }
-                foreach ($sale->accredits as $accredit){
+                foreach ($sale->accredits()->get() as $accredit){
                     $accredit->state = Sale::ANNULLED;
                     $accredit->save();
                 }
