@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           v.customize ["modifyvm", :id, "--cpus", cpus]
     end
   # nfs
-  config.vm.synced_folder ".", "/vagrant", owner: "ubuntu", group:"www-data"
+  config.vm.synced_folder ".", "/vagrant", owner: "www-data", group:"www-data"
   # Network
   config.vm.network :private_network, ip: "192.168.40.10"
   config.ssh.forward_agent = true

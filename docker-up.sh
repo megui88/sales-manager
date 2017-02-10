@@ -1,2 +1,2 @@
 cd laradock;
-docker-compose up -d nginx mysql redis;
+docker-compose up -d nginx mariadb redis;

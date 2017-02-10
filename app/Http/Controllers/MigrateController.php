@@ -49,6 +49,7 @@ class MigrateController extends Controller
         $buffer = [];
         $concept_id = Concept::where('name', '=', 'Venta Farmacia')->first()->id;
         $period = Periods::getCurrentPeriod();
+        $pharmacyProvider = User::where('code', '=', '53')->first();
         foreach ($results as $item) {
             try {
                 $user = User::where('code','=',trim($item[1]))
@@ -73,7 +74,6 @@ class MigrateController extends Controller
                     continue;
                 }
                 $amount = trim(str_replace(',', '.', trim(str_replace('.', '', $item[2]))));
-                $pharmacyProvider = User::where('code', '=', '53')->first;
                 $sale = Sale::create([
                     'sale_mode' => $request->get('sale_mode'),
                     'payer_id' => $user->id,
