@@ -56,7 +56,9 @@ class ActionMigrate extends Command
         foreach ($sales as $sale){
             switch ($action){
                 case Migrate::DELETE:
-                    Sale::where('migrate_id', '=', $migrate->id)->delete();
+                    $sale->dues()->delete();
+                    $sale->accredits()->delete();
+                    $sale->incomes()->delete();
                     break;
                 case Migrate::ANNUL:
                     $sale->update(['state' => Sale::ANNULLED]);
@@ -64,6 +66,7 @@ class ActionMigrate extends Command
             }
         }
         if(in_array($action, [Migrate::DELETE,Migrate::ANNUL])) {
+            Sale::where('migrate_id', '=', $migrate->id)->delete();
             $migrate->update(['status' => $action]);
         }
         return;

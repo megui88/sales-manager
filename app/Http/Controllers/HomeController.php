@@ -119,6 +119,7 @@ class HomeController extends Controller
 
 
         foreach ($dues as $due){
+
             if($due->sale->sale_mode != Sale::SUBSIDY && isset($rows[$due->sale->collector_id])) {
                 $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
             }
