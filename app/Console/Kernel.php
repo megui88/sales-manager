@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\MemberMigrate::class,
         Commands\AxoftMigrate::class,
         Commands\ActionMigrate::class,
+        Commands\ListMigrate::class,
     ];
 
     /**
