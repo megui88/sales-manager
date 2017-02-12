@@ -188,7 +188,9 @@ class HomeController extends Controller
      */
     public function bulkImport()
     {
-        $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE)->get();
+        $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE)
+            ->whereNotIn('status',[Migrate::ANNUL,Migrate::DELETE])
+            ->get();
         return view('bulk_import', compact('migrations'));
     }
 

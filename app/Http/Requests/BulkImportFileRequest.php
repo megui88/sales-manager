@@ -31,7 +31,9 @@ class BulkImportFileRequest extends Request
             if('csv' !== $ext){
                 $validator->errors ()->add('bulk-import-file', 'Solo se acepta archivos csv separados por coma');
             }
-            $file = Migrate::where('checksum','=',md5_file($_FILES['bulk-import-file']['tmp_name']))->first();
+            $file = Migrate::where('checksum','=',md5_file($_FILES['bulk-import-file']['tmp_name']))
+                ->whereNotIn('status',[Migrate::ANNUL,Migrate::DELETE])
+                ->first();
             if($file){
                 $validator->errors ()->add('bulk-import-file', 'El archivo que intenta cargar ya fue cargado');
             }

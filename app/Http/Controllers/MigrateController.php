@@ -116,6 +116,7 @@ class MigrateController extends Controller
     public function bulkImportFile(BulkImportFileRequest $request)
     {
         $file = $request->{'bulk-import-file'};
+        $porviders = [];
         $migrate = Migrate::create([
             'name' => $file->getClientOriginalName(),
             'type' => Migrate::BULK_TYPE,
@@ -139,10 +140,13 @@ class MigrateController extends Controller
                         continue;
                     }
                     $user = User::where('code','=',trim($data[0]))->first();
-                    $provider = User::where('code','=',trim($data[1]))->first();
+                    if(!isset($porviders[trim($data[1])])) {
+                        $porviders[trim($data[1])] = User::where('code', '=', trim($data[1]))->first();
+                    }
+                    $provider = $porviders[trim($data[1])];
 
                     if (! $user || ! $provider || empty($data[2]) || empty($data[3])) {
-                        $buffer[] = $line . ',' . 'Sin usuario/proveedor/cuotas/monto';
+                        $buffer[] =  trim($data[0]) . ',' . trim($data[1]) . ',' . trim($data[2]) . ',' . trim($data[3]) . ',Error usuario/proveedor/cuotas/monto';
                         continue;
                     }
                     $installments = trim((int)$data[2]);
@@ -150,7 +154,7 @@ class MigrateController extends Controller
                     $sale = Sale::create([
                         'sale_mode' => $request->get('sale_mode'),
                         'payer_id' => $user->id,
-                        'collector_id' => $provider->code,
+                        'collector_id' => $provider->id,
                         'period' => $period,
                         'concept_id' => $concept_id,
                         'description' => $request->get('description'),
@@ -172,6 +176,7 @@ class MigrateController extends Controller
             fclose($gestor);
 
             if (!empty($buffer)) {
+            #    dd($buffer);
                 $migrate->update([
                     'errors' => $buffer,
                     'status' => States::PROCESSED,
@@ -287,6 +292,7 @@ class MigrateController extends Controller
 
     public function errorsFile(Migrate $migrate)
     {
+       // dd($migrate->errors);
         return Response::make(is_null($migrate->errors)?'':implode(PHP_EOL,$migrate->errors))->header("Content-type"," charset=utf-8")->header("Content-disposition","attachment; filename=\"error-".$migrate->name."\"");
     }
 }
