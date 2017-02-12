@@ -117,6 +117,8 @@
                             <ul class="dropdown-menu" role="menu">
                                 @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE))
                                     <li><a href="{{ url('/budget') }}">Presupuesto</a></li>
+                                    <li><a href="{{ url('/satellite') }}">Satellite</a></li>
+                                    <li><a href="{{ url('/others') }}">Empresas</a></li>
                                 @endif
                             </ul>
                         </li>

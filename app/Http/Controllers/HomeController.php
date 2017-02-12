@@ -119,7 +119,6 @@ class HomeController extends Controller
 
 
         foreach ($dues as $due){
-
             if($due->sale->sale_mode != Sale::SUBSIDY && isset($rows[$due->sale->collector_id])) {
                 $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
             }
@@ -132,9 +131,26 @@ class HomeController extends Controller
         }
 
         foreach ($incomes as $income){
+            if(isset($rows[$income->collector_id])) {
                 $rows[$income->collector_id]['income'] += $income->amount_of_quota;
+            }
         }
         return view('budget', compact('rows','incomes','accredit','dues','period'));
+
+    }
+
+
+    public function satellite()
+    {
+        $period = request()->get('period', Periods::getCurrentPeriod()->uid);
+        return view('satellite', compact('period'));
+
+    }
+
+    public function others()
+    {
+        $period = request()->get('period', Periods::getCurrentPeriod()->uid);
+        return view('others', compact('period'));
 
     }
 

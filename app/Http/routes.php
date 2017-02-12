@@ -73,8 +73,10 @@ Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOY
     Route::get('/budget', 'HomeController@budget');
     Route::get('/close', 'HomeController@close');
     Route::post('/close/{step}', 'CloseController@step');
-    Route::get('/satellite/{period}', 'SatelliteController@downloadFile');
-    Route::get('/retirados/{period}', 'SatelliteController@retiradoFile');
+    Route::get('/satellite', 'HomeController@satellite');
+    Route::get('/others', 'HomeController@others');
+    Route::post('/satellite', 'SatelliteController@downloadFile');
+    Route::post('/others', 'SatelliteController@othersFile');
     Route::get('/axoft_import', 'HomeController@AxoftImport');
     Route::post('/axoft_import/file', 'MigrateController@AxoftImportFile');
 });
