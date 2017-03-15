@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Company;
+use App\Periods;
 use App\Services\BusinessCore;
 use App\User;
 use Illuminate\Http\Request;
@@ -17,6 +18,10 @@ class SatelliteController extends Controller
     public function downloadFile()
     {
         $period = Request()->get('period');
+        $_period = Periods::where('uid', '=', $period)->first();
+        $date = is_null($_period->closed_at)
+            ? date('Ymd', strtotime('now'))
+            : $_period->closed_at->format('Ymd');
         $rows = DB::select( DB::raw(
             "SELECT u.code, " .
             " u.headquarters_id," .
@@ -30,7 +35,7 @@ class SatelliteController extends Controller
         $content = "\t\t\tCANT\t\t" . number_format(count($rows), 2 , ',', '') . PHP_EOL;
         foreach ($rows as $row){
             $code = ($row->headquarters_id =='b3d519f2-9092-11e6-9ece-04011111c601') ? 5132 : 5124;
-            $content .= $row->code . "\t\t" . '20170106' . "\t" . $code. "\t" . number_format($row->mount, 2 , ',', '') . PHP_EOL;
+            $content .= $row->code . "\t\t" . $date . "\t" . $code. "\t" . number_format($row->mount, 2 , ',', '') . PHP_EOL;
             $total += $row->mount;
         }
         $content .= "\t\t\tTOTA\t" . number_format($total, 2 , ',', '') . PHP_EOL;
