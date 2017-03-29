@@ -58,7 +58,13 @@
                                                     <tr style="text-align: right;">
                                                     <!--td style="text-align: center">{{ $accredit->sale->concept->name }}</td-->
                                                         <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link"  style="font-size: 10px">{{ $accredit->sale->id }}</a></td>
-                                                        <td>{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }} {{ $accredit->sale->concept->name }}</td>
+                                                        <td>{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }}
+                                                            @if($accredit->sale->payer_id === '0')
+                                                                {{ $accredit->sale->concept->name }}
+                                                                @else
+                                                                {{ $accredit->sale->payer->fullName() }}
+                                                            @endif
+                                                        </td>
                                                         <!--td style="text-align: center">{{ $accredit->sale->description }}</-td-->
                                                         <td>{{ $accredit->number_of_quota }} / {{ $accredit->sale->installments }}</td>
                                                         <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>
