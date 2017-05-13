@@ -27,7 +27,7 @@ class SatelliteController extends Controller
             "SELECT u.code, " .
             " u.headquarters_id," .
             " SUM(d.amount_of_quota) as mount FROM users as u ".
-            "JOIN dues as d ON d.period = :period AND d.payer_id=u.id AND d.state!=" . Sale::ANNULLED . " " .
+            "JOIN dues as d ON d.period = :period AND d.payer_id=u.id AND d.state!='" . Sale::ANNULLED . "' " .
             "WHERE u.role != 'proveedor' AND u.state='" . BusinessCore::MEMBER_AFFILIATE . "'AND u.company_id='b3cb9468-9092-11e6-9568-04011111c601' " .
             "GROUP BY d.payer_id ORDER by u.headquarters_id, u.code"),
             [ 'period' => $period,]
@@ -54,7 +54,7 @@ class SatelliteController extends Controller
             " CONCAT(u.name,' ',u.last_name) as name, " .
             " u.headquarters_id," .
             " SUM(d.amount_of_quota) as mount FROM users as u ".
-            "JOIN dues as d ON d.period = :period AND d.payer_id=u.id AND d.state!=" . Sale::ANNULLED . " " .
+            "JOIN dues as d ON d.period = :period AND d.payer_id=u.id AND d.state!='" . Sale::ANNULLED . "' " .
             "WHERE u.role != 'proveedor' AND u.state='" . BusinessCore::MEMBER_AFFILIATE . "'AND u.company_id='" . $company->id . "' " .
             "GROUP BY d.payer_id ORDER by u.headquarters_id, u.code"),
             [ 'period' => $period,]
