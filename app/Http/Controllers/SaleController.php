@@ -124,7 +124,6 @@ class SaleController extends Controller
             $request->session()->flash('alert-danger', 'Usted no ingreso una orden de compra.');
             return redirect()->to('/purchase_orders');
         }
-        
         $sale->update([
             'state' => Sale::COMPLETED,
             'amount' => $data['order_amount'],
