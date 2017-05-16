@@ -235,8 +235,8 @@ class UserController extends Controller
 
 
         foreach ($accredits as $accredit) {
-            if ($accredits->state == Sale::PENDING) {
-                $periods[$accredits->period]['accredits_pending'] [] = $accredits;
+            if ($accredit->state == Sale::PENDING) {
+                $periods[$accredit->period]['accredits_pending'] [] = $accredit;
                 continue;
             }
             $periods[$accredit->period]['accredits'] [] = $accredit;
