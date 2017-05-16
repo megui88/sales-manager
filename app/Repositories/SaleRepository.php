@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Accredit;
@@ -40,7 +41,7 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
         parent::boot();
         self::creating(function ($entity) {
 
-            $entity->state = self::INITIATED;
+            $entity->state = !empty($entity->state) ? $entity->state : self::INITIATED;
             if (empty($entity->period) && empty($entity->first_due_date)) {
                 $entity->period = Periods::getCurrentPeriod()->uid;
             }
@@ -53,7 +54,7 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
             }
 
             foreach (self::$required as $key) {
-                if (empty($entity->$key) && (0 !=$entity->$key or '0' != $entity->$key)) {
+                if (empty($entity->$key) && (0 != $entity->$key or '0' != $entity->$key)) {
                     $entity->errors [] = "The attribute $key is required.";
                 }
             }
@@ -103,6 +104,7 @@ abstract class SaleRepository extends Model implements Transactional, States, Ch
     {
         return $this->hasMany(Incomes::class);
     }
+
     public function collector()
     {
         return $this->belongsTo(User::class, 'collector_id', 'id');

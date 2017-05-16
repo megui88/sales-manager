@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ConfirmOrderRequest;
 use App\Http\Requests\SaleRequest;
 use App\Http\Requests\SupplierRequest;
 use App\Periods;
@@ -15,30 +16,30 @@ class SaleController extends Controller
 {
     public function annulled(Sale $sale)
     {
-        if(request()->method() == request()::METHOD_POST)
-        {
+        if (request()->method() == request()::METHOD_POST) {
             $this->validate(request(), [
                 'password' => 'required',
             ]);
 
-            if(BusinessCore::AuthorizationPassword(request()->get('password'))) {
+            if (BusinessCore::AuthorizationPassword(request()->get('password'))) {
 
-                $period = Periods::where('uid','=', $sale->period)->first();
+                $period = Periods::where('uid', '=', $sale->period)->first();
 
-                if($period && !is_null($period->closed_at) ){
-                    request()->session()->flash('alert-danger', 'No se puede anular, el periodo ya fue cerrado, genere una NOTA DE CREDITO');
+                if ($period && !is_null($period->closed_at)) {
+                    request()->session()->flash('alert-danger',
+                        'No se puede anular, el periodo ya fue cerrado, genere una NOTA DE CREDITO');
                     return redirect()->to(request()->server('REQUEST_URI'));
                 }
                 $sale->state = Sale::ANNULLED;
-                foreach ($sale->dues()->get() as $due){
+                foreach ($sale->dues()->get() as $due) {
                     $due->state = Sale::ANNULLED;
                     $due->save();
                 }
-                foreach ($sale->incomes()->get() as $income){
+                foreach ($sale->incomes()->get() as $income) {
                     $income->state = Sale::ANNULLED;
                     $income->save();
                 }
-                foreach ($sale->accredits()->get() as $accredit){
+                foreach ($sale->accredits()->get() as $accredit) {
                     $accredit->state = Sale::ANNULLED;
                     $accredit->save();
                 }
@@ -49,7 +50,7 @@ class SaleController extends Controller
             }
             $this->exceptionNotAurhoze();
         }
-        if($sale->state == Sale::ANNULLED){
+        if ($sale->state == Sale::ANNULLED) {
             redirect()->to(request()->server('REQUEST_URI'));
         }
         return view('sales.change_annul', compact('sale'));
@@ -59,14 +60,14 @@ class SaleController extends Controller
     {
         $data = $request->all();
 
-        $period = Periods::where('uid','=', $data['period'])->first();
+        $period = Periods::where('uid', '=', $data['period'])->first();
 
-        if($period && !is_null($period->closed_at) ){
+        if ($period && !is_null($period->closed_at)) {
             $request->session()->flash('alert-danger', 'El periodo indicado ya cerro.');
             return redirect()->to('/home');
         }
 
-        $collector = User::firstOrFail()->where('id','=',$data['collector_id'])->first();
+        $collector = User::firstOrFail()->where('id', '=', $data['collector_id'])->first();
         $sale = Sale::create([
             'sale_mode' => $data['sale_mode'],
             'payer_id' => $data['payer_id'],
@@ -79,10 +80,10 @@ class SaleController extends Controller
             'state' => Sale::INITIATED,
             'amount' => $data['amount'],
         ]);
-/*        if($request->server('REQUEST_URI') == '/home'){
-            $request->session()->flash('alert-success', 'Venta cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
-            return redirect()->to('/home');
-        };*/
+        /*        if($request->server('REQUEST_URI') == '/home'){
+                    $request->session()->flash('alert-success', 'Venta cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
+                    return redirect()->to('/home');
+                };*/
         return redirect()->to('/sales/' . $sale->id);
     }
 
@@ -90,14 +91,14 @@ class SaleController extends Controller
     {
         $data = $request->all();
 
-        $period = Periods::where('uid','=', $data['period'])->first();
+        $period = Periods::where('uid', '=', $data['period'])->first();
 
-        if($period && !is_null($period->closed_at) ){
+        if ($period && !is_null($period->closed_at)) {
             $request->session()->flash('alert-danger', 'El periodo indicado ya cerro.');
             return redirect()->to('/purchase_orders');
         }
 
-        $collector = User::firstOrFail()->where('id','=',$data['collector_id'])->first();
+        $collector = User::firstOrFail()->where('id', '=', $data['collector_id'])->first();
         $sale = Sale::create([
             'sale_mode' => $data['sale_mode'],
             'payer_id' => $data['payer_id'],
@@ -110,10 +111,19 @@ class SaleController extends Controller
             'state' => Sale::PENDING,
             'amount' => $data['amount'],
         ]);
-/*        if($request->server('REQUEST_URI') == '/purchase_orders'){
-            $request->session()->flash('alert-success', 'Orden de compra cargada <a href="/purchase_orders/'. $sale->id.'" class="link">Ver</a>');
-            return redirect()->to('/purchase_orders');
-        };*/
+
+        return redirect()->to('/purchase_orders/' . $sale->id);
+    }
+
+    public function confirmPurchaseOrder(ConfirmOrderRequest $request)
+    {
+        $data = $request->all();
+
+        $sale = Sale::firstOrFail()->where('id', '=', $data['order_id'])->first();
+        $sale->update([
+            'state' => Sale::COMPLETED,
+            'amount' => $data['order_amount'],
+        ]);
         return redirect()->to('/purchase_orders/' . $sale->id);
     }
 
@@ -121,14 +131,14 @@ class SaleController extends Controller
     {
         $data = $request->all();
 
-        $period = Periods::where('uid','=', $data['period'])->first();
+        $period = Periods::where('uid', '=', $data['period'])->first();
 
-        if($period && !is_null($period->closed_at) ){
+        if ($period && !is_null($period->closed_at)) {
             $request->session()->flash('alert-danger', 'El periodo indicado ya cerro.');
             return redirect()->to('/credit_notes');
         }
 
-        $collector = User::firstOrFail()->where('id','=',$data['collector_id'])->first();
+        $collector = User::firstOrFail()->where('id', '=', $data['collector_id'])->first();
         $sale = Sale::create([
             'sale_mode' => $data['sale_mode'],
             'payer_id' => $data['payer_id'],
@@ -141,10 +151,10 @@ class SaleController extends Controller
             'state' => Sale::INITIATED,
             'amount' => -1 * $data['amount'],
         ]);
-/*        if($request->server('REQUEST_URI') == '/credit_notes'){
-            $request->session()->flash('alert-success', 'Nota de credito cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
-            return redirect()->to('/credit_notes');
-        };*/
+        /*        if($request->server('REQUEST_URI') == '/credit_notes'){
+                    $request->session()->flash('alert-success', 'Nota de credito cargada <a href="/sales/'. $sale->id.'" class="link">Ver</a>');
+                    return redirect()->to('/credit_notes');
+                };*/
         return redirect()->to('/sales/' . $sale->id);
     }
 
@@ -152,9 +162,9 @@ class SaleController extends Controller
     {
         $data = $request->all();
 
-        $period = Periods::where('uid','=', $data['period'])->first();
+        $period = Periods::where('uid', '=', $data['period'])->first();
 
-        if($period && !is_null($period->closed_at) ){
+        if ($period && !is_null($period->closed_at)) {
             $request->session()->flash('alert-danger', 'El periodo indicado ya cerro.');
             return redirect()->to('/credit_notes');
         }
@@ -176,8 +186,9 @@ class SaleController extends Controller
 
     public function details(Sale $sale)
     {
-        if( in_array(Auth::user()->role,[BusinessCore::MEMBER_ROLE, BusinessCore::VENDOR_ROLE])
-            && !in_array(Auth::user()->id,[$sale->collector_id, $sale->payer_id])){
+        if (in_array(Auth::user()->role, [BusinessCore::MEMBER_ROLE, BusinessCore::VENDOR_ROLE])
+            && !in_array(Auth::user()->id, [$sale->collector_id, $sale->payer_id])
+        ) {
             throw new AuthorizationException();
         }
         $view = 'sales.details';

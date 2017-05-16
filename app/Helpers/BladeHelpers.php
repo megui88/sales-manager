@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helpers;
 
 use App\Concept;
@@ -11,6 +12,7 @@ use Carbon\Carbon;
 class BladeHelpers
 {
     const FORMAT_DATE = 'd/m/Y';
+
     public static function import($number)
     {
         return BusinessCore::printAmount($number);
@@ -23,7 +25,7 @@ class BladeHelpers
 
     public static function saleMode($sale_mode)
     {
-        switch ($sale_mode){
+        switch ($sale_mode) {
             case Channels::CURRENT_ACCOUNT:
                 return 'V';
                 break;
@@ -46,7 +48,7 @@ class BladeHelpers
 
     public static function UserCode($user_id)
     {
-        if('0' == $user_id){
+        if ('0' == $user_id) {
             return 0;
         }
 
@@ -62,22 +64,22 @@ class BladeHelpers
     {
         $html_id = $id ? "id=\"$id\"" : '';
         $function = ($function)??'submit()';
-        return '<button type="button" class="btn btn-primary btn-submit" onclick="' . $function . '" '. $html_id .'>' . $message . '</button>';
+        return '<button type="button" class="btn btn-primary btn-submit" onclick="' . $function . '" ' . $html_id . '>' . $message . '</button>';
     }
 
-    public static function sellPeriodSelect($total = 4, $old = null, $id = 'period' , $current = false)
+    public static function sellPeriodSelect($total = 4, $old = null, $id = 'period', $current = false)
     {
-        if(is_null($old)){
+        if (is_null($old)) {
             $old = Periods::getCurrentPeriod()->uid;
         }
         $periods = BusinessCore::getPeriodAndFutures($total, $current);
         $content = "<select id='$id' name='$id' class=\"form-control\">";
-        foreach ($periods as $period){
+        foreach ($periods as $period) {
             $select = '';
-            if($old == $period){
+            if ($old == $period) {
                 $select = 'selected';
             }
-            $content .=   "<option value='" . $period . "' $select>" . $period . "</option>";
+            $content .= "<option value='" . $period . "' $select>" . $period . "</option>";
         }
         return $content . "</select>";
     }
@@ -86,36 +88,36 @@ class BladeHelpers
     {
         if (empty($sign)) {
             $concepts = Concept::all();
-        }else{
+        } else {
             $concepts = Concept::where('sign_operation', '=', $sign)->get();
         }
         $content = "<select id='concept_id' name='concept_id' class=\"form-control\">";
-        foreach ($concepts as $concept){
+        foreach ($concepts as $concept) {
             $select = '';
-            if((is_null($old) && $concept->id == $default ) || $old == $concept->id){
+            if ((is_null($old) && $concept->id == $default) || $old == $concept->id) {
                 $select = 'selected';
             }
-            $content .=   "<option value='" . $concept->id . "' $select>" . $concept->name . "</option>";
+            $content .= "<option value='" . $concept->id . "' $select>" . $concept->name . "</option>";
         }
         return $content . "</select>";
     }
 
     public static function date($date)
     {
-        if ($date instanceof Carbon){
+        if ($date instanceof Carbon) {
             return ('30/11/-0001' == $date->format(self::FORMAT_DATE)) ? '' : $date->format(self::FORMAT_DATE);
         }
-        if ($date instanceof \DateTime){
+        if ($date instanceof \DateTime) {
             return ('00/00/0000' == $date->format(self::FORMAT_DATE)) ? '' : $date->format(self::FORMAT_DATE);
         }
 
-        if ('string' == gettype($date)){
+        if ('string' == gettype($date)) {
             return (new \DateTime($date))->format(self::FORMAT_DATE);
         }
     }
 
     public static function email($email)
     {
-        return (substr($email,-8) == '@no-mail') ? '' : $email;
+        return (substr($email, -8) == '@no-mail') ? '' : $email;
     }
 }

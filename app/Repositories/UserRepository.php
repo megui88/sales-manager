@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Contract\CustomizeQuery;
@@ -18,8 +19,8 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
     {
         parent::boot();
 
-        User::creating(function($user){
-            if(empty($user->email)){
+        User::creating(function ($user) {
+            if (empty($user->email)) {
                 $user->email = strtotime('now') . $user->code . '@no-mail';
             }
             return $user;
@@ -50,13 +51,13 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
 
     public function builder($data)
     {
-        $this->credit_max =  BusinessCore::CREDIT_MAX;
+        $this->credit_max = BusinessCore::CREDIT_MAX;
 
-        foreach ($data as $attribute => $value){
+        foreach ($data as $attribute => $value) {
             $this->$attribute = $value;
         }
 
-        if(empty($this->email)) {
+        if (empty($this->email)) {
             $this->password = Hash::make(str_random(8));
         }
 
@@ -77,7 +78,7 @@ abstract class UserRepository extends Authenticatable implements CustomizeQuery,
      */
     public function customQuery(Builder $query, $value = '', $filters = null)
     {
-        return $query->where(function($q) use ($value) {
+        return $query->where(function ($q) use ($value) {
             /** @var Builder $q */
             $q->where('name', 'like', $value . '%')
                 ->orWhere('last_name', 'like', $value . '%')

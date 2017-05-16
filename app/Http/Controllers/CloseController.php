@@ -14,7 +14,7 @@ class CloseController extends Controller
 {
     public function step($step)
     {
-        if(method_exists($this, $step)){
+        if (method_exists($this, $step)) {
             return $this->$step();
         }
         throw new NotFoundHttpException();

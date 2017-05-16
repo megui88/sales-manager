@@ -31,7 +31,7 @@ class UserController extends Controller
         $users = $this->pagination(User::class);
         $filters = $this->getFilters();
 
-        if(request()->isXmlHttpRequest()) {
+        if (request()->isXmlHttpRequest()) {
             return $users;
         }
 
@@ -44,7 +44,7 @@ class UserController extends Controller
      */
     public function details($user)
     {
-        $user = User::where('id','=',$user)
+        $user = User::where('id', '=', $user)
             ->orWhere('code', '=', $user)
             ->firstOrFail();
         return $user;
@@ -58,7 +58,7 @@ class UserController extends Controller
     public function create(UserRequest $request)
     {
         $user = User::create($request->all());
-        $path = $user->role === BusinessCore::MEMBER_ROLE ?  '/members/income/' : '/providers/income/' ;
+        $path = $user->role === BusinessCore::MEMBER_ROLE ? '/members/income/' : '/providers/income/';
         return redirect()->to($path . $user->id);
     }
 
@@ -137,13 +137,12 @@ class UserController extends Controller
 
     public function disEnrolled(User $user)
     {
-        if(request()->method() == Request::METHOD_POST)
-        {
+        if (request()->method() == Request::METHOD_POST) {
             $this->validate(request(), [
                 'password' => 'required',
             ]);
 
-            if(BusinessCore::AuthorizationPassword(request()->get('password'))) {
+            if (BusinessCore::AuthorizationPassword(request()->get('password'))) {
                 $user->disEnrolled();
                 return view('user.confirm_disenrolled', compact('user'));
             }
@@ -191,22 +190,22 @@ class UserController extends Controller
      */
     public function accountDetails(User $user, $periodInit, $periodDone)
     {
-        if(! BusinessCore::isValidPeriodFormat($periodInit) ||  ! BusinessCore::isValidPeriodFormat($periodDone)){
+        if (!BusinessCore::isValidPeriodFormat($periodInit) || !BusinessCore::isValidPeriodFormat($periodDone)) {
             request()->session()->flash('alert-warning', 'El periodo no es valido');
             return redirect()->to('/details');
         }
-        if($periodInit > $periodDone){
+        if ($periodInit > $periodDone) {
             request()->session()->flash('alert-warning', 'El periodo inicial debe ser menor al periodo de fin!');
             return redirect()->to('/details');
         }
 
-        $dues =  Due::where('period', '>=', $periodInit)
+        $dues = Due::where('period', '>=', $periodInit)
             ->where('period', '<=', $periodDone)
             ->where('payer_id', '=', $user->id)
             ->where('state', '!=', Sale::ANNULLED)
             ->orderBy('created_at', 'ASC')
             ->get();
-        $accredits =  Accredit::where('period', '>=', $periodInit)
+        $accredits = Accredit::where('period', '>=', $periodInit)
             ->where('period', '<=', $periodDone)
             ->where('collector_id', '=', $user->id)
             ->where('state', '!=', Sale::ANNULLED)
@@ -216,25 +215,36 @@ class UserController extends Controller
         $periods = [];
 
         //structure
-        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)){
+        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)) {
             $periods[$period] = [
                 'dues' => [],
                 'accredits' => [],
+                'dues_pending' => [],
+                'accredits_pending' => [],
             ];
         }
 
         //populate
         foreach ($dues as $due) {
-            $periods[$due->period]['dues'] []= $due;
+            if ($due->state == Sale::PENDING) {
+                $periods[$due->period]['dues_pending'] [] = $due;
+                continue;
+            }
+            $periods[$due->period]['dues'] [] = $due;
         }
 
+
         foreach ($accredits as $accredit) {
-            $periods[$accredit->period]['accredits'] []= $accredit;
+            if ($accredits->state == Sale::PENDING) {
+                $periods[$accredits->period]['accredits_pending'] [] = $accredits;
+                continue;
+            }
+            $periods[$accredit->period]['accredits'] [] = $accredit;
         }
 
         $template = 'user.account_detail';
 
-        switch($user->role){
+        switch ($user->role) {
             case BusinessCore::VENDOR_ROLE:
                 $template = 'providers.account_detail';
                 break;
@@ -250,37 +260,40 @@ class UserController extends Controller
      */
     public function account0Details($periodInit, $periodDone)
     {
-        if(! BusinessCore::isValidPeriodFormat($periodInit) ||  ! BusinessCore::isValidPeriodFormat($periodDone)){
+        if (!BusinessCore::isValidPeriodFormat($periodInit) || !BusinessCore::isValidPeriodFormat($periodDone)) {
             request()->session()->flash('alert-warning', 'El periodo no es valido');
             return redirect()->to('/details');
         }
-        if($periodInit > $periodDone){
+        if ($periodInit > $periodDone) {
             request()->session()->flash('alert-warning', 'El periodo inicial debe ser menor al periodo de fin!');
             return redirect()->to('/details');
         }
 
-        $dues =  Due::where('period', '>=', $periodInit)
+        $dues = Due::where('period', '>=', $periodInit)
             ->where('period', '<=', $periodDone)
             ->where('payer_id', '=', '0')
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->orderBy('created_at', 'ASC')
             ->get();
-        $accredits =  Accredit::where('period', '>=', $periodInit)
+        $accredits = Accredit::where('period', '>=', $periodInit)
             ->where('period', '<=', $periodDone)
             ->where('collector_id', '=', '0')
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->orderBy('created_at', 'ASC')
             ->get();
-        $incomes =  Incomes::where('period', '>=', $periodInit)
+        $incomes = Incomes::where('period', '>=', $periodInit)
             ->where('period', '<=', $periodDone)
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->orderBy('created_at', 'ASC')
             ->get();
 
         $periods = [];
 
         //structure
-        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)){
+        for ($period = $periodInit; $period <= $periodDone; $period = BusinessCore::nextPeriod($period)) {
             $periods[$period] = [
                 'dues' => [],
                 'accredits' => [],
@@ -289,15 +302,15 @@ class UserController extends Controller
 
         //populate
         foreach ($dues as $due) {
-            $periods[$due->period]['dues'] []= $due;
+            $periods[$due->period]['dues'] [] = $due;
         }
 
         foreach ($accredits as $accredit) {
-            $periods[$accredit->period]['accredits'] []= $accredit;
+            $periods[$accredit->period]['accredits'] [] = $accredit;
         }
 
         foreach ($incomes as $income) {
-            $periods[$income->period]['incomes'] []= $income;
+            $periods[$income->period]['incomes'] [] = $income;
         }
 
         $sale = new Sale();

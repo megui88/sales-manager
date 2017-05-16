@@ -10,7 +10,7 @@ class PasswordGrantVerifier
     public function verify($username, $password)
     {
         $credentials = [
-            'email'    => $username,
+            'email' => $username,
             'password' => $password,
         ];
         if (Auth::once($credentials)) {
@@ -25,7 +25,7 @@ class PasswordGrantVerifier
 
     private function sessionsGarbageCollector($user)
     {
-        $client_id = (int) request()->get('client_id');
+        $client_id = (int)request()->get('client_id');
         DB::table('oauth_sessions')
             ->where('client_id', '=', $client_id)
             ->where('owner_type', '=', 'user')

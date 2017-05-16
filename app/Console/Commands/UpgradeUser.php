@@ -36,18 +36,18 @@ class UpgradeUser extends Command
     public function handle()
     {
         $code = $this->option('code');
-        if (empty($code)){
-            $this->error(PHP_EOL.'use --code to upgrade user'.PHP_EOL);
+        if (empty($code)) {
+            $this->error(PHP_EOL . 'use --code to upgrade user' . PHP_EOL);
             exit(2);
         }
 
         $user = User::where('code', '=', $code)->first();
-        if(! $user) {
+        if (!$user) {
             $this->error('User not found');
             exit(2);
         }
-        $role =  $user->role;
-        switch ( $user->role){
+        $role = $user->role;
+        switch ($user->role) {
             case BusinessCore::VENDOR_ROLE:
             case BusinessCore::MEMBER_ROLE:
                 $role = BusinessCore::EMPLOYEE_ROLE;
@@ -62,12 +62,12 @@ class UpgradeUser extends Command
                 $q = "Upgrade to $role?";
                 break;
             case BusinessCore::EMPLOYEE_ADMIN_ROLE:
-                $this->error(PHP_EOL."the employee is $role".PHP_EOL);
+                $this->error(PHP_EOL . "the employee is $role" . PHP_EOL);
                 exit(2);
                 break;
         }
         $question = $this->confirm($q, true);
-        if($question){
+        if ($question) {
             $user->role = $role;
             $user->save();
         }

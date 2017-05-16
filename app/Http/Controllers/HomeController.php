@@ -19,13 +19,13 @@ class HomeController extends Controller
     public function init()
     {
         $user = Auth::user();
-        switch($user->role){
+        switch ($user->role) {
             case BusinessCore::MEMBER_ROLE:
                 return $this->welcomeMember();
-            break;
+                break;
             case BusinessCore::VENDOR_ROLE:
                 return $this->welcomeVendor();
-            break;
+                break;
         }
         return view('welcome');
     }
@@ -34,15 +34,15 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $period = Periods::getCurrentPeriod();
-        $dues = Due::where('payer_id','=', $user->id)
+        $dues = Due::where('payer_id', '=', $user->id)
             ->where('period', '=', $period->uid)
             ->where('state', '!=', Sale::ANNULLED)
             ->get();
         $dueImport = 0;
-        foreach ($dues as $due){
+        foreach ($dues as $due) {
             $dueImport += $due->amount_of_quota;
         }
-        return view('welcome_member',compact('user', 'dueImport'));
+        return view('welcome_member', compact('user', 'dueImport'));
     }
 
     public function welcomeVendor()
@@ -50,33 +50,36 @@ class HomeController extends Controller
         $user = Auth::user();
         $period = Periods::getCurrentPeriod();
         $totalSales = Sale::whereDate('created_at', '>=', $period->created_at)
-            ->where('collector_id','=', $user->id)
+            ->where('collector_id', '=', $user->id)
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->count();
-        $accredits = Accredit::where('collector_id','=', $user->id)
+        $accredits = Accredit::where('collector_id', '=', $user->id)
             ->where('period', '=', $period->uid)
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->get();
         $accreditImport = 0;
-        foreach ($accredits as $accredit){
+        foreach ($accredits as $accredit) {
             $accreditImport += $accredit->amount_of_quota;
         }
-        $dues = Due::where('payer_id','=', $user->id)
+        $dues = Due::where('payer_id', '=', $user->id)
             ->where('period', '=', $period->uid)
             ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->get();
         $dueImport = 0;
-        foreach ($dues as $due){
+        foreach ($dues as $due) {
             $dueImport += $due->amount_of_quota;
         }
-        return view('welcome_vendor',compact('user', 'accreditImport', 'dueImport', 'totalSales'));
+        return view('welcome_vendor', compact('user', 'accreditImport', 'dueImport', 'totalSales'));
     }
 
     public function details()
     {
         $data = request()->all();
-        $userId = !empty($data['member_id'])?$data['member_id']:Auth::user()->id;
-        if(!empty($data['init']) && !empty($data['done'])){
+        $userId = !empty($data['member_id']) ? $data['member_id'] : Auth::user()->id;
+        if (!empty($data['init']) && !empty($data['done'])) {
             return redirect()->to('details/' . $userId . '/' . $data['init'] . '/' . $data['done']);
         }
         return view('account_details');
@@ -86,7 +89,7 @@ class HomeController extends Controller
     public function budget()
     {
         $period = request()->get('period', Periods::getCurrentPeriod()->uid);
-        $providers = User::where('role','=',BusinessCore::VENDOR_ROLE)->orderBy('fantasy_name','ASC')->get();
+        $providers = User::where('role', '=', BusinessCore::VENDOR_ROLE)->orderBy('fantasy_name', 'ASC')->get();
 
 
         $rows = [];
@@ -97,7 +100,7 @@ class HomeController extends Controller
             'income' => 0,
         ];
 
-        foreach ($providers as $provider){
+        foreach ($providers as $provider) {
             $rows [$provider->id] = [
                 'name' => 'Farmacia',
                 'due' => 0,
@@ -107,35 +110,38 @@ class HomeController extends Controller
             $rows [$provider->id]['name'] = $provider->fantasy_name;
         }
 
-        $dues = Due::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
+        $dues = Due::where('period', '=', $period)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->get();
-        $accredits = Accredit::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
+        $accredits = Accredit::where('period', '=', $period)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->get();
-        $incomes= Incomes::where('period','=',$period)
-            ->where('state','!=', Sale::ANNULLED)
+        $incomes = Incomes::where('period', '=', $period)
+            ->where('state', '!=', Sale::ANNULLED)
+            ->where('state', '!=', Sale::PENDING)
             ->get();
 
 
-        foreach ($dues as $due){
-            if($due->sale->sale_mode != Sale::SUBSIDY && isset($rows[$due->sale->collector_id])) {
+        foreach ($dues as $due) {
+            if ($due->sale->sale_mode != Sale::SUBSIDY && isset($rows[$due->sale->collector_id])) {
                 $rows[$due->sale->collector_id]['due'] += $due->amount_of_quota;
             }
         }
 
-        foreach ($accredits as $accredit){
-            if(isset($rows[$accredit->collector_id])) {
+        foreach ($accredits as $accredit) {
+            if (isset($rows[$accredit->collector_id])) {
                 $rows[$accredit->collector_id]['accredit'] += $accredit->amount_of_quota;
             }
         }
 
-        foreach ($incomes as $income){
-            if(isset($rows[$income->collector_id])) {
+        foreach ($incomes as $income) {
+            if (isset($rows[$income->collector_id])) {
                 $rows[$income->collector_id]['income'] += $income->amount_of_quota;
             }
         }
-        return view('budget', compact('rows','incomes','accredit','dues','period'));
+        return view('budget', compact('rows', 'incomes', 'accredit', 'dues', 'period'));
 
     }
 
@@ -161,7 +167,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id', 'desc')->paginate(100);
+        $sales = Sale::where('amount', '>', 0)->where('sale_mode', '=', Sale::CURRENT_ACCOUNT)->orderBy('id',
+            'desc')->paginate(100);
         return view('sales', compact('sales'));
     }
 
@@ -206,7 +213,7 @@ class HomeController extends Controller
     public function bulkImport()
     {
         $migrations = Migrate::where('type', '=', Migrate::BULK_TYPE)
-            ->whereNotIn('status',[Migrate::ANNUL,Migrate::DELETE])
+            ->whereNotIn('status', [Migrate::ANNUL, Migrate::DELETE])
             ->get();
         return view('bulk_import', compact('migrations'));
     }
@@ -251,7 +258,7 @@ class HomeController extends Controller
     public function userDisable()
     {
         $user = Auth::user();
-        if(! $user){
+        if (!$user) {
             return redirect()->to('/login');
         }
         Auth::logout();

@@ -33,17 +33,16 @@ class MigrateController extends Controller
 
         function turn_array($m)
         {
-            for ($z = 0;$z < count($m);$z++)
-            {
-                for ($x = 0;$x < count($m[$z]);$x++)
-                {
+            for ($z = 0; $z < count($m); $z++) {
+                for ($x = 0; $x < count($m[$z]); $x++) {
                     $rt[$x][$z] = $m[$z][$x];
                 }
             }
 
             return $rt;
         }
-        preg_match_all('/\s+(\d+)\s+[a-z¥A-Z\,\.\s]+([\,\.\d]+)\s+/',$content, $tt);
+
+        preg_match_all('/\s+(\d+)\s+[a-z¥A-Z\,\.\s]+([\,\.\d]+)\s+/', $content, $tt);
 
         $results = turn_array($tt);
         $buffer = [];
@@ -52,24 +51,24 @@ class MigrateController extends Controller
         $pharmacyProvider = User::where('code', '=', '53')->first();
         foreach ($results as $item) {
             try {
-                $user = User::where('code','=',trim($item[1]))
-                    ->orWhere('code','=',trim($item[1]) . 0)->first();
+                $user = User::where('code', '=', trim($item[1]))
+                    ->orWhere('code', '=', trim($item[1]) . 0)->first();
 
-                if (! $user) {
+                if (!$user) {
                     //find compatibilizer
-                    $compativilizer = CodeCompatibilizer::where('codigo','=',trim($item[1]) . 0)->first();
-                    if(!$compativilizer){
+                    $compativilizer = CodeCompatibilizer::where('codigo', '=', trim($item[1]) . 0)->first();
+                    if (!$compativilizer) {
 
                         $buffer[] = "\t" . trim($item[0]) . "\t" . 'No compatibilizado';
                         continue;
                     }
-                    $user = User::where('code','=',$compativilizer->legajo)->first();
-                    if(!$user){
+                    $user = User::where('code', '=', $compativilizer->legajo)->first();
+                    if (!$user) {
                         $buffer[] = "\t" . trim($item[0]) . "\t" . 'No sin ingresar al sistema';
                         continue;
                     }
                 }
-                if ( empty($item[2])) {
+                if (empty($item[2])) {
                     $buffer[] = "\t" . trim($item[0]) . "\t" . 'No reconoce monto';
                     continue;
                 }
@@ -88,11 +87,11 @@ class MigrateController extends Controller
                     'migrate_id' => $migrate->id,
                 ]);
 
-                if(empty($sale->id) OR !empty($sale->errors)){
+                if (empty($sale->id) OR !empty($sale->errors)) {
                     $buffer[] = "\t" . trim($item[0]) . ' ' . json_encode($sale->errors);
                 }
             } catch (\Exception $e) {
-                $buffer[] = "\t" . trim($item[0]) . "\t" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
+                $buffer[] = "\t" . trim($item[0]) . "\t" . $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();
             }
         }
 
@@ -126,7 +125,7 @@ class MigrateController extends Controller
         ]);
 
 
-        if (($gestor = fopen($file->getRealPath(), "r")) !== FALSE) {
+        if (($gestor = fopen($file->getRealPath(), "r")) !== false) {
             $buffer = [];
             $concept_id = Concept::where('name', '=', 'Venta Mutual')->first()->id;
             $period = Periods::getCurrentPeriod();
@@ -139,14 +138,14 @@ class MigrateController extends Controller
                         $buffer[] = $line;
                         continue;
                     }
-                    $user = User::where('code','=',trim($data[0]))->first();
-                    if(!isset($porviders[trim($data[1])])) {
+                    $user = User::where('code', '=', trim($data[0]))->first();
+                    if (!isset($porviders[trim($data[1])])) {
                         $porviders[trim($data[1])] = User::where('code', '=', trim($data[1]))->first();
                     }
                     $provider = $porviders[trim($data[1])];
 
-                    if (! $user || ! $provider || empty($data[2]) || empty($data[3])) {
-                        $buffer[] =  trim($data[0]) . ',' . trim($data[1]) . ',' . trim($data[2]) . ',' . trim($data[3]) . ',Error usuario/proveedor/cuotas/monto';
+                    if (!$user || !$provider || empty($data[2]) || empty($data[3])) {
+                        $buffer[] = trim($data[0]) . ',' . trim($data[1]) . ',' . trim($data[2]) . ',' . trim($data[3]) . ',Error usuario/proveedor/cuotas/monto';
                         continue;
                     }
                     $installments = trim((int)$data[2]);
@@ -165,18 +164,18 @@ class MigrateController extends Controller
                         'migrate_id' => $migrate->id,
                     ]);
 
-                    if(!empty($sale->errors)){
-                        $buffer[] = $line. ',' . json_encode($sale->errors);
+                    if (!empty($sale->errors)) {
+                        $buffer[] = $line . ',' . json_encode($sale->errors);
                     }
 
                 } catch (\Exception $e) {
-                    $buffer[] = $line . "," . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine();
+                    $buffer[] = $line . "," . $e->getMessage() . " " . $e->getFile() . " " . $e->getLine();
                 }
             }
             fclose($gestor);
 
             if (!empty($buffer)) {
-            #    dd($buffer);
+                #    dd($buffer);
                 $migrate->update([
                     'errors' => $buffer,
                     'status' => States::PROCESSED,
@@ -211,7 +210,7 @@ class MigrateController extends Controller
             'status' => States::PENDING,
         ]);
 
-        if (($gestor = fopen($file->getRealPath(), "r")) !== FALSE) {
+        if (($gestor = fopen($file->getRealPath(), "r")) !== false) {
             $buffer = [];
             while (!feof($gestor)) {
                 try {
@@ -227,19 +226,19 @@ class MigrateController extends Controller
                         continue;
                     }
                     //
-                    $data[10] = ($data[10] == 310)? 39 :$data[10];
-                    $data[10] = ($data[10] == 311)? 55 :$data[10];
-                    $data[10] = ($data[10] == 348)? 328 :$data[10];
-                    $data[10] = ($data[10] == 549)? 54 :$data[10];
-                    $data[10] = ($data[10] == 333)? 517 :$data[10];
-                    $data[10] = ($data[10] == 5)? 999999 :$data[10];
-                    $data[10] = ($data[10] == 556)? 5 :$data[10];
+                    $data[10] = ($data[10] == 310) ? 39 : $data[10];
+                    $data[10] = ($data[10] == 311) ? 55 : $data[10];
+                    $data[10] = ($data[10] == 348) ? 328 : $data[10];
+                    $data[10] = ($data[10] == 549) ? 54 : $data[10];
+                    $data[10] = ($data[10] == 333) ? 517 : $data[10];
+                    $data[10] = ($data[10] == 5) ? 999999 : $data[10];
+                    $data[10] = ($data[10] == 556) ? 5 : $data[10];
 
                     $user = User::where('code', '=', trim($data[10]))
                         ->orWhere('code', '=', trim($data[10]) . 0)->first();
-                    if(in_array($data[10],[54, 53, 51, 999999])){
+                    if (in_array($data[10], [54, 53, 51, 999999])) {
                         $user = null;
-                    }elseif (!$user) {
+                    } elseif (!$user) {
                         //find compatibilizer
                         $compativilizer = CodeCompatibilizer::where('codigo', '=', trim($data[10]) . 0)->first();
                         if ($compativilizer) {
@@ -247,21 +246,21 @@ class MigrateController extends Controller
                         }
                     }
 
-                    $debe = trim(str_replace(',','.',str_replace('.', '', trim($data[48]))));
-                    $haber = trim(str_replace(',','.',str_replace('.', '', trim($data[49]))));
+                    $debe = trim(str_replace(',', '.', str_replace('.', '', trim($data[48]))));
+                    $haber = trim(str_replace(',', '.', str_replace('.', '', trim($data[49]))));
                     TempAxoftMig::create([
                         'migrate_id' => $migrate->id,
-                        'fecha' => Carbon::createFromFormat('d/m/Y',$data[0]),
+                        'fecha' => Carbon::createFromFormat('d/m/Y', $data[0]),
                         'user_id' => !$user ? null : $user->id,
                         'cod_cuenta' => $data[10],
                         'cod_comprobante' => $data[3],
                         'comprobante' => $data[5],
-                        'leyenda' => isset($data[44])?$data[44]:'',
+                        'leyenda' => isset($data[44]) ? $data[44] : '',
                         'debe' => $debe,
                         'haber' => $haber,
                     ]);
                 } catch (\Exception $e) {
-                    $buffer[] = trim($line) . ";" . $e->getMessage() . " " . $e->getFile() . " " .$e->getLine() . PHP_EOL;
+                    $buffer[] = trim($line) . ";" . $e->getMessage() . " " . $e->getFile() . " " . $e->getLine() . PHP_EOL;
                 }
             }
             fclose($gestor);
@@ -292,7 +291,9 @@ class MigrateController extends Controller
 
     public function errorsFile(Migrate $migrate)
     {
-       // dd($migrate->errors);
-        return Response::make(is_null($migrate->errors)?'':implode(PHP_EOL,$migrate->errors))->header("Content-type"," charset=utf-8")->header("Content-disposition","attachment; filename=\"error-".$migrate->name."\"");
+        // dd($migrate->errors);
+        return Response::make(is_null($migrate->errors) ? '' : implode(PHP_EOL,
+            $migrate->errors))->header("Content-type", " charset=utf-8")->header("Content-disposition",
+            "attachment; filename=\"error-" . $migrate->name . "\"");
     }
 }

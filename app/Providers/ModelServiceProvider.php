@@ -50,7 +50,7 @@ class ModelServiceProvider extends ServiceProvider
     private function setTransaction()
     {
 
-        return function ($entity){
+        return function ($entity) {
 
             if ($entity instanceof Transactional) {
 

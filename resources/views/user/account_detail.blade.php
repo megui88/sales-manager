@@ -54,8 +54,32 @@
                                                 @endforeach
                                                 </tbody>
                                                 <tbody>
+                                                @foreach($items['dues_pending'] as $due)
+                                                    <tr class="bg-warning" style="text-align: right">
+                                                        <td><a href="/sales/{{ $due->sale->id }}" class="btn btn-link">{{\App\Helpers\BladeHelpers::saleMode($due->sale->sale_mode)}} {{ $due->sale->id }}</a></td>
+                                                        <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($due->sale->collector_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($due->sale->collector_id) != '0') {{$due->sale->collector->fantasy_name}}@endif</td>
+                                                        <!--td style="text-align: center">{{ $due->sale->description }}</td-->
+                                                        <td>{{ $due->number_of_quota }} / {{ $due->sale->installments }}</td>
+                                                        <td>{{ \App\Helpers\BladeHelpers::import($due->amount_of_quota) }}</td>
+                                                    </tr>
+                                                    <?php $total += $due->amount_of_quota; ?>
+                                                @endforeach
+                                                </tbody>
+                                                <tbody>
                                                 @foreach($items['accredits'] as $accredit)
                                                     <tr style="text-align: right">
+                                                        <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
+                                                        <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id) != '0') {{$accredit->sale->payer->fullName()}}@endif</td>
+                                                        <!--td style="text-align: center">{{ $accredit->sale->description }}</td-->
+                                                        <td>{{ $accredit->number_of_quota }} / {{ $accredit->sale->installments }}</td>
+                                                        <td>{{ \App\Helpers\BladeHelpers::import($accredit->amount_of_quota) }}</td>
+                                                    </tr>
+                                                    <?php $total -= $accredit->amount_of_quota; ?>
+                                                @endforeach
+                                                </tbody>
+                                                <tbody>
+                                                @foreach($items['accredits_pending'] as $accredit)
+                                                    <tr class="bg-warning" style="text-align: right">
                                                         <td><a href="/sales/{{ $accredit->sale->id }}" class="btn btn-link">{{ $accredit->sale->id }}</a></td>
                                                         <td style="text-align: center">{{ \App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id)  }}@if(\App\Helpers\BladeHelpers::UserCode($accredit->sale->payer_id) != '0') {{$accredit->sale->payer->fullName()}}@endif</td>
                                                         <!--td style="text-align: center">{{ $accredit->sale->description }}</td-->

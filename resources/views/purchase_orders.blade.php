@@ -108,6 +108,45 @@
             </div>
             <div class="col-lg-12 col-md-12">
                 <div class="panel panel-default">
+                    <div class="panel-heading">Confirmar Orden</div>
+
+                    <div class="panel-body">
+                        <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
+                            <form method="post" action="/purchase_orders" name="confirm_order">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="_method" value="PATCH">
+                                <div class="col-md-6">
+                                    <label for="order_id" class="col-md-4 control-label">Numero de Orden</label>
+                                    <input id="id" type="number" class="form-control" name="order_id" data-sale=true required value="{{old('id')}}" required>
+
+                                    @if ($errors->has('order_id'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('order_id') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="order_amount" class="col-md-4 control-label">Importe</label>
+                                    <input id="order_amount" type="number" class="form-control" name="order_amount" value="{{old('amount')}}" required>
+
+                                    @if ($errors->has('order_amount'))
+                                        <span class="help-block">
+                                        <strong>{{ $errors->first('order_amount') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                                <div class="col-md-12" style="text-align: right">
+                                    <p>
+                                        <input type="submit" value="Confirmar Orden" class="btn btn-lg btn-warning">
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-default">
                     <div class="panel-heading">Ultimas ordene de compras</div>
 
                     <div class="panel-body">
@@ -160,45 +199,45 @@
             var payer = $('#payer');
 
             bussiness.inputs.inputMember(payer)
-                    .then(function (data) {
-                        bussiness.inputs.memberOk(payer, data);
+                .then(function (data) {
+                    bussiness.inputs.memberOk(payer, data);
 
-                        if (bussiness.inputs.setMember(payer, {
-                                    'full_name': data.last_name + ', ' + data.name,
-                                    'code': data.code,
-                                    'id': data.id,
-                                    'fantasy_name': data.fantasy_name
-                                })) {
-                            var collector = $('#collector');
-                            bussiness.inputs.inputMember(collector)
-                                    .then(function (data) {
-                                        bussiness.inputs.memberOk(collector, data);
+                    if (bussiness.inputs.setMember(payer, {
+                            'full_name': data.last_name + ', ' + data.name,
+                            'code': data.code,
+                            'id': data.id,
+                            'fantasy_name': data.fantasy_name
+                        })) {
+                        var collector = $('#collector');
+                        bussiness.inputs.inputMember(collector)
+                            .then(function (data) {
+                                bussiness.inputs.memberOk(collector, data);
 
-                                        if (bussiness.inputs.setMember(collector, {
-                                                    'full_name': data.last_name + ', ' + data.name,
-                                                    'code': data.code,
-                                                    'id': data.id,
-                                                    'fantasy_name': data.fantasy_name
-                                                })) {
-                                            console.log('mando form');
-                                            return that.form.submit();
-                                        }
-                                    })
-                                    .catch(function(msg){if ($(collector).prop('required')){
-                                        bussiness.alerts.inputIsRequired(collector);
-                                        console.log(msg);
-                                    } else {
-                                        bussiness.inputs.nextInput(collector);
-                                    }});
-                        }
+                                if (bussiness.inputs.setMember(collector, {
+                                        'full_name': data.last_name + ', ' + data.name,
+                                        'code': data.code,
+                                        'id': data.id,
+                                        'fantasy_name': data.fantasy_name
+                                    })) {
+                                    console.log('mando form');
+                                    return that.form.submit();
+                                }
+                            })
+                            .catch(function(msg){if ($(collector).prop('required')){
+                                bussiness.alerts.inputIsRequired(collector);
+                                console.log(msg);
+                            } else {
+                                bussiness.inputs.nextInput(collector);
+                            }});
+                    }
 
-                    })
-                    .catch(function(msg){if ($(payer).prop('required')){
-                        bussiness.alerts.inputIsRequired(payer);
-                        console.log(msg);
-                    } else {
-                        bussiness.inputs.nextInput(payer);
-                    }});
+                })
+                .catch(function(msg){if ($(payer).prop('required')){
+                    bussiness.alerts.inputIsRequired(payer);
+                    console.log(msg);
+                } else {
+                    bussiness.inputs.nextInput(payer);
+                }});
         }
     </script>
 @endsection

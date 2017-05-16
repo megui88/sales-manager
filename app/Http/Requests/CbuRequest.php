@@ -17,9 +17,9 @@ class CbuRequest extends Request
     {
         $user = User::find(request()->segments()[2]);
         return [
-          'document' => 'required|unique:users,document,' . $user->id,
-          'cuil_cuit' => 'required|unique:users,cuil_cuit,' . $user->id,
-          'cbu' => 'required|unique:users,cbu,' . $user->id . '|digits:22',
+            'document' => 'required|unique:users,document,' . $user->id,
+            'cuil_cuit' => 'required|unique:users,cuil_cuit,' . $user->id,
+            'cbu' => 'required|unique:users,cbu,' . $user->id . '|digits:22',
         ];
     }
 }

@@ -15,7 +15,9 @@ class OauthClients extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'secret', 'name',
+        'id',
+        'secret',
+        'name',
     ];
 
     /**

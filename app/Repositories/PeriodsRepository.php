@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Periods;
@@ -11,12 +12,13 @@ use Illuminate\Support\Facades\Auth;
 abstract class PeriodsRepository extends Model
 {
     use UuidForKey;
+
     public static function getPeriod($date = 'now')
     {
-        $period = Periods::where('created_at','<=', $date)
-            ->where('closed_at','>=', $date)
+        $period = Periods::where('created_at', '<=', $date)
+            ->where('closed_at', '>=', $date)
             ->first();
-        if(!$period){
+        if (!$period) {
             $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
             return $dateTime->format(BusinessCore::PERIOD_FORMAT);
@@ -44,12 +46,12 @@ abstract class PeriodsRepository extends Model
 
         $period = $this->getCurrentPeriod()->uid;
         $this->update([
-           'closed_at' => new \DateTime('now'),
-           'operator_id_closed' => Auth::user()->id,
+            'closed_at' => new \DateTime('now'),
+            'operator_id_closed' => Auth::user()->id,
         ]);
         static::create([
-           'uid' => BusinessCore::nextPeriod($period),
-           'operator_id_opened' => Auth::user()->id,
+            'uid' => BusinessCore::nextPeriod($period),
+            'operator_id_opened' => Auth::user()->id,
         ]);
     }
 }

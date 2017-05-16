@@ -14,7 +14,7 @@ class BusinessCore
     const MEMBER_ROLE = 'socio';
     const EMPLOYEE_ROLE = 'empleado';
     const EMPLOYEE_ADMIN_ROLE = 'administrador';
-    const PHARMACIST_ROLE= 'farmaceutico';
+    const PHARMACIST_ROLE = 'farmaceutico';
     const PERIOD_FORMAT = 'Ym';
     const PERIOD_EXP_REG = '/^(\d{4})(\d{2})+$/i';
     const PERIOD_EXP_REG_REMP = '${1}-$2-01';
@@ -34,14 +34,14 @@ class BusinessCore
 
             $periods = array_merge($periods, self::calculateFuturePeriod($period, $total));
             return $periods;
-        }catch (ModelNotFoundException $e){
+        } catch (ModelNotFoundException $e) {
             throw new DoesNotExistOpenPeriodException('Does not exist open period');
         }
     }
 
     public static function nextPeriod($period)
     {
-        if(!self::isValidPeriodFormat($period)){
+        if (!self::isValidPeriodFormat($period)) {
             throw new BusinessException('Period invalid: ' . $period);
         }
         $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $period);
@@ -52,7 +52,7 @@ class BusinessCore
 
     public static function previousPeriod($period)
     {
-        if(!self::isValidPeriodFormat($period)){
+        if (!self::isValidPeriodFormat($period)) {
             throw new BusinessException('Period invalid: ' . $period);
         }
         $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $period);
@@ -62,9 +62,9 @@ class BusinessCore
 
     public static function AuthorizationPassword($password)
     {
-        $results = User::where('role','=', self::EMPLOYEE_ADMIN_ROLE)->get();
-        foreach ($results as $result){
-            if( password_verify($password, $result->password) ){
+        $results = User::where('role', '=', self::EMPLOYEE_ADMIN_ROLE)->get();
+        foreach ($results as $result) {
+            if (password_verify($password, $result->password)) {
                 return true;
             };
         }
@@ -72,6 +72,7 @@ class BusinessCore
         return false;
 
     }
+
     /**
      * @param $number
      * @return string|float
@@ -83,7 +84,7 @@ class BusinessCore
             throw new BusinessException('try to format a nonnumeric');
         }
 
-        return number_format((float) $number, self::PRINT_DECIMALS, self::PRINT_DEC_POINT, self::PRINT_THOUSANDS_SEP);
+        return number_format((float)$number, self::PRINT_DECIMALS, self::PRINT_DEC_POINT, self::PRINT_THOUSANDS_SEP);
     }
 
     /**
@@ -97,7 +98,7 @@ class BusinessCore
             throw new BusinessException('try to format a nonnumeric');
         }
 
-        return (float) number_format($number, self::DECIMALS_PLACES,  '.', '');
+        return (float)number_format($number, self::DECIMALS_PLACES, '.', '');
     }
 
     /**
@@ -135,7 +136,7 @@ class BusinessCore
         }
         $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
-        return (string) $dateTime->modify("last day of +$months month")->format(self::PERIOD_FORMAT);
+        return (string)$dateTime->modify("last day of +$months month")->format(self::PERIOD_FORMAT);
     }
 
     /**
@@ -150,7 +151,7 @@ class BusinessCore
         }
         $dateTime = ($date instanceof \DateTime) ? clone $date : new \DateTime($date);
 
-        return (string) $dateTime->modify("last day of +$months month")->format(self::DUE_DATE_FORMAT);
+        return (string)$dateTime->modify("last day of +$months month")->format(self::DUE_DATE_FORMAT);
     }
 
     /**
@@ -164,7 +165,7 @@ class BusinessCore
     {
         $periods = [];
         $tmp_date_string = preg_replace(self::PERIOD_EXP_REG, self::PERIOD_EXP_REG_REMP, $first_period);
-        $periods [1]= $period = self::dateToPeriodFormat($tmp_date_string, 0);
+        $periods [1] = $period = self::dateToPeriodFormat($tmp_date_string, 0);
         for ($i = 2; $i <= $totalInstallment; ++$i) {
             $periods [$i] = $period = self::nextPeriod($period);
         }
@@ -241,16 +242,16 @@ class BusinessCore
 
         $partial = array_sum($quotes);
         if ($partial < $amount) {
-            $quotes[count($quotes)] +=  $amount - $partial;
+            $quotes[count($quotes)] += $amount - $partial;
         }
 
         if ($partial > $amount) {
-            $quotes[count($quotes)] -=  $partial - $amount;
+            $quotes[count($quotes)] -= $partial - $amount;
         }
 
         if (!is_null($installment) && isset($quotes[$installment])) {
             return $quotes[$installment];
-        } elseif (!is_null($installment) && !isset($quotes[$installment]) ) {
+        } elseif (!is_null($installment) && !isset($quotes[$installment])) {
             throw new BusinessException('The quote requested does not exist');
         }
 

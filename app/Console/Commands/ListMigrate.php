@@ -32,8 +32,8 @@ class ListMigrate extends Command
     {
         $migrates = Migrate::all();
 
-        foreach ($migrates as $migrate){
-            $this->line( $migrate->id . ' [' . $migrate->updated_at . ' ' . $migrate->status . '] : ' .  $migrate->name);
+        foreach ($migrates as $migrate) {
+            $this->line($migrate->id . ' [' . $migrate->updated_at . ' ' . $migrate->status . '] : ' . $migrate->name);
         }
         return;
     }

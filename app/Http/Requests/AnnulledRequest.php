@@ -17,7 +17,7 @@ class CodeRequest extends Request
     {
         $user = User::find(request()->segments()[2]);
         return [
-          'code' => 'numeric|required|unique:users,code,' . $user->id . '|confirmed'
+            'code' => 'numeric|required|unique:users,code,' . $user->id . '|confirmed'
         ];
     }
 }

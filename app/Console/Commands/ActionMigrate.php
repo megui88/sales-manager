@@ -37,24 +37,24 @@ class ActionMigrate extends Command
     public function handle()
     {
         $id = $this->option('id');
-        if (empty($id)){
-            $this->error(PHP_EOL.'use --id to migration'.PHP_EOL);
+        if (empty($id)) {
+            $this->error(PHP_EOL . 'use --id to migration' . PHP_EOL);
             exit(2);
         }
         $action = $this->option('action');
-        if (empty($action)){
-            $this->error(PHP_EOL.'use --action to action'.PHP_EOL);
+        if (empty($action)) {
+            $this->error(PHP_EOL . 'use --action to action' . PHP_EOL);
             exit(2);
         }
         $migrate = Migrate::where('id', '=', $id)->first();
-        if(! $migrate) {
+        if (!$migrate) {
             $this->error('Migrate not found');
             exit(2);
         }
         /** @var Sale[] $sales */
         $sales = Sale::where('migrate_id', '=', $migrate->id)->get();
-        foreach ($sales as $sale){
-            switch ($action){
+        foreach ($sales as $sale) {
+            switch ($action) {
                 case Migrate::DELETE:
                     $sale->dues()->delete();
                     $sale->accredits()->delete();
@@ -65,7 +65,7 @@ class ActionMigrate extends Command
                     break;
             }
         }
-        if(in_array($action, [Migrate::DELETE,Migrate::ANNUL])) {
+        if (in_array($action, [Migrate::DELETE, Migrate::ANNUL])) {
             Sale::where('migrate_id', '=', $migrate->id)->delete();
             $migrate->update(['status' => $action]);
         }

@@ -17,7 +17,7 @@ class ProvidersController extends Controller
 
     public function register()
     {
-        return view('providers.register',[]);
+        return view('providers.register', []);
     }
 
     public function createRegister(ProviderRegisterRequest $request)

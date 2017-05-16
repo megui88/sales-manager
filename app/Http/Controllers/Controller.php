@@ -29,24 +29,24 @@ class Controller extends BaseController
 
         foreach ($filters as $filter => $value) {
 
-            if (empty($value)){
+            if (empty($value)) {
                 continue;
             }
 
-            if ('true' === $value){
+            if ('true' === $value) {
                 $value = true;
             }
 
-            if ('false' === $value){
+            if ('false' === $value) {
                 $value = false;
             }
 
-            if (('size' == $filter && ! $model->canUseInPaginate($filter)) || 'pageSize' == $filter){
+            if (('size' == $filter && !$model->canUseInPaginate($filter)) || 'pageSize' == $filter) {
                 $size = (int)$value;
                 continue;
             }
 
-            if( ('order' == $filter && ! $model->canUseInPaginate($filter)) || 'orderBy' == $filter){
+            if (('order' == $filter && !$model->canUseInPaginate($filter)) || 'orderBy' == $filter) {
                 $desc = ('-' == substr($value, 0, 1));
                 if ($model->canUseInPaginate(!$desc ? $value : substr($value, 1))) {
                     $query->orderBy(
@@ -57,13 +57,13 @@ class Controller extends BaseController
                 continue;
             }
 
-            if ( (('q' == $filter && ! $model->canUseInPaginate($filter)) || 'queryCustom' == $filter)
+            if ((('q' == $filter && !$model->canUseInPaginate($filter)) || 'queryCustom' == $filter)
                 && $model instanceof CustomizeQuery
-            ){
-                $query = $model->customQuery($query,$value, $filters);
+            ) {
+                $query = $model->customQuery($query, $value, $filters);
             }
 
-            if ($model->canUseInPaginate($filter) ){
+            if ($model->canUseInPaginate($filter)) {
                 $query->where(
                     $filter,
                     '=',
@@ -89,7 +89,7 @@ class Controller extends BaseController
     protected function getFilters()
     {
         $request = request();
-        return $request->get('filters',[]);
+        return $request->get('filters', []);
     }
 
     public function exceptionNotAurhoze()

@@ -3,38 +3,46 @@
 # Backend Auth
 Route::auth();
 
-Route::get('oauth/authorize', ['as' => 'oauth.authorize.get', 'middleware' => ['check-authorization-params', 'auth'], function() {
-    $authParams = Authorizer::getAuthCodeRequestParams();
+Route::get('oauth/authorize', [
+    'as' => 'oauth.authorize.get',
+    'middleware' => ['check-authorization-params', 'auth'],
+    function () {
+        $authParams = Authorizer::getAuthCodeRequestParams();
 
-    $formParams = array_except($authParams,'client');
+        $formParams = array_except($authParams, 'client');
 
-    $formParams['client_id'] = $authParams['client']->getId();
+        $formParams['client_id'] = $authParams['client']->getId();
 
-    $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
-        return $scope->getId();
-    }, $authParams['scopes']));
+        $formParams['scope'] = implode(config('oauth2.scope_delimiter'), array_map(function ($scope) {
+            return $scope->getId();
+        }, $authParams['scopes']));
 
-    return View::make('oauth.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
-}]);
-
-Route::post('oauth/authorize', ['as' => 'oauth.authorize.post', 'middleware' => ['csrf', 'check-authorization-params', 'auth'], function() {
-
-    $params = Authorizer::getAuthCodeRequestParams();
-    $params['user_id'] = Auth::user()->id;
-    $redirectUri = '/';
-
-    // If the user has allowed the client to access its data, redirect back to the client with an auth code.
-    if (Request::has('approve')) {
-        $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
+        return View::make('oauth.authorization-form', ['params' => $formParams, 'client' => $authParams['client']]);
     }
+]);
 
-    // If the user has denied the client to access its data, redirect back to the client with an error message.
-    if (Request::has('deny')) {
-        $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
+Route::post('oauth/authorize', [
+    'as' => 'oauth.authorize.post',
+    'middleware' => ['csrf', 'check-authorization-params', 'auth'],
+    function () {
+
+        $params = Authorizer::getAuthCodeRequestParams();
+        $params['user_id'] = Auth::user()->id;
+        $redirectUri = '/';
+
+        // If the user has allowed the client to access its data, redirect back to the client with an auth code.
+        if (Request::has('approve')) {
+            $redirectUri = Authorizer::issueAuthCode('user', $params['user_id'], $params);
+        }
+
+        // If the user has denied the client to access its data, redirect back to the client with an error message.
+        if (Request::has('deny')) {
+            $redirectUri = Authorizer::authCodeRequestDeniedRedirectUri();
+        }
+
+        return Redirect::to($redirectUri);
     }
-
-    return Redirect::to($redirectUri);
-}]);
+]);
 
 # Api OAuth
 Route::get('oauth/access_token', function () {
@@ -46,7 +54,7 @@ Route::post('oauth/access_token', function () {
 });
 
 # Url's anonymous
-Route::group([],function () {
+Route::group([], function () {
     Route::get('/register/provider', 'ProvidersController@register');
     Route::post('/register/provider', 'ProvidersController@createRegister');
     Route::get('/user-disable', 'HomeController@userDisable');
@@ -54,14 +62,14 @@ Route::group([],function () {
 });
 
 # Url's pharmacy auth
-Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::PHARMACIST_ROLE ]], function () {
+Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::PHARMACIST_ROLE]], function () {
     Route::get('/pharmacy', 'HomeController@pharmacy');
     Route::post('/pharmacy/file', 'MigrateController@pharmacyFile');
     Route::get('/users/{user}', 'UserController@details');
 });
 
 # Url's members auth
-Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBER_ROLE]], function () {
+Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::MEMBER_ROLE]], function () {
     Route::get('/', 'HomeController@init');
     Route::get('/details', 'HomeController@details');
     Route::get('/details/M7M/{init}/{done}', 'UserController@account0Details');
@@ -69,7 +77,7 @@ Route::group(['middleware' => ['auth', 'role:'.\App\Services\BusinessCore::MEMBE
 });
 
 # Url's administrator auth
-Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE]], function () {
+Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::EMPLOYEE_ADMIN_ROLE]], function () {
     Route::get('/budget', 'HomeController@budget');
     Route::get('/close', 'HomeController@close');
     Route::post('/close/{step}', 'CloseController@step');
@@ -81,7 +89,7 @@ Route::group(['middleware' => ['auth','role:'.\App\Services\BusinessCore::EMPLOY
     Route::post('/axoft_import/file', 'MigrateController@AxoftImportFile');
 });
 # Url's common auth
-Route::group(['middleware' =>  ['auth' ]], function () {
+Route::group(['middleware' => ['auth']], function () {
     Route::get('/users', 'UserController@index');
     Route::get('/users/{user}', 'UserController@details');
     Route::get('/sales/{sale}', 'SaleController@details');
@@ -89,7 +97,7 @@ Route::group(['middleware' =>  ['auth' ]], function () {
 });
 
 # Url's common auth
-Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPLOYEE_ROLE ]], function () {
+Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::EMPLOYEE_ROLE]], function () {
 
 
     Route::get('/home', 'HomeController@index');
@@ -101,6 +109,7 @@ Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPL
     Route::post('/sales', 'SaleController@create');
     Route::post('/credit_notes', 'SaleController@createCreditNote');
     Route::post('/purchase_orders', 'SaleController@createPurchaseOrder');
+    Route::patch('/purchase_orders', 'SaleController@confirmPurchaseOrder');
     Route::get('/purchase_orders/{sale}', 'SaleController@detailsPurchaseOrder');
     Route::get('/sales/{sale}/annul', 'SaleController@annulled');
     Route::post('/sales/{sale}/annul', 'SaleController@annulled');
@@ -126,7 +135,7 @@ Route::group(['middleware' =>  ['auth', 'role:'.\App\Services\BusinessCore::EMPL
 });
 
 # Users
-Route::group([],function () {
+Route::group([], function () {
 });
 
 

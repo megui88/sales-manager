@@ -17,7 +17,7 @@ class EmailRequest extends Request
     {
         $user = User::find(request()->segments()[2]);
         return [
-          'email' => 'email|required|unique:users,email,' . $user->id . '|confirmed'
+            'email' => 'email|required|unique:users,email,' . $user->id . '|confirmed'
         ];
     }
 }

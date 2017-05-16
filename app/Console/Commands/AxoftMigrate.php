@@ -26,7 +26,28 @@ class AxoftMigrate extends Command
 
     protected $_dates = [];
 
-    protected $_noProcess = [1,2,5,11,51,53,54,59,115,201,400,401,403,404,405,406,407,408,409,999999];
+    protected $_noProcess = [
+        1,
+        2,
+        5,
+        11,
+        51,
+        53,
+        54,
+        59,
+        115,
+        201,
+        400,
+        401,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        999999
+    ];
 
     /**
      * The console command description.
@@ -82,7 +103,7 @@ class AxoftMigrate extends Command
             ->get();
         $concepts = Concept::where('name', '=', 'Subsidio')->first()->id;
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('debe', '<>', 0)
@@ -91,7 +112,7 @@ class AxoftMigrate extends Command
                     //  ->whereNotIn('cod_cuenta', [2])
                     ->first();
                 if (!$comp_user) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process.
                 }
 
@@ -102,18 +123,18 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_collectors) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
 
                 foreach ($comp_collectors as $comp_collector) {
-                    if(!$comp_collector->user_id){
+                    if (!$comp_collector->user_id) {
                         dd($comp_collector);
                     }
                     $collector = $this->getUser($comp_collector->user_id);
 
-                    $sale =  Sale::create([
+                    $sale = Sale::create([
                         'sale_mode' => Sale::SUBSIDY,
                         'payer_id' => 0,
                         'collector_id' => $collector->id,
@@ -134,8 +155,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -158,7 +179,7 @@ class AxoftMigrate extends Command
             -1 => Concept::where('name', '=', 'Nota de Credito')->first()->id
         ];
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('haber', '<>', 0)
@@ -167,7 +188,7 @@ class AxoftMigrate extends Command
                     ->whereNotIn('cod_cuenta', [2])
                     ->first();
                 if (!$comp_user) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process.
                 }
 
@@ -178,13 +199,13 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_payers) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
 
                 foreach ($comp_payers as $comp_payer) {
-                    if(!$comp_payer->user_id){
+                    if (!$comp_payer->user_id) {
                         dd($comp_payer);
                     }
                     $payer = $this->getUser($comp_payer->user_id);
@@ -210,8 +231,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -234,7 +255,7 @@ class AxoftMigrate extends Command
             -1 => Concept::where('name', '=', 'Nota de Credito')->first()->id
         ];
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('debe', '<>', 0)
@@ -243,7 +264,7 @@ class AxoftMigrate extends Command
                     ->whereNotIn('cod_cuenta', [2])
                     ->first();
                 if (!$comp_user) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process.
                 }
 
@@ -254,13 +275,13 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_payers) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
 
                 foreach ($comp_payers as $comp_payer) {
-                    if(!$comp_payer->user_id){
+                    if (!$comp_payer->user_id) {
                         dd($comp_payer);
                     }
                     $payer = $this->getUser($comp_payer->user_id);
@@ -285,8 +306,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -295,11 +316,11 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'EGR')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '>', 1)
             ->get();
@@ -308,7 +329,7 @@ class AxoftMigrate extends Command
             -1 => Concept::where('name', '=', 'Nota de Credito')->first()->id
         ];
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_habers = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('haber', '<>', 0)
@@ -317,7 +338,7 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_habers) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process.
                 }
 
@@ -337,12 +358,12 @@ class AxoftMigrate extends Command
                         'state' => Sale::INITIATED,
                         'amount' => $mode * $comp_haber->haber,
                     ]);
-                    if($sale->id) {
+                    if ($sale->id) {
                         $comp_haber->update([
                             'process' => 1
                         ]);
-                    }else{
-                        echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    } else {
+                        echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     }
                 }
 
@@ -353,7 +374,7 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_debes) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
@@ -372,17 +393,17 @@ class AxoftMigrate extends Command
                         'state' => Sale::INITIATED,
                         'amount' => $comp_debe->debe,
                     ]);
-                    if($sale->id) {
+                    if ($sale->id) {
                         $comp_debe->update([
                             'process' => 1
                         ]);
-                    }else{
+                    } else {
                         echo $comprobante->comprobante . PHP_EOL;
                     }
                 }
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
 
@@ -392,11 +413,11 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'EGR')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '=', 1)
             ->get();
@@ -405,7 +426,7 @@ class AxoftMigrate extends Command
             -1 => Concept::where('name', '=', 'Nota de Credito')->first()->id
         ];
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('haber', '<>', 0)
@@ -423,7 +444,7 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_payers) == 0) {
-                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'EGR' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
@@ -454,8 +475,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
 
@@ -465,17 +486,17 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'REV')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '=', 1)
             ->get();
-        $concept =  Concept::where('name', '=', 'Nota de Credito')->first()->id;
+        $concept = Concept::where('name', '=', 'Nota de Credito')->first()->id;
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'REV')
                     ->where('haber', '<>', 0)
@@ -493,21 +514,21 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_payers) == 0) {
-                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
                 $collector = $this->getUser($comp_user->user_id);
 
                 foreach ($comp_payers as $comp_payer) {
-                    if(!$comp_payer->user_id){
+                    if (!$comp_payer->user_id) {
                         dd($comp_payer);
                     }
                     $payer = $this->getUser($comp_payer->user_id);
 
                     Sale::create([
                         'sale_mode' => Sale::CURRENT_ACCOUNT,
-                        'payer_id' =>  $payer->id,
+                        'payer_id' => $payer->id,
                         'collector_id' => $collector->id,
                         'period' => $this->_getPeriods($comp_payer->fecha),
                         'concept_id' => $concept,
@@ -525,8 +546,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -535,17 +556,17 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'REV')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '=', 1)
             ->get();
-        $concept =  Concept::where('name', '=', 'Nota de Credito')->first()->id;
+        $concept = Concept::where('name', '=', 'Nota de Credito')->first()->id;
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_user = TempAxoftMig::where('cod_comprobante', '=', 'REV')
                     ->where('haber', '<>', 0)
@@ -563,7 +584,7 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_payers) == 0) {
-                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
@@ -572,7 +593,7 @@ class AxoftMigrate extends Command
                 foreach ($comp_payers as $comp_payer) {
                     Sale::create([
                         'sale_mode' => Sale::CURRENT_ACCOUNT,
-                        'payer_id' =>  0,
+                        'payer_id' => 0,
                         'collector_id' => $collector->id,
                         'period' => $this->_getPeriods($comp_payer->fecha),
                         'concept_id' => $concept,
@@ -590,8 +611,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -600,17 +621,17 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'REV')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '>', 1)
             ->get();
-        $concept =  Concept::where('name', '=', 'Nota de Credito')->first()->id;
+        $concept = Concept::where('name', '=', 'Nota de Credito')->first()->id;
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comp_habers = TempAxoftMig::where('cod_comprobante', '=', 'REV')
                     ->where('haber', '<>', 0)
@@ -618,17 +639,17 @@ class AxoftMigrate extends Command
                     ->whereNotIn('cod_cuenta', $this->_noProcess)
                     ->get();
                 if (count($comp_habers) == 0) {
-                    throw new \Exception('no funciona el comprobante: ' . $comprobante->comprobante );
+                    throw new \Exception('no funciona el comprobante: ' . $comprobante->comprobante);
                 }
                 foreach ($comp_habers as $comp_haber) {
-                    if(!$comp_haber->user_id){
+                    if (!$comp_haber->user_id) {
                         dd($comp_haber);
                     }
                     $collector = $this->getUser($comp_haber->user_id);
 
                     Sale::create([
                         'sale_mode' => Sale::CURRENT_ACCOUNT,
-                        'payer_id' =>  0,
+                        'payer_id' => 0,
                         'collector_id' => $collector->id,
                         'period' => $this->_getPeriods($comp_haber->fecha),
                         'concept_id' => $concept,
@@ -650,18 +671,18 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_debes) == 0) {
-                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
                 foreach ($comp_debes as $comp_debe) {
-                    if(!$comp_debe->user_id){
+                    if (!$comp_debe->user_id) {
                         dd($comp_debe);
                     }
                     $payer = $this->getUser($comp_debe->user_id);
 
                     Sale::create([
                         'sale_mode' => Sale::CURRENT_ACCOUNT,
-                        'payer_id' =>  $payer->id,
+                        'payer_id' => $payer->id,
                         'collector_id' => 0,
                         'period' => $this->_getPeriods($comp_debe->fecha),
                         'concept_id' => $concept,
@@ -676,8 +697,8 @@ class AxoftMigrate extends Command
                     ]);
                 }
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -686,19 +707,19 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'), DB::raw('count(*) as counting'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'REV')
             ->where('haber', '<>', 0)
-            ->whereNotIn('cod_cuenta',$this->_noProcess)
+            ->whereNotIn('cod_cuenta', $this->_noProcess)
             ->groupBy('comprobante')
             ->having('counting', '>', 1)
             ->get();
-        $concept =  Concept::where('name', '=', 'Nota de Credito')->first()->id;
+        $concept = Concept::where('name', '=', 'Nota de Credito')->first()->id;
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
 
-            echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+            echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
             continue; //no process N/C desde mutual.
 
             try {
@@ -708,9 +729,9 @@ class AxoftMigrate extends Command
                     ->whereNotIn('cod_cuenta', $this->_noProcess)
                     ->first();
                 if (0 == count($comp_habers)) {
-                    throw new \Exception('no funciona el comprobante: ' . $comprobante->comprobante );
+                    throw new \Exception('no funciona el comprobante: ' . $comprobante->comprobante);
                 }
-                foreach ($comp_habers as $comp_haber){
+                foreach ($comp_habers as $comp_haber) {
 
                 }
 
@@ -721,23 +742,23 @@ class AxoftMigrate extends Command
                     ->get();
 
                 if (count($comp_debes) == 0) {
-                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ .PHP_EOL;
+                    echo 'REV' . $comprobante->comprobante . __METHOD__ . ' ' . __LINE__ . PHP_EOL;
                     continue; //no process N/C desde mutual.
                 }
 
 
                 foreach ($comp_debes as $comp_debe) {
-                    if(!in_array($comp_debe->cod_cuenta, [1,201])){
+                    if (!in_array($comp_debe->cod_cuenta, [1, 201])) {
                         $payerId = 0;
-                    }else{
-                        if(!$comp_debe->user_id){
+                    } else {
+                        if (!$comp_debe->user_id) {
                             dd($comp_debe);
                         }
                         $payerId = $comp_debe->user_id;
                     }
                     Sale::create([
                         'sale_mode' => Sale::CURRENT_ACCOUNT,
-                        'payer_id' =>  $payerId,
+                        'payer_id' => $payerId,
                         'collector_id' => 0,
                         'period' => $this->_getPeriods($comp_debe->fecha),
                         'concept_id' => $concept,
@@ -755,8 +776,8 @@ class AxoftMigrate extends Command
                     'process' => 1
                 ]);
 
-            }catch (\Exception $e){
-                dd($e->getFile(),$e->getLine(),$e->getMessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getFile(), $e->getLine(), $e->getMessage(), $comprobante->comprobante);
             }
         }
     }
@@ -766,26 +787,26 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'EGR')
-            ->whereIn('cod_cuenta',[51])
-            ->where('leyenda', 'not like','%club%')
-            ->where('leyenda', 'not like','%segur%')
+            ->whereIn('cod_cuenta', [51])
+            ->where('leyenda', 'not like', '%club%')
+            ->where('leyenda', 'not like', '%segur%')
             ->groupBy('comprobante')
             ->get();
         $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
-        $collector = User::where('code','=','51')->first();
+        $collector = User::where('code', '=', '51')->first();
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('comprobante', '=', $comprobante->comprobante)
                     ->where('process', '=', 0)
                     ->whereNotIn('cod_cuenta', [51])
                     ->where('debe', '<>', 0)
-                    ->where('leyenda', 'not like','%club%')
-                    ->where('leyenda', 'not like','%segur%')
+                    ->where('leyenda', 'not like', '%club%')
+                    ->where('leyenda', 'not like', '%segur%')
                     ->get();
                 if (1 > $comps->count()) {
                     continue;
@@ -811,8 +832,8 @@ class AxoftMigrate extends Command
                     ]);
                 }
 
-            }catch (\Exception $e){
-                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getfile(), $e->getline(), $e->getmessage(), $comprobante->comprobante);
             }
         }
     }
@@ -821,24 +842,24 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'EGR')
-            ->whereIn('cod_cuenta',[51])
-            ->where('leyenda', 'like','%club%')
+            ->whereIn('cod_cuenta', [51])
+            ->where('leyenda', 'like', '%club%')
             ->groupBy('comprobante')
             ->get();
         $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
-        $collector = User::where('code','=','301')->first();
+        $collector = User::where('code', '=', '301')->first();
 
-        foreach($comprobantes as $comprobante){
+        foreach ($comprobantes as $comprobante) {
             try {
                 $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('comprobante', '=', $comprobante->comprobante)
                     ->where('process', '=', 0)
                     ->whereNotIn('cod_cuenta', [51])
                     ->where('debe', '<>', 0)
-                  #  ->where('leyenda', 'like','%club%')
+                    #  ->where('leyenda', 'like','%club%')
                     ->get();
                 if (1 > $comps->count()) {
                     continue;
@@ -864,8 +885,8 @@ class AxoftMigrate extends Command
                     ]);
                 }
 
-            }catch (\Exception $e){
-                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getfile(), $e->getline(), $e->getmessage(), $comprobante->comprobante);
             }
         }
     }
@@ -874,28 +895,28 @@ class AxoftMigrate extends Command
     {
         $comprobantes = DB::table('temp_axoft_mig')
             ->select(DB::raw('comprobante'))
-            ->where('process','=', 0)
-            ->where('fecha','>=', '2016-06-14')
+            ->where('process', '=', 0)
+            ->where('fecha', '>=', '2016-06-14')
             ->where('cod_comprobante', '=', 'EGR')
-            ->whereIn('cod_cuenta',[51])
-          #  ->where('leyenda', 'like','%segur%')
+            ->whereIn('cod_cuenta', [51])
+            #  ->where('leyenda', 'like','%segur%')
             ->groupBy('comprobante')
             ->get();
         $concepts = Concept::where('name', '=', 'venta mutual')->first()->id;
-        $collector = User::where('code','=','339')->first();
+        $collector = User::where('code', '=', '339')->first();
 
-        foreach($comprobantes as $comprobante){
-            print_r('comprobante: ' . $comprobante->comprobante   . ' .');
+        foreach ($comprobantes as $comprobante) {
+            print_r('comprobante: ' . $comprobante->comprobante . ' .');
             try {
                 $comps = TempAxoftMig::where('cod_comprobante', '=', 'EGR')
                     ->where('comprobante', '=', $comprobante->comprobante)
                     ->where('process', '=', 0)
                     ->whereNotIn('cod_cuenta', [51])
                     ->where('debe', '<>', 0)
-                    ->where('leyenda', 'like','%segur%')
+                    ->where('leyenda', 'like', '%segur%')
                     ->get();
                 if (1 > $comps->count()) {
-                    print_r('fail: ' . $comprobante->comprobante   . PHP_EOL);
+                    print_r('fail: ' . $comprobante->comprobante . PHP_EOL);
                     continue;
                 }
                 echo PHP_EOL;
@@ -919,18 +940,18 @@ class AxoftMigrate extends Command
                     ]);
                 }
 
-            }catch (\Exception $e){
-                dd($e->getfile(),$e->getline(),$e->getmessage(),$comprobante->comprobante);
+            } catch (\Exception $e) {
+                dd($e->getfile(), $e->getline(), $e->getmessage(), $comprobante->comprobante);
             }
         }
     }
 
     private function _getPeriods($fecha)
     {
-        if(!empty($this->_dates[$fecha])){
+        if (!empty($this->_dates[$fecha])) {
             return $this->_dates[$fecha];
         }
-        if( $fecha > '2016-12-12' && $fecha < '2016-12-31'){
+        if ($fecha > '2016-12-12' && $fecha < '2016-12-31') {
             $fecha = '2017-01-01';
         }
 
@@ -939,11 +960,11 @@ class AxoftMigrate extends Command
 
     private function getUser($id)
     {
-        if(!empty($this->_user[$id])){
+        if (!empty($this->_user[$id])) {
             return $this->_user[$id];
         }
-        $user = User::where('id','=',$id)->first();
-        if(!$user){
+        $user = User::where('id', '=', $id)->first();
+        if (!$user) {
             throw new \Exception('no existe el usuario id: ' . $id);
         }
 

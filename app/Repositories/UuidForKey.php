@@ -13,7 +13,7 @@ trait UuidForKey
     {
         static::creating(function ($model) {
             $model->incrementing = false;
-            $model->{$model->getKeyName()} = (string) Uuid::uuid1();
+            $model->{$model->getKeyName()} = (string)Uuid::uuid1();
         });
     }
 

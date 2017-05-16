@@ -37,13 +37,13 @@ class UserDetails extends Command
     {
         $code = $this->option('code');
         $id = $this->option('id');
-        if (empty($code) && empty($id)){
-            $this->error(PHP_EOL.'use --code or --id to find user'.PHP_EOL);
+        if (empty($code) && empty($id)) {
+            $this->error(PHP_EOL . 'use --code or --id to find user' . PHP_EOL);
             exit(2);
         }
 
         $user = User::where('code', '=', $code)->orWhere('id', '=', $id)->first();
-        if(! $user) {
+        if (!$user) {
             $this->error('User not found');
             exit(2);
         }

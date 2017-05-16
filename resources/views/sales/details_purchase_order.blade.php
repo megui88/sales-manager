@@ -101,7 +101,11 @@
                             <td></td>
                             <td></td>
                             <td style="text-align: right"><strong>Total</strong></td>
-                            <td style="border: 2px black solid"></td>
+                            <td style="border: 2px black solid">
+                                @if($sale->state == \App\Sale::COMPLETED)
+                                    {{ \App\Services\BusinessCore::printAmount($sale->amount) }}
+                                @endif
+                            </td>
                         </tr>
                         </tfoot>
                     </table>

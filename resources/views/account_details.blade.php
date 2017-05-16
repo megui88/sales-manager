@@ -37,7 +37,7 @@
                                 @endif
                                 <div class="col-md-6">
                                     <label for="done" class="col-md-4 control-label">Fin</label>
-                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(12, old('period'), 'done') !!}
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(20, old('period'), 'done') !!}
                                     @if ($errors->has('done'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('done') }}</strong>

@@ -35,19 +35,19 @@ class EnableUser extends Command
     public function handle()
     {
         $code = $this->option('code');
-        if (empty($code)){
-            $this->error(PHP_EOL.'use --code to enable/disable user'.PHP_EOL);
+        if (empty($code)) {
+            $this->error(PHP_EOL . 'use --code to enable/disable user' . PHP_EOL);
             exit(2);
         }
 
         $user = User::where('code', '=', $code)->first();
-        if(! $user) {
+        if (!$user) {
             $this->error('User not found');
             exit(2);
         }
-        $q =  $user->enable ? 'Disable user' : 'Enable user';
+        $q = $user->enable ? 'Disable user' : 'Enable user';
         $question = $this->confirm($q . '?', true);
-        if($question){
+        if ($question) {
             $user->enable = !$user->enable;
             $user->save();
         }

@@ -37,8 +37,8 @@ class OauthNewClient extends Command
     public function handle()
     {
         $name = $this->option('name');
-        if (empty($name)){
-            $this->error(PHP_EOL.'use --name to assign name to client'.PHP_EOL);
+        if (empty($name)) {
+            $this->error(PHP_EOL . 'use --name to assign name to client' . PHP_EOL);
             exit(2);
         }
         $data = [
@@ -53,7 +53,7 @@ class OauthNewClient extends Command
         $this->table(
             ['Name', 'Id', 'Secret'],
             [
-                [ $data['name'], $data['id'], $data['secret'] ],
+                [$data['name'], $data['id'], $data['secret']],
             ]);
         return;
     }

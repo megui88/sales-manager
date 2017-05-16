@@ -16,7 +16,7 @@ class AdministrativeExpensesRequest extends Request
     public function rules()
     {
         return [
-          'administrative_expenses' => 'required|numeric|max:20|min:1|confirmed',
+            'administrative_expenses' => 'required|numeric|max:20|min:1|confirmed',
         ];
     }
 }

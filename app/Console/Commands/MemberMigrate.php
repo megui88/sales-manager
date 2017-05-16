@@ -37,13 +37,13 @@ class MemberMigrate extends Command
     {
         $code = $this->option('code');
         $name = $this->option('name');
-        if (empty($code) || empty($name)){
-            $this->error(PHP_EOL.'use --code and --name to find user'.PHP_EOL);
+        if (empty($code) || empty($name)) {
+            $this->error(PHP_EOL . 'use --code and --name to find user' . PHP_EOL);
             exit(2);
         }
 
         $user = User::createByCodeAndName($code, $name);
-        if(! $user) {
+        if (!$user) {
             $this->error('User not work');
             exit(2);
         }

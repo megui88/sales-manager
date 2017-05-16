@@ -30,21 +30,21 @@ class PurchaseOrdertListener
      */
     public function handle(Event $event)
     {
+
         $sale = $event->getSale();
+
         if ($sale->getAttribute('sale_mode') !== Sale::PURCHASE_ORDER) {
             return true;
         }
 
-        if (!in_array($sale->getAttribute('state'),[Sale::INITIATED])) {
+        if (!in_array($sale->getAttribute('state'), [Sale::INITIATED, Sale::PENDING, Sale::COMPLETED])) {
             return true;
         }
-
-        if ($event::TYPE == Sale::REPROCESSED){
-            ($sale->dues())?$sale->dues()->delete():null;
-            ($sale->accredits())?$sale->accredits()->delete():null;
-            ($sale->incomes())?$sale->incomes()->delete():null;
+        if ($event::TYPE == Sale::REPROCESSED) {
+            ($sale->dues()) ? $sale->dues()->delete() : null;
+            ($sale->accredits()) ? $sale->accredits()->delete() : null;
+            ($sale->incomes()) ? $sale->incomes()->delete() : null;
             $this->createDuesAndAccredits($sale);
-            $sale->state = Sale::INITIATED;
             return;
         }
 
@@ -53,11 +53,14 @@ class PurchaseOrdertListener
 
     private function createDuesAndAccredits(Sale $sale)
     {
-        $dueAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($sale->amount, $sale->installments);
+        $dueAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($sale->amount,
+            $sale->installments);
         $accredit = $this->business->subtractCharge($sale->amount, $sale->charge);
-        $accreditAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($accredit, $sale->installments);
+        $accreditAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($accredit,
+            $sale->installments);
         $income = $this->business->calculateIncome($sale->amount, $sale->charge);
-        $incomeAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($income, $sale->installments);
+        $incomeAmountOfQuotes = $this->business->calculateTheValueOfTheAmountOfEachInstallment($income,
+            $sale->installments);
         $periods = $this->business->calculateFuturePeriod($sale->period, $sale->installments);
         $due_dates = $this->business->calculateFutureDueDate($sale->first_due_date, $sale->installments);
 
@@ -71,7 +74,7 @@ class PurchaseOrdertListener
                 'amount_of_quota' => $dueAmountOfQuotes[$quote],
                 'due_date' => $due_dates[$quote],
                 'period' => $periods[$quote],
-                'state' => Sale::INITIATED,
+                'state' => $sale->state,
             ];
             Due::create($data);
             $data['amount_of_quota'] = $accreditAmountOfQuotes[$quote];
