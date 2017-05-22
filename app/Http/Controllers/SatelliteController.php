@@ -70,4 +70,30 @@ class SatelliteController extends Controller
             ->header("Content-type", " charset=utf-8")
             ->header("Content-disposition", "attachment; filename=\"" . $company->name . "_" . $period . "_.csv\"");
     }
+
+    public function futureDebsFile()
+    {
+        $period = Request()->get('period');
+        $company = Company::where('id', '=', Request()->get('company_id'))->first();
+
+        $rows = DB::select(DB::raw(
+            "SELECT u.code, " .
+            " CONCAT(u.name,' ',u.last_name) as name, " .
+            " u.headquarters_id," .
+            " SUM(d.amount_of_quota) as mount FROM users as u " .
+            "JOIN dues as d ON d.period >= :period AND d.payer_id=u.id AND d.state NOT IN ('" . Sale::ANNULLED . "', '" . Sale::PENDING . "') " .
+            "WHERE u.role != 'proveedor' AND u.state='" . BusinessCore::MEMBER_AFFILIATE . "'AND u.company_id='" . $company->id . "' " .
+            "GROUP BY d.payer_id ORDER by u.headquarters_id, u.code"),
+            ['period' => $period,]
+        );
+        $content = "Legajo" . PHP_EOL;
+        foreach ($rows as $row) {
+            $code = ($row->headquarters_id == 'b3d519f2-9092-11e6-9ece-04011111c601') ? 'Merlo' : 'Goya';
+            $content .= $row->code . ';' . $row->name . ';' . number_format($row->mount, 2, ',',
+                    '') . ';' . $code . PHP_EOL;
+        }
+        return Response::make($content)
+            ->header("Content-type", " charset=utf-8")
+            ->header("Content-disposition", "attachment; filename=\"deuda_a_futuro" . $company->name . "_" . $period . "_.csv\"");
+    }
 }

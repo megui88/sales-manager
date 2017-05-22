@@ -82,8 +82,10 @@ Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::EMP
     Route::get('/close', 'HomeController@close');
     Route::post('/close/{step}', 'CloseController@step');
     Route::get('/satellite', 'HomeController@satellite');
+    Route::get('/future-debs', 'HomeController@futureDebs');
     Route::get('/others', 'HomeController@others');
     Route::post('/satellite', 'SatelliteController@downloadFile');
+    Route::post('/future-debs', 'SatelliteController@futureDebsFile');
     Route::post('/others', 'SatelliteController@othersFile');
     Route::get('/axoft_import', 'HomeController@AxoftImport');
     Route::post('/axoft_import/file', 'MigrateController@AxoftImportFile');

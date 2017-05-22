@@ -154,6 +154,12 @@ class HomeController extends Controller
 
     }
 
+    public function futureDebs()
+    {
+        $period = request()->get('period', Periods::getCurrentPeriod()->uid);
+        return view('future_debs', compact('period'));
+    }
+
     public function others()
     {
         $period = request()->get('period', Periods::getCurrentPeriod()->uid);
