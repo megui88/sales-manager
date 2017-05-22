@@ -9,6 +9,8 @@
 namespace App\Http\Requests;
 
 
+use App\Services\BusinessCore;
+
 class SaleRequest extends Request
 {
 
@@ -38,5 +40,29 @@ class SaleRequest extends Request
             'period' => 'string|required',
             'concept_id' => 'string|required',
         ];
+    }
+
+
+    public function getValidatorInstance()
+    {
+        $validator = parent::getValidatorInstance();
+
+        $validator->after(function () use ($validator) {
+
+            $input = $validator->getData();
+            $payer_id = $input['payer_id'];
+            $period = $input['period'];
+
+            $b = new BusinessCore();
+            $current = $b->getUserDuesByPeriod($payer_id, $period);
+            $amount = $b->calculateTheValueOfTheAmountOfEachInstallment($input['amount'],$input['installments'],1);
+
+            if (($current + $amount)  > BusinessCore::CURRENT_MAX) {
+                $validator->errors()->add('payer_id',
+                    'El socio pose un gasto superior a ' . BusinessCore::CURRENT_MAX . ' en el periodo ' . $period);
+            }
+        });
+
+        return $validator;
     }
 }

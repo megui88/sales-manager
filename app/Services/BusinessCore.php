@@ -3,11 +3,14 @@
 namespace App\Services;
 
 use App\Periods;
+use App\Sale;
 use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class BusinessCore
 {
+    const CURRENT_MAX = 7000;
     const CREDIT_MAX = 40000;
     const AGENT_ROLE = 9;
     const VENDOR_ROLE = 'proveedor';
@@ -256,5 +259,31 @@ class BusinessCore
         }
 
         return $quotes;
+    }
+
+    public function getUserDuesByPeriod($userId, $period)
+    {
+        if (!self::isValidPeriodFormat($period)) {
+            throw new BusinessException('Period invalid: ' . $period);
+        }
+
+        $current = DB::table('dues')
+            ->select(DB::raw('sum(amount_of_quota) as amount'))
+            ->where('payer_id', '=', $userId)
+            ->where('period', '=', $period)
+            ->whereNotIn('state', [Sale::PENDING, Sale::ANNULLED])
+            ->get();
+        return $current[0]->amount;
+    }
+
+    public function getUserDebtsFuture($userId)
+    {
+        $current = DB::table('dues')
+            ->select(DB::raw('sum(amount_of_quota) as amount'))
+            ->where('payer_id', '=', $userId)
+            ->where('period', '>=', Periods::getCurrentPeriod()->uid)
+            ->whereNotIn('state', [Sale::PENDING, Sale::ANNULLED])
+            ->get();
+        return $current[0]->amount;
     }
 }
