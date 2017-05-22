@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth']], function () {
 Route::group(['middleware' => ['auth', 'role:' . \App\Services\BusinessCore::EMPLOYEE_ROLE]], function () {
 
 
+    Route::get('/on-limit', 'HomeController@onLimit');
     Route::get('/home', 'HomeController@index');
     Route::get('/credit_notes', 'HomeController@creditNotes');
     Route::get('/purchase_orders', 'HomeController@purchaseOrder');

@@ -12,6 +12,7 @@ use App\Sale;
 use App\Services\BusinessCore;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class HomeController extends Controller
 {
@@ -278,6 +279,34 @@ class HomeController extends Controller
         return view('close', [
             'current' => $current,
             'nextPeriod' => BusinessCore::nextPeriod($current),
+        ]);
+    }
+
+    public function onLimit()
+    {
+        $data = [];
+        $currents = DB::table('dues')
+            ->select(DB::raw('payer_id'), DB::raw('sum(amount_of_quota) as amount'))
+            ->where('payer_id', '!=', '0')
+            ->where('period', '>=', Periods::getCurrentPeriod()->uid)
+            ->whereNotIn('state', [Sale::PENDING, Sale::ANNULLED])
+            ->groupBy('payer_id')
+            ->get();
+        foreach ($currents as $current){
+            if($current->amount <= (BusinessCore::CURRENT_MAX - 500)){
+                continue;
+            }
+
+            $data[] = [
+                'payer' => User::find($current->payer_id),
+                'amount' => $current->amount,
+                'exceeded' => ($current->amount >= BusinessCore::CURRENT_MAX),
+            ];
+        }
+
+        return view('exceeded', [
+            'data' => $data,
+            'period' => Periods::getCurrentPeriod(),
         ]);
     }
 }

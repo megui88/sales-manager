@@ -80,10 +80,14 @@
                 @if (Auth::guest())
                 @else
 
+                    @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+                        <li><a href="{{ url('/on-limit') }}">EXCEDIDOS</a></li>                    @endif
+
                     @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::MEMBER_ROLE))
                         <li><a href="{{ url('/details') }}">Detalle de cuenta</a></li>
                     @endif
                     @if(\App\Services\AccessControl::hasAccess(Auth::user()->role,\App\Services\BusinessCore::EMPLOYEE_ROLE))
+
                         <li><a href="{{ url('/home') }}">Venta</a></li>
                         <li><a href="{{ url('/credit_notes') }}">Nota de Credito</a></li>
                         <li><a href="{{ url('/purchase_orders') }}">Ordenes de compra</a></li>
