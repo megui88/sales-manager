@@ -294,7 +294,7 @@ class HomeController extends Controller
         $currents = DB::table('dues')
             ->select(DB::raw('payer_id'), DB::raw('sum(amount_of_quota) as amount'))
             ->where('payer_id', '!=', '0')
-            ->where('period', '>=', Periods::getCurrentPeriod()->uid)
+            ->where('period', '=', Periods::getCurrentPeriod()->uid)
             ->whereNotIn('state', [Sale::PENDING, Sale::ANNULLED])
             ->groupBy('payer_id')
             ->get();
