@@ -75,25 +75,47 @@ class SatelliteController extends Controller
     {
         $period = Request()->get('period');
         $company = Company::where('id', '=', Request()->get('company_id'))->first();
-
+        $users = [];
         $rows = DB::select(DB::raw(
             "SELECT u.code, " .
+            " d.period, " .
             " CONCAT(u.name,' ',u.last_name) as name, " .
             " u.headquarters_id," .
             " SUM(d.amount_of_quota) as mount FROM users as u " .
             "JOIN dues as d ON d.period >= :period AND d.payer_id=u.id AND d.state NOT IN ('" . Sale::ANNULLED . "', '" . Sale::PENDING . "') " .
             "WHERE u.role != 'proveedor' AND u.state='" . BusinessCore::MEMBER_AFFILIATE . "'AND u.company_id='" . $company->id . "' " .
-            "GROUP BY d.payer_id ORDER by u.headquarters_id, u.code"),
+            "GROUP BY d.payer_id, d.period ORDER by d.period, u.headquarters_id, u.code"),
             ['period' => $period,]
         );
-        $content = "Legajo" . PHP_EOL;
         foreach ($rows as $row) {
-            $code = ($row->headquarters_id == 'b3d519f2-9092-11e6-9ece-04011111c601') ? 'Merlo' : 'Goya';
-            $content .= $row->code . ';' . $row->name . ';' . number_format($row->mount, 2, ',',
-                    '') . ';' . $code . PHP_EOL;
+
+            if (empty($users[$row->code])) {
+                $code = ($row->headquarters_id == 'b3d519f2-9092-11e6-9ece-04011111c601') ? 'Merlo' : 'Goya';
+                $users[$row->code] = [
+                    'code' => $code,
+                    'legajo' => $row->code,
+                    'name' => $row->name,
+                ];
+            }
+            $users[$row->code][$row->period] = number_format($row->mount, 2, ',', '');
+
         }
-        return Response::make($content)
+
+        $headers = 'sede;legajo;nombre;' . $period . ';';
+        $nextPerdio = BusinessCore::nextPeriod($period);
+        for($i = 1; $i <= 36;++$i){
+            $headers .= $nextPerdio . ';';
+            $nextPerdio = BusinessCore::nextPeriod($nextPerdio);
+        }
+
+        $content = '';
+        foreach ($users as $legajo => $user){
+                $content .= implode(';', $user) . PHP_EOL;
+        }
+
+        return Response::make($headers. PHP_EOL . $content)
             ->header("Content-type", " charset=utf-8")
-            ->header("Content-disposition", "attachment; filename=\"deuda_a_futuro" . $company->name . "_" . $period . "_.csv\"");
+            ->header("Content-disposition",
+                "attachment; filename=\"deuda_a_futuro" . $company->name . "_" . $period . "_.csv\"");
     }
 }

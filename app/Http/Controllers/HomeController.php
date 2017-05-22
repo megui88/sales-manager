@@ -295,19 +295,36 @@ class HomeController extends Controller
             ->select(DB::raw('payer_id'), DB::raw('sum(amount_of_quota) as amount'))
             ->where('payer_id', '!=', '0')
             ->where('period', '=', Periods::getCurrentPeriod()->uid)
-            ->whereNotIn('state', [ Sale::ANNULLED])
+            ->whereNotIn('state', [Sale::ANNULLED])
             ->groupBy('payer_id')
             ->get();
-        foreach ($currents as $current){
-            if($current->amount <= (BusinessCore::CURRENT_MAX - 500)){
+        $currents_F = DB::table('dues')
+            ->select(DB::raw('payer_id'), DB::raw('sum(amount_of_quota) as amount'))
+            ->where('payer_id', '!=', '0')
+            ->where('period', '=', BusinessCore::nextPeriod(Periods::getCurrentPeriod()->uid))
+            ->whereNotIn('state', [Sale::ANNULLED])
+            ->groupBy('payer_id')
+            ->get();
+
+        foreach ($currents as $current) {
+            if ($current->amount <= (BusinessCore::CURRENT_MAX - 500)) {
                 continue;
             }
 
-            $data[] = [
+            $data[$current->payer_id] = [
                 'payer' => User::find($current->payer_id),
+                'next_period' => '',
                 'amount' => $current->amount,
                 'exceeded' => ($current->amount >= BusinessCore::CURRENT_MAX),
             ];
+        }
+
+        foreach ($currents_F as $current) {
+            if (empty($data[$current->payer_id])) {
+                continue;
+            }
+
+            $data[$current->payer_id]['next_period'] = $current->amount;
         }
 
         return view('exceeded', [

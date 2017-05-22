@@ -13,7 +13,8 @@
 
                             <tr>
                                 <td>Nombre</td>
-                                <td>Importe</td>
+                                <td>{{ $period->uid }}</td>
+                                <td>{{ \App\Services\BusinessCore::nextPeriod($period->uid) }}</td>
                                 <td>Accion</td>
                                 <td></td>
                             </tr>
@@ -25,6 +26,7 @@
                                         @endif>
                                     <td>{{ $row['payer']->fullName() }}</td>
                                     <td>{{ $row['amount'] }}</td>
+                                    <td>{{ $row['next_period'] }}</td>
                                     <td><a href="/details/{{$row['payer']->id}}/{{ $period->uid }}/{{ $period->uid }}">ver detalle</a></td>
                                 </tr>
                             @endforeach
