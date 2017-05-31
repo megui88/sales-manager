@@ -9,6 +9,7 @@
 namespace App\Http\Requests;
 
 
+use App\Sale;
 use App\Services\BusinessCore;
 
 class SaleRequest extends Request
@@ -55,9 +56,9 @@ class SaleRequest extends Request
 
             $b = new BusinessCore();
             $current = $b->getUserDuesByPeriod($payer_id, $period);
-            $amount = $b->calculateTheValueOfTheAmountOfEachInstallment($input['amount'],$input['installments'],1);
+            $amount = $b->calculateTheValueOfTheAmountOfEachInstallment($input['amount'], $input['installments'], 1);
 
-            if (($current + $amount)  > BusinessCore::CURRENT_MAX) {
+            if (($current + $amount) > BusinessCore::CURRENT_MAX and $_SERVER['REQUEST_URI'] != '/credit_notes') {
                 $validator->errors()->add('payer_id',
                     'El socio pose un gasto superior a ' . BusinessCore::CURRENT_MAX . ' en el periodo ' . $period);
             }
