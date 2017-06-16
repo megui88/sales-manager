@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class BusinessCore
 {
-    const CURRENT_MAX = 13000;
+    const CURRENT_MAX = 7000;
     const CREDIT_MAX = 40000;
     const AGENT_ROLE = 9;
     const VENDOR_ROLE = 'proveedor';
