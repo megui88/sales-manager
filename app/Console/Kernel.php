@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\AxoftMigrate::class,
         Commands\ActionMigrate::class,
         Commands\ListMigrate::class,
+        Commands\Refinancing::class,
     ];
 
     /**

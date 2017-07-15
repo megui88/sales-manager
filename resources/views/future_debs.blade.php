@@ -6,7 +6,7 @@
             <div class="row">
                 <label for="period" class="col-md-4 control-label">Periodo: </label>
                 <div class="col-md-5">
-                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(12, $period) !!}
+                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(12, $period, 'period', true) !!}
                 </div>
             </div>
             <div class="row">

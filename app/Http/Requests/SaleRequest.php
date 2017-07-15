@@ -62,6 +62,13 @@ class SaleRequest extends Request
                 $validator->errors()->add('payer_id',
                     'El socio pose un gasto superior a ' . BusinessCore::CURRENT_MAX . ' en el periodo ' . $period);
             }
+
+            if (BusinessCore::calculateFuturePeriod($input['period'], $input['installments'], $input['installments']) > '201711') {
+                $validator->errors()->add('period',
+                    'El limite de compra es hasta el 11/2017 no pueden exceder ese periodo.');
+                $validator->errors()->add('installments',
+                    'Intente reducir el numero de cuotas.');
+            }
         });
 
         return $validator;
