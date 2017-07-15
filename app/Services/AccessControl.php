@@ -14,7 +14,7 @@ class AccessControl
             BusinessCore::MEMBER_ROLE => self::memberAccess(),
             BusinessCore::VENDOR_ROLE => self::vendorAccess(),
             BusinessCore::PHARMACIST_ROLE => self::pharmacistAccess(),
-            BusinessCore::EMPLOYEE_ROLE => self::emplyeeAccess(),
+            BusinessCore::EMPLOYEE_ROLE => self::employeeAccess(),
             BusinessCore::EMPLOYEE_ADMIN_ROLE => self::employeeAdminAccess(),
             BusinessCore::AGENT_ROLE => self::agentAccess(),
         ];
@@ -41,7 +41,7 @@ class AccessControl
         ];
     }
 
-    static private function emplyeeAccess()
+    static private function employeeAccess()
     {
         return [
             BusinessCore::MEMBER_ROLE,

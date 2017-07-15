@@ -120,11 +120,12 @@ class SaleController extends Controller
         $data = $request->all();
 
         $sale = Sale::firstOrFail()->where('id', '=', $data['order_id'])->first();
-        if($sale->sale_mode != Sale::PURCHASE_ORDER){
+        if ($sale->sale_mode != Sale::PURCHASE_ORDER) {
             $request->session()->flash('alert-danger', 'Usted no ingreso una orden de compra.');
             return redirect()->to('/purchase_orders');
         }
         $sale->update([
+            'period' => ($sale->perdiod < Periods::getPeriod()) ? Periods::getPeriod() : $sale->period,
             'state' => Sale::COMPLETED,
             'amount' => $data['order_amount'],
         ]);
