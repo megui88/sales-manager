@@ -52,7 +52,7 @@ class MemberDisaffiliationTest extends TestCase
         $this->submitForm('Ingresar', $inputs)
             ->followRedirects()
             //then
-            ->see('Bienvenido')
+            ->see('Aviso')
             ->see('Usuarios');
 
         //when
