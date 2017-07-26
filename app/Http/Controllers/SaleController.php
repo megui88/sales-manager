@@ -125,7 +125,7 @@ class SaleController extends Controller
             return redirect()->to('/purchase_orders');
         }
         $sale->update([
-            'period' => ($sale->perdiod < Periods::getPeriod()) ? Periods::getPeriod() : $sale->period,
+            'period' => ($sale->perdiod < Periods::getCurrentPeriod()->uid) ? Periods::getCurrentPeriod()->uid : $sale->period,
             'state' => Sale::COMPLETED,
             'amount' => $data['order_amount'],
         ]);
