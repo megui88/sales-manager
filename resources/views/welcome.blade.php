@@ -10,7 +10,7 @@
 
                 <div class="panel-body">
                     No se puede vender más del mes <strong>noviembre 2017 (112017)</strong><br>
-                    Todas las compras de este mes deben ser como Maximo en <strong>4 Cuotas.</strong>
+                    Todas las compras de este mes deben ser en <strong>1 Cuota.</strong>
                 </div>
             </div>
         </div>

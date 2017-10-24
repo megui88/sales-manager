@@ -33,7 +33,7 @@ class BusinessCore
     {
         try {
             $periods = [];
-            $period = ($current) ? Periods::getCurrentPeriod() : '201701';
+            $period = ($current) ? Periods::getCurrentPeriod() : '201601';
 
             $periods = array_merge($periods, self::calculateFuturePeriod($period, $total));
             return $periods;

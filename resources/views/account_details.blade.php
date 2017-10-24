@@ -14,7 +14,7 @@
                             <div class="form-group{{ !empty($errors->getBags()) ? ' has-error' : '' }}">
                                 <div class="col-md-6">
                                     <label for="init" class="col-md-4 control-label">Inicio</label>
-                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(20, old('period'), 'init') !!}
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(26, old('period'), 'init') !!}
                                     @if ($errors->has('init'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('init') }}</strong>
@@ -37,7 +37,7 @@
                                 @endif
                                 <div class="col-md-6">
                                     <label for="done" class="col-md-4 control-label">Fin</label>
-                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(20, old('period'), 'done') !!}
+                                    {!! \App\Helpers\BladeHelpers::sellPeriodSelect(26, old('period'), 'done') !!}
                                     @if ($errors->has('done'))
                                         <span class="help-block">
                                         <strong>{{ $errors->first('done') }}</strong>
